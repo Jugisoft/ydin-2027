@@ -1,8 +1,11 @@
 name: Päivitä data
 on:
   schedule:
-    - cron: "17 3 * * *"          # joka yö (UTC) – n. klo 6 Suomen aikaa
-    - cron: "17 10-20/3 * 4-9 *"   # kaudella (huhti–syys) 3 h välein päivällä
+    - cron: "5 19 * * *"   # 22.05 Suomen kesäaikaa (UTC+3)
+    - cron: "5 20 * * *"   # 22.05 Suomen talviaikaa (UTC+2)
+  push:
+    branches: [main]
+    paths: ["web/**", "ydin/**", "data/seuranta/**", ".github/workflows/**"]
   workflow_dispatch:
     inputs:
       kausi:
@@ -10,11 +13,16 @@ on:
         default: "2026"
 permissions:
   contents: write
+  pages: write
+  id-token: write
 concurrency: paivita
 jobs:
   paivita:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.julkaisu.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,10 +30,17 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
       - run: python -m ydin.paivita --kausi ${{ github.event.inputs.kausi || '2026' }}
-      - name: Tallenna muutokset
+      - name: Tallenna data
         run: |
           git config user.name "ydin-bot"
           git config user.email "ydin-bot@users.noreply.github.com"
           git add data/out
           git diff --cached --quiet || git commit -m "Data päivitetty $(date -u +%Y-%m-%dT%H:%MZ)"
           git push
+      - name: Rakenna sivusto
+        run: python -m ydin.sivu
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: site }
+      - id: julkaisu
+        uses: actions/deploy-pages@v4
