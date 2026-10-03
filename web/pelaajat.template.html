@@ -1,0 +1,287 @@
+<title>YDIN 2027 Pelaajat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: kapea ohjausrivi ylhäällä, iso lajiteltava taulukko, oikealla (mobiilissa alla) valitun pelaajan pesäkortti */
+:root{
+  --bg:#eef1ee;        /* nurmen sävyinen vaalea neutraali */
+  --surface:#ffffff;
+  --line:#d5dbd6;
+  --fg:#14211c;
+  --muted:#5d6b65;
+  --accent:#1f47c7;    /* koboltti */
+  --accent-soft:#e3e9fb;
+  --sand:#c99a3a;      /* kentän hiekka: kärkilyöntipalkit */
+  --sand-soft:#f2e6c9;
+  --good:#1d7a4a;
+  --on-accent:#ffffff;
+  --font-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1714;--surface:#16211d;--line:#2a3833;--fg:#e6ece9;--muted:#93a29b;
+  --accent:#7d9bff;--accent-soft:#1d2a4d;--sand:#e0b65a;--sand-soft:#3a3220;--good:#5cc98f;--on-accent:#0f1714;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1714;--surface:#16211d;--line:#2a3833;--fg:#e6ece9;--muted:#93a29b;
+  --accent:#7d9bff;--accent-soft:#1d2a4d;--sand:#e0b65a;--sand-soft:#3a3220;--good:#5cc98f;--on-accent:#0f1714;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.45}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:20px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.back{font:600 .9rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);text-decoration:none;align-self:center}
+.brand h1{font-family:var(--font-display);font-weight:700;font-size:2.4rem;letter-spacing:.01em;margin:0;line-height:1}
+.brand h1 span{color:var(--accent)}
+.brand .sub{font-family:var(--font-display);font-size:1.15rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.stamp{font-size:.8rem;color:var(--muted)}
+
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px;width:fit-content;max-width:100%}
+.tabs button{font:600 .95rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:5px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.tabs button:focus-visible,.chip:focus-visible,th button:focus-visible,tbody tr:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.leaders{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:12px}
+.leader{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.leader:hover{border-color:var(--accent)}
+.leader .lab{font:600 .78rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.leader .who{font-size:.92rem}
+.leader .val{font:700 2rem var(--font-display);line-height:1.05;font-variant-numeric:tabular-nums}
+.leader .who{font-weight:600}
+.leader .who small{color:var(--muted);font-weight:500}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:600 .85rem var(--font-display);letter-spacing:.03em;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:4px 10px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.field{display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--muted)}
+.field input[type=search]{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 10px;width:200px;max-width:100%}
+.field input[type=range]{accent-color:var(--accent);width:120px}
+.field output{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600;min-width:2ch}
+.toggle{display:flex;align-items:center;gap:6px;font-size:.88rem;color:var(--muted);cursor:pointer}
+.toggle input{accent-color:var(--accent)}
+
+.main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+@media (max-width:960px){.main{grid-template-columns:minmax(0,1fr)}}
+
+.tablebox{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.92rem}
+thead th{position:sticky;top:0;background:var(--surface);border-bottom:2px solid var(--fg);text-align:right;padding:0;white-space:nowrap;z-index:1}
+th button{all:unset;cursor:pointer;display:block;padding:9px 8px;font:600 .82rem var(--font-display);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+th[aria-sort] button{color:var(--fg)}
+th[aria-sort="descending"] button::after{content:" ▾";color:var(--accent)}
+th[aria-sort="ascending"] button::after{content:" ▴";color:var(--accent)}
+th.l,td.l{text-align:left}
+td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--accent-soft)}
+tbody tr.sel{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+td.rk{color:var(--muted);width:2.5em}
+td.nm{font-weight:600}
+td.jk{color:var(--muted);font:600 .85rem var(--font-display);letter-spacing:.03em}
+td.yht{font-weight:700}
+td.pc{min-width:110px}
+.bar{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.bar i{display:block;height:6px;width:56px;background:var(--sand-soft);border-radius:3px;overflow:hidden;position:relative}
+.bar i b{position:absolute;inset:0 auto 0 0;background:var(--sand)}
+tr.small td.pc,tr.small td.pb{color:var(--muted)}
+tr.small td.pc b{opacity:.45}
+.pb{display:none}
+.showbases .pb{display:table-cell}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.foot{font-size:.8rem;color:var(--muted);padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px 16px}
+
+/* pesäkortti */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px;position:sticky;top:12px}
+.card h2{font:700 1.6rem var(--font-display);margin:0;line-height:1.05;text-wrap:balance}
+.card .meta{color:var(--muted);font-size:.88rem}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kpi{display:flex;flex-direction:column;align-items:flex-start}
+.kpi span{font:600 .72rem var(--font-display);letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.kpi strong{font:700 1.5rem var(--font-display);font-variant-numeric:tabular-nums}
+.field-svg{width:100%;height:auto;display:block}
+.field-svg .grass{fill:var(--bg)}
+.field-svg .path{stroke:var(--line);stroke-width:2;fill:none;stroke-dasharray:4 5}
+.field-svg .base{fill:var(--surface);stroke:var(--fg);stroke-width:1.5}
+.field-svg .base.hot{fill:var(--sand)}
+.field-svg .pct{font:700 17px var(--font-display);fill:var(--fg)}
+.field-svg .lbl{font:600 10.5px var(--font-display);letter-spacing:.08em;fill:var(--muted);text-transform:uppercase}
+.field-svg .cnt{font:500 11px var(--font-body);fill:var(--muted)}
+.note{font-size:.8rem;color:var(--muted);margin:0}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <a class="back" href="index.html">← Koti</a>
+      <h1>YDIN <span>2027</span></h1>
+      <div class="sub">Pelaajat · Miesten Superpesis <span id="kausi"></span></div>
+    </div>
+    <div class="stamp" id="stamp"></div>
+  </header>
+
+  <div class="tabs" role="group" aria-label="Sarjavaihe" id="tabs">
+    <button data-v="runko" aria-pressed="true">Runkosarja</button>
+    <button data-v="jatko_ylempi" aria-pressed="false">Ylempi jatkosarja</button>
+    <button data-v="jatko_alempi" aria-pressed="false">Alempi jatkosarja</button>
+    <button data-v="kaikki" aria-pressed="false">Koko kausi</button>
+  </div>
+
+  <section class="leaders" id="leaders" aria-label="Kärkipelaajat"></section>
+
+  <div class="controls">
+    <div class="chips" id="chips" role="group" aria-label="Joukkue"></div>
+    <label class="field">Hae <input type="search" id="q" placeholder="Pelaajan nimi"></label>
+    <label class="field">KLY vähintään <input type="range" id="minkly" min="0" max="60" step="5" value="0"><output id="minklyv">0</output></label>
+    <label class="toggle"><input type="checkbox" id="bases"> Kärkilyönnit pesittäin</label>
+  </div>
+
+  <div class="main">
+    <div class="tablebox" id="tablebox">
+      <table>
+        <thead><tr id="head"></tr></thead>
+        <tbody id="body"></tbody>
+      </table>
+      <div class="foot"><span id="count"></span><span>Himmennetty KL% = alle 10 yritystä.</span><span>Lähde: pesistulokset.fi</span></div>
+    </div>
+    <aside class="card" id="card" aria-live="polite"></aside>
+  </div>
+</div>
+
+<script>
+const DATA = __DATA__;
+const F = DATA.kentat;
+const SUM = ["O","K","L","T","KL","KLY","KL0","KLY0","KL1","KLY1","KL2","KLY2","KL3","KLY3","LV"];
+const pct = (a,b)=> b ? 100*a/b : null;
+const fmtP = v => v==null ? "–" : v.toFixed(1).replace(".",",");
+const PESA = ["kotipesältä","1. pesältä","2. pesältä","3. pesältä"];
+
+function rows(v){
+  const toObj = r => Object.fromEntries(F.map((k,i)=>[k,r[i]]));
+  if(v!=="kaikki") return DATA.vaiheet[v].map(toObj);
+  const m = new Map();
+  for(const ph of Object.keys(DATA.vaiheet)) for(const r of DATA.vaiheet[ph]){
+    const o = toObj(r), cur = m.get(o.id);
+    if(!cur){m.set(o.id,o);continue}
+    for(const k of SUM) cur[k]+=o[k];
+  }
+  return [...m.values()];
+}
+function enrich(p){
+  p.YHT=p.K+p.L+p.T; p.KLp=pct(p.KL,p.KLY);
+  for(let n=0;n<4;n++) p["KLp"+n]=pct(p["KL"+n],p["KLY"+n]);
+  return p;
+}
+
+const COLS = [
+  {k:"rk",t:"#",c:"rk l",nosort:true},
+  {k:"nimi",t:"Pelaaja",c:"nm l"},
+  {k:"jk",t:"Joukkue",c:"jk l"},
+  {k:"O",t:"O"},
+  {k:"KLtxt",t:"K+L",sortKey:"KandL"},
+  {k:"T",t:"T"},
+  {k:"YHT",t:"YHT",c:"yht"},
+  {k:"KL",t:"KL"},
+  {k:"KLY",t:"KLY"},
+  {k:"KLp",t:"KL%",c:"pc"},
+  {k:"KLp0",t:"KL%0",c:"pb"},{k:"KLp1",t:"KL%1",c:"pb"},{k:"KLp2",t:"KL%2",c:"pb"},{k:"KLp3",t:"KL%3",c:"pb"},
+];
+const st = {v:"runko", jk:null, q:"", min:0, sort:"YHT", dir:-1, sel:null};
+try{ const s=JSON.parse(localStorage.getItem("ydin-pelaajat")||"{}"); Object.assign(st,{v:s.v||st.v,sort:s.sort||st.sort,dir:s.dir||st.dir}); }catch(e){}
+const save=()=>{try{localStorage.setItem("ydin-pelaajat",JSON.stringify({v:st.v,sort:st.sort,dir:st.dir}))}catch(e){}};
+
+const $ = id=>document.getElementById(id);
+$("kausi").textContent = DATA.kausi;
+$("stamp").textContent = "Päivitetty " + new Date(DATA.paivitetty).toLocaleString("fi-FI",{day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"});
+
+let ALL=[];
+function load(){ ALL = rows(st.v).map(enrich); if(!ALL.find(p=>p.id===st.sel)) st.sel=null; buildChips(); render(); }
+
+function buildChips(){
+  const teams=[...new Set(ALL.map(p=>p.jk))].sort((a,b)=>a.localeCompare(b,"fi"));
+  if(st.jk && !teams.includes(st.jk)) st.jk=null;
+  $("chips").innerHTML = ["Kaikki",...teams].map(t=>`<button class="chip" data-t="${t}" aria-pressed="${(t==="Kaikki"&&!st.jk)||t===st.jk}">${t}</button>`).join("");
+}
+
+function leaders(list){
+  const q = list.filter(p=>p.KLY>=20);
+  const top=(arr,key)=>arr.slice().sort((a,b)=>(b[key]??-1)-(a[key]??-1))[0];
+  const L=[
+    {lab:"Eniten YHT",p:top(list,"YHT"),val:p=>p.YHT,sub:p=>`${p.K}+${p.L} · ${p.T} T`},
+    {lab:"Paras KL% (väh. 20 KLY)",p:top(q,"KLp"),val:p=>fmtP(p.KLp)+" %",sub:p=>`${p.KL}/${p.KLY}`},
+    {lab:"Eniten kunnareita",p:top(list,"K"),val:p=>p.K,sub:p=>`${p.O} ottelua`},
+    {lab:"Eniten tuotuja",p:top(list,"T"),val:p=>p.T,sub:p=>`${p.O} ottelua`},
+  ];
+  $("leaders").innerHTML = L.filter(x=>x.p).map(x=>`<button class="leader" data-id="${x.p.id}">
+    <span class="lab">${x.lab}</span><span class="val">${x.val(x.p)}</span>
+    <span class="who">${x.p.nimi} <small>${x.p.jk} · ${x.sub(x.p)}</small></span></button>`).join("");
+}
+
+function render(){
+  const base = st.jk ? ALL.filter(p=>p.jk===st.jk) : ALL;
+  leaders(base);
+  const q=st.q.trim().toLowerCase();
+  let list = base.filter(p=>p.KLY>=st.min && (!q || p.nimi.toLowerCase().includes(q)));
+  const key = st.sort==="KandL" ? (p=>p.K*1000+p.L) : (p=>p[st.sort]);
+  list.sort((a,b)=>{const x=key(a),y=key(b);
+    if(typeof x==="string") return st.dir*x.localeCompare(y,"fi");
+    return st.dir*((x??-1)-(y??-1)) || b.YHT-a.YHT;});
+  $("head").innerHTML = COLS.map(c=>{
+    const sk=c.sortKey||c.k, s = st.sort===sk ? (st.dir<0?"descending":"ascending") : null;
+    const cls=(c.c||"").split(" ").filter(x=>x==="l"||x==="pb").join(" ");
+    return `<th class="${cls}" ${s?`aria-sort="${s}"`:""}>${c.nosort?`<button tabindex="-1" style="cursor:default">${c.t}</button>`:`<button data-s="${sk}">${c.t}</button>`}</th>`;}).join("");
+  $("body").innerHTML = list.length ? list.map((p,i)=>`<tr data-id="${p.id}" tabindex="0" class="${p.KLY<10?"small":""} ${p.id===st.sel?"sel":""}">
+    <td class="rk l">${i+1}</td><td class="nm l">${p.nimi}</td><td class="jk l">${p.jk}</td>
+    <td>${p.O}</td><td>${p.K}+${p.L}</td><td>${p.T}</td><td class="yht">${p.YHT}</td>
+    <td>${p.KL}</td><td>${p.KLY}</td>
+    <td class="pc"><span class="bar"><b>${fmtP(p.KLp)}</b><i><b style="width:${p.KLp??0}%"></b></i></span></td>
+    ${[0,1,2,3].map(n=>`<td class="pb" title="${p["KL"+n]}/${p["KLY"+n]}">${fmtP(p["KLp"+n])}</td>`).join("")}
+  </tr>`).join("") : `<tr><td colspan="${COLS.length}" class="empty">Ei pelaajia näillä rajauksilla.</td></tr>`;
+  $("count").textContent = `${list.length} pelaajaa`;
+  if(st.sel==null && list[0]) st.sel=list[0].id;
+  card(ALL.find(p=>p.id===st.sel));
+  document.querySelectorAll("tbody tr").forEach(tr=>tr.classList.toggle("sel",+tr.dataset.id===st.sel));
+}
+
+function card(p){
+  if(!p){$("card").innerHTML=`<p class="note">Valitse pelaaja taulukosta.</p>`;return}
+  // Pesäpallokenttä: koti alhaalla, pesät siksakissa 1 (vasen) → 2 (oikea) → 3 (vasen ylhäällä)
+  const B=[{x:150,y:282,n:0,t:"Koti"},{x:62,y:196,n:1,t:"1-pesä"},{x:238,y:120,n:2,t:"2-pesä"},{x:74,y:46,n:3,t:"3-pesä"}];
+  const vals=B.map(b=>p["KLp"+b.n]);
+  const best=Math.max(...vals.map((v,i)=>p["KLY"+i]>=10?v:-1));
+  const svg=`<svg class="field-svg" viewBox="0 0 300 320" role="img" aria-label="Kärkilyöntiprosentit lähtöpesittäin">
+    <path class="grass" d="M150 312 L10 210 Q20 20 150 6 Q280 20 290 210 Z"/>
+    <path class="path" d="M150 282 L62 196 L238 120 L74 46 L150 282"/>
+    ${B.map((b,i)=>{const v=vals[i],y=p["KLY"+b.n],hot=y>=10&&v===best&&best>=0;
+      const tx=b.x<150?b.x+20:b.x-20, anc=b.x<150?"start":"end";
+      return `<rect class="base ${hot?"hot":""}" x="${b.x-9}" y="${b.y-9}" width="18" height="18" rx="${b.n===0?9:2}" transform="rotate(${b.n===0?0:45} ${b.x} ${b.y})"/>
+      <text class="lbl" x="${tx}" y="${b.y-12}" text-anchor="${anc}">${b.t}</text>
+      <text class="pct" x="${tx}" y="${b.y+6}" text-anchor="${anc}">${fmtP(v)}${v==null?"":" %"}</text>
+      <text class="cnt" x="${tx}" y="${b.y+21}" text-anchor="${anc}">${p["KL"+b.n]}/${y}${y<10&&y>0?" · pieni otos":""}</text>`}).join("")}
+  </svg>`;
+  $("card").innerHTML=`<div><h2>${p.nimi}</h2><div class="meta">${p.jk} · ${p.O} ottelua · ${p.LV} lyöntivuoroa</div></div>
+    <div class="kpis"><div class="kpi"><span>K+L</span><strong>${p.K}+${p.L}</strong></div>
+    <div class="kpi"><span>T</span><strong>${p.T}</strong></div>
+    <div class="kpi"><span>YHT</span><strong>${p.YHT}</strong></div>
+    <div class="kpi"><span>KL%</span><strong>${fmtP(p.KLp)}</strong></div></div>
+    ${svg}
+    <p class="note">Kärkilyöntiprosentti sen pesän mukaan, jolta kärkietenijä lähtee. Hiekanvärinen pesä on pelaajan vahvin (väh. 10 yritystä).</p>`;
+}
+
+$("tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;st.v=b.dataset.v;
+  document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));save();load();});
+$("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;st.jk=b.dataset.t==="Kaikki"?null:b.dataset.t;st.sel=null;buildChips();render();});
+$("q").addEventListener("input",e=>{st.q=e.target.value;render();});
+$("minkly").addEventListener("input",e=>{st.min=+e.target.value;$("minklyv").textContent=st.min;render();});
+$("bases").addEventListener("change",e=>$("tablebox").classList.toggle("showbases",e.target.checked));
+$("head").addEventListener("click",e=>{const b=e.target.closest("button[data-s]");if(!b)return;const s=b.dataset.s;
+  if(st.sort===s) st.dir*=-1; else {st.sort=s;st.dir=(s==="nimi"||s==="jk")?1:-1;} save();render();});
+const pick=id=>{st.sel=+id;render();};
+$("body").addEventListener("click",e=>{const tr=e.target.closest("tr[data-id]");if(tr)pick(tr.dataset.id);});
+$("body").addEventListener("keydown",e=>{if(e.key==="Enter"){const tr=e.target.closest("tr[data-id]");if(tr)pick(tr.dataset.id);}});
+$("leaders").addEventListener("click",e=>{const b=e.target.closest(".leader");if(b)pick(b.dataset.id);});
+
+document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===st.v));
+load();
+</script>
