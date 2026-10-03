@@ -90,8 +90,11 @@ def koti_data(vientipolku=SEURANTA):
     with open(vientipolku, encoding="utf-8") as f:
         V = json.load(f)
     meta = lue(f"meta_{KAUSI}.json")
+    kuvat = lue_kuvat()
     return {"kausi": KAUSI, "paivitetty": meta["paivitetty"], "taulukko": taulukko, "pudotus": pudotus,
-            "pelaajat": pelaajat, "vault": V}
+            "pelaajat": pelaajat, "vault": V,
+            "kuvat": {str(p["id"]): kuvat["pelaajat"].get(str(p["id"])) for p in pelaajat if kuvat["pelaajat"].get(str(p["id"]))},
+            "logot": kuvat["logot"]}
 
 def pelaajat_data():
     tm = {}
@@ -106,7 +109,26 @@ def pelaajat_data():
         except FileNotFoundError:
             continue
         vaiheet[ph] = [[p["id"], p["nimi"], tm.get(p["joukkue"], "?")] + [p[k] for k in keys] for p in rivit]
-    return {"kausi": KAUSI, "paivitetty": lue(f"meta_{KAUSI}.json")["paivitetty"], "kentat": ["id", "nimi", "jk"] + keys, "vaiheet": vaiheet}
+    nykyiset = {str(r[0]) for v in vaiheet.values() for r in v}
+    kuvat = lue_kuvat()
+    historia = {}
+    for kausi in range(KAUSI - 10, KAUSI + 1):
+        try:
+            h = lue(f"historia_{kausi}.json")
+        except FileNotFoundError:
+            continue
+        historia[kausi] = {laji: {pid: r for pid, r in h[laji].items() if pid in nykyiset} for laji in ("runko", "kaikki")}
+    return {"kausi": KAUSI, "paivitetty": lue(f"meta_{KAUSI}.json")["paivitetty"], "kentat": ["id", "nimi", "jk"] + keys, "vaiheet": vaiheet,
+            "historia": historia, "hkentat": ["jk"] + HKENTAT,
+            "kuvat": {pid: u for pid, u in kuvat["pelaajat"].items() if pid in nykyiset}, "logot": kuvat["logot"]}
+
+HKENTAT = ["O", "K", "L", "T", "KL", "KLY", "KL0", "KLY0", "KL1", "KLY1", "KL2", "KLY2", "KL3", "KLY3"]
+
+def lue_kuvat():
+    try:
+        return lue("kuvat.json")
+    except FileNotFoundError:
+        return {"pelaajat": {}, "logot": {}}
 
 IKONIT = {
     "koti": '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
