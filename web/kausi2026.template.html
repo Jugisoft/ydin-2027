@@ -22,6 +22,8 @@ tbody tr.sel{background:var(--accent-soft)}
 tbody tr.cut td{border-bottom:2px dashed var(--line)}
 td.pos{color:var(--muted);width:2em}
 td.tm{font-weight:700}
+.tml{display:flex;align-items:center;gap:8px}
+.tml img{width:24px;height:24px;object-fit:contain;flex:none}
 td.tm small{display:block;font-weight:500;color:var(--muted);font-size:.78rem}
 td.pts{font:700 1.1rem var(--font-display)}
 .form{display:inline-flex;gap:3px}
@@ -35,7 +37,7 @@ td.pts{font:700 1.1rem var(--font-display)}
 .leader{background:var(--surface-2);border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
 .leader .lab{font:600 .72rem var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .leader .who{display:flex;align-items:center;gap:9px;min-width:0}
-.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 .85rem var(--font-display);background:var(--accent-soft);color:var(--accent);flex:none}
+.av{width:38px;height:38px;border-radius:50%;object-fit:cover;object-position:top;display:grid;place-items:center;font:700 .85rem var(--font-display);background:var(--accent-soft);color:var(--accent);flex:none}
 .leader .nm{font-weight:700;line-height:1.15;min-width:0}
 .leader .nm small{display:block;font-weight:500;color:var(--muted)}
 .leader .val{font:700 2.1rem var(--font-display);line-height:1;font-variant-numeric:tabular-nums}
@@ -91,7 +93,7 @@ td.pts{font:700 1.1rem var(--font-display)}
       <section class="card">
         <div class="head"><h3>Kauden kärki</h3><a class="more" href="pelaajat.html">Kaikki pelaajat →</a></div>
         <div class="leaders" id="leaders"></div>
-        <p class="note">Runkosarja. KL% vähintään 60 kärkilyöntiyritystä.</p>
+        <p class="note">Runkosarja. KL% vähintään 60 kärkilyöntiyritystä. Kuvat: pesistulokset.fi</p>
       </section>
       <section class="card">
         <div class="head"><h3>Jaksot</h3><span class="hint" id="jaksoTeam"></span></div>
@@ -131,7 +133,7 @@ function spark(arr){
 }
 function stand(){
   $("stand").innerHTML = D.taulukko.map((t,i)=>`<tr data-t="${t.lyh}" tabindex="0" class="${t.lyh===SEL?"sel":""} ${i===7?"cut":""}">
-    <td class="pos l">${i+1}</td><td class="tm l">${t.lyh}<small>${esc(t.nimi.split(",")[0])}</small></td>
+    <td class="pos l">${i+1}</td><td class="tm l"><span class="tml">${(D.logot||{})[t.lyh]?`<img src="${D.logot[t.lyh]}" alt="" loading="lazy">`:""}<span>${t.lyh}<small>${esc(t.nimi.split(",")[0])}</small></span></span></td>
     <td class="hide-s">${t.O}</td><td>${t.V}</td><td>${t.H}</td><td class="hide-s">${t.juoksut}–${t.paastetyt}</td>
     <td class="l hide-s">${spark(t.pistekulku)}</td>
     <td class="l"><span class="form">${t.vire.map(v=>{const k=/[k]$/i.test(v.t); return `<i class="${v.v?"w":"l"}${k?"k":""}" title="${v.pvm} ${v.koti?"":"@"}${v.vs} ${v.t}">${v.v?"V":"H"}</i>`}).join("")}</span></td>
@@ -149,7 +151,7 @@ function leaders(){
   ];
   $("leaders").innerHTML = C.map(c=>{const [a,...r]=top(P,c.f); return `<div class="leader">
     <span class="lab">${c.lab}</span>
-    <div class="who"><span class="av">${ini(a.nimi)}</span><span class="nm">${esc(a.nimi)}<small>${a.jk} · ${c.s(a)}</small></span></div>
+    <div class="who">${(D.kuvat||{})[String(a.id)]?`<img class="av" src="${D.kuvat[String(a.id)]}" alt="" loading="lazy">`:`<span class="av">${ini(a.nimi)}</span>`}<span class="nm">${esc(a.nimi)}<small>${a.jk} · ${c.s(a)}</small></span></div>
     <span class="val">${c.v(a)}</span>
     <div class="runners">${r.map(p=>`<span><span>${esc(p.nimi)} · ${p.jk}</span><b>${String(c.v(p)).replace(/<[^>]+>/g,"")}</b></span>`).join("")}</div></div>`}).join("");
 }
