@@ -26,3 +26,10 @@ def test_joukkueet_kotiutus_ja_torjunta():
     assert J[1]["torjunta%"] == 75.0          # vastustaja onnistui 2/8
     assert J[2]["kotiutus%"] == 25.0 and J[2]["torjunta%"] == 50.0
     assert J[1]["KL%"] == 50.0 and J[1]["voitot"] == 1
+
+def test_sarjapisteet():
+    from ydin.sivu import tulos, pisteet
+    assert pisteet(*tulos("2-0 (3-1, 2-0)")) == (3, 0)
+    assert pisteet(*tulos("1-0 (2-2, 1-0)")) == (2, 0)
+    assert pisteet(*tulos("1-2k (5-3, 5-6, 0-0, 2-4)")) == (2, 1)
+    assert pisteet(*tulos("2-1S (2-3, 7-1, 1-2)")) == (2, 1)
