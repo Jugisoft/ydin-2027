@@ -59,7 +59,8 @@ def koti_data(vientipolku=SEURANTA):
                          "juoksut": j["runs"], "paastetyt": j["runs_opponent"],
                          "kotiutus": j["kotiutus%"], "torjunta": j["torjunta%"], "KL%": j["KL%"],
                          "j1": [j["runs_p0"], j["runs_p0_opponent"]], "j2": [j["runs_p1"], j["runs_p1_opponent"]],
-                         "vapaat": j["walks"], "harhaheitot": j["wild_throws"]})
+                         "vapaat": j["walks"], "harhaheitot": j["wild_throws"],
+                         "vapaat_v": j["walks_opponent"], "KLpesat": [j.get(f"KL%{n}") for n in range(4)]})
     taulukko.sort(key=lambda x: (-x["P"], -x["V"]))
 
     # pudotuspelit ja karsinnat
@@ -94,7 +95,16 @@ def koti_data(vientipolku=SEURANTA):
     return {"kausi": KAUSI, "paivitetty": meta["paivitetty"], "taulukko": taulukko, "pudotus": pudotus,
             "pelaajat": pelaajat, "vault": V,
             "kuvat": {str(p["id"]): kuvat["pelaajat"].get(str(p["id"])) for p in pelaajat if kuvat["pelaajat"].get(str(p["id"]))},
-            "logot": kuvat["logot"]}
+            "logot": kuvat["logot"], "jhist": joukkuehistoria()}
+
+def joukkuehistoria():
+    h = {}
+    for kausi in range(KAUSI - 10, KAUSI + 1):
+        try:
+            h[kausi] = lue(f"joukkuehistoria_{kausi}.json")["joukkueet"]
+        except FileNotFoundError:
+            pass
+    return h
 
 def pelaajat_data():
     tm = {}
@@ -139,8 +149,8 @@ IKONIT = {
     "sisalto": '<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/>',
 }
 # (avain, otsikko, tiedosto tai None = tulossa)
-VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("pelaajat", "Pelaajat", "pelaajat.html"),
-           None, ("ottelut", "Ottelut", None), ("joukkueet", "Joukkueet", None), ("sisalto", "Sisältö", None)]
+VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("joukkueet", "Joukkueet", "joukkueet.html"),
+           ("pelaajat", "Pelaajat", "pelaajat.html"), None, ("ottelut", "Ottelut", None), ("sisalto", "Sisältö", None)]
 
 def nav(nykyinen):
     osat = []
@@ -196,6 +206,7 @@ def main():
     yht = dict(haku=haku, paivitetty=pv)
     print("index.html", rakenna("koti.template.html", k, "index.html", "YDIN 2027 Koti", "koti", **yht))
     print("kausi-2026.html", rakenna("kausi2026.template.html", k, "kausi-2026.html", "YDIN 2027 Kausi 2026", "kausi", **yht))
+    print("joukkueet.html", rakenna("joukkueet.template.html", k, "joukkueet.html", "YDIN 2027 Joukkueet", "joukkueet", **yht))
     print("pelaajat.html", rakenna("pelaajat.template.html", pd, "pelaajat.html", "YDIN 2027 Pelaajat", "pelaajat", **yht))
     print([(t["lyh"], t["P"]) for t in k["taulukko"]])
 
