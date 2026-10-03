@@ -101,7 +101,7 @@
         <div class="list" id="rumors"></div>
       </section>
       <section class="card">
-        <div class="head"><h3>Sarja 2027</h3><span class="hint">Suluissa sijoitus 2026</span></div>
+        <div class="head"><h3>Sarja 2027</h3><span class="hint">Suluissa sijoitus 2026 · avaa joukkuesivu</span></div>
         <div class="teams" id="teams"></div>
       </section>
       <section class="card">
@@ -179,9 +179,9 @@ function rumors(){
 function teams(){
   const rank={}; D.taulukko.forEach((t,i)=>rank[t.lyh]=i+1);
   const nimi={}; D.taulukko.forEach(t=>nimi[t.lyh]=t.nimi.split(",")[0]);
-  $("teams").innerHTML=TEAMS27.map(t=>`<button type="button" class="team ${t===SEL?"sel":""}" data-t="${t}">
+  $("teams").innerHTML=TEAMS27.map(t=>`<a class="team" href="joukkueet.html?t=${t}" style="text-decoration:none">
     <span style="display:flex;align-items:center;gap:8px">${(D.logot||{})[t]?`<img src="${D.logot[t]}" alt="" loading="lazy" style="width:26px;height:26px;object-fit:contain">`:""}<span><b>${t}</b><br><small>${esc(nimi[t]||NOUSIJAT[t]||"")}</small></span></span>
-    ${rank[t]?`<small>(${rank[t]}.)</small>`:`<span class="tagup">nousija</span>`}</button>`).join("");
+    ${rank[t]?`<small>(${rank[t]}.)</small>`:`<span class="tagup">nousija</span>`}</a>`).join("");
 }
 function perf(){
   const P=D.pelaajat, top=(f,n=3)=>P.slice().sort((a,b)=>f(b)-f(a)).slice(0,n);
@@ -191,7 +191,7 @@ function perf(){
 function render(){ transfers(); teams(); }
 document.addEventListener("click",e=>{
   if(e.target.id==="clr"){ SEL=null; try{localStorage.removeItem("ydin-koti-sel")}catch(_){} render(); return; }
-  const el=e.target.closest("#net .netrow, #teams .team"); if(el) setSel(el.dataset.t);
+  const el=e.target.closest("#net .netrow"); if(el) setSel(el.dataset.t);
 });
 hero(); news(); pj(); rumors(); perf(); render();
 </script>
