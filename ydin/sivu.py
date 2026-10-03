@@ -108,27 +108,73 @@ def pelaajat_data():
         vaiheet[ph] = [[p["id"], p["nimi"], tm.get(p["joukkue"], "?")] + [p[k] for k in keys] for p in rivit]
     return {"kausi": KAUSI, "paivitetty": lue(f"meta_{KAUSI}.json")["paivitetty"], "kentat": ["id", "nimi", "jk"] + keys, "vaiheet": vaiheet}
 
-KEHYS = """<!doctype html>
-<html lang="fi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-</head><body>
-%s
-</body></html>
-"""
+IKONIT = {
+    "koti": '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+    "kausi": '<path d="M4 6h16M4 12h16M4 18h10"/>',
+    "pelaajat": '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>',
+    "ottelut": '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    "joukkueet": '<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/>',
+    "sisalto": '<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/>',
+}
+# (avain, otsikko, tiedosto tai None = tulossa)
+VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("pelaajat", "Pelaajat", "pelaajat.html"),
+           None, ("ottelut", "Ottelut", None), ("joukkueet", "Joukkueet", None), ("sisalto", "Sisältö", None)]
 
-def rakenna(pohja, data, kohde):
+def nav(nykyinen):
+    osat = []
+    for v in VALIKKO:
+        if v is None:
+            osat.append('<span class="sep" role="separator"></span>'); continue
+        avain, nimi, tied = v
+        ikoni = f'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">{IKONIT[avain]}</svg>'
+        if tied is None:
+            osat.append(f'<a aria-disabled="true" class="off">{ikoni}{nimi}<span class="soon">tulossa</span></a>')
+        else:
+            cur = ' aria-current="page"' if avain == nykyinen else ""
+            osat.append(f'<a href="{tied}"{cur}>{ikoni}{nimi}</a>')
+    return "".join(osat)
+
+def osat(pohja):
     with open(os.path.join(WEB, pohja), encoding="utf-8") as f:
         t = f.read()
-    html = t.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"))
+    a, b, c = t.index("<!--TYYLI-->"), t.index("<!--SISALTO-->"), t.index("<!--SKRIPTI-->")
+    return t[a + 12:b].strip(), t[b + 14:c].rstrip(), t[c + 14:].strip()
+
+def js(data):
+    return json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+
+def rakenna(pohja, data, kohde, otsikko, valikko, haku, paivitetty):
+    with open(os.path.join(WEB, "runko.html"), encoding="utf-8") as f:
+        runko = f.read()
+    tyyli, sisalto, skripti = osat(pohja)
+    korvaa = {"__OTSIKKO__": otsikko, "__TYYLI__": tyyli, "__NAV__": nav(valikko), "__PAIVITETTY__": paivitetty,
+              "__HAKU__": js(haku), "__SISALTO__": sisalto, "__SKRIPTI__": skripti.replace("__DATA__", js(data))}
+    html = runko
+    for k, v in korvaa.items():
+        html = html.replace(k, v, 1)
     os.makedirs(SITE, exist_ok=True)
     with open(os.path.join(SITE, kohde), "w", encoding="utf-8") as f:
-        f.write(KEHYS.replace("%s", html, 1))
+        f.write(html)
     return len(html)
 
 def main():
     k = koti_data()
-    print("index.html", rakenna("koti.template.html", k, "index.html"))
-    print("pelaajat.html", rakenna("pelaajat.template.html", pelaajat_data(), "pelaajat.html"))
+    pd = pelaajat_data()
+    haku, nahty = [], set()
+    for ph in ("runko", "jatko_ylempi", "jatko_alempi"):
+        for r in pd["vaiheet"].get(ph, []):
+            if r[0] not in nahty:
+                nahty.add(r[0]); haku.append([r[0], r[1], r[2]])
+    haku.sort(key=lambda h: h[1])
+    import datetime
+    try:
+        pv = datetime.datetime.fromisoformat(k["paivitetty"]).strftime("%-d.%-m.%Y")
+    except Exception:
+        pv = k["paivitetty"]
+    yht = dict(haku=haku, paivitetty=pv)
+    print("index.html", rakenna("koti.template.html", k, "index.html", "YDIN 2027 Koti", "koti", **yht))
+    print("kausi-2026.html", rakenna("kausi2026.template.html", k, "kausi-2026.html", "YDIN 2027 Kausi 2026", "kausi", **yht))
+    print("pelaajat.html", rakenna("pelaajat.template.html", pd, "pelaajat.html", "YDIN 2027 Pelaajat", "pelaajat", **yht))
     print([(t["lyh"], t["P"]) for t in k["taulukko"]])
 
 if __name__ == "__main__":
