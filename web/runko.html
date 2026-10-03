@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>__OTSIKKO__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+/* Yhteinen runko: vasen navigaatio aina näkyvissä (mobiilissa ylhäällä), sisältö oikealla. */
+:root{
+  --bg:#eceff0; --surface:#ffffff; --surface-2:#f5f7f7; --line:#dde2e2;
+  --fg:#131d1a; --muted:#5f6c68;
+  --accent:#1f47c7; --accent-soft:#e4eafb; --on-accent:#ffffff;
+  --sand:#c99a3a; --sand-soft:#f3e8cd;
+  --band:#111a17; --band-fg:#eef3f1; --band-muted:#8fa09a; --band-card:#1b2622;
+  --win:#1d7a4a; --loss:#c2413a; --warn:#b7791f; --good:#1d7a4a;
+  --font-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1311;--surface:#141d1a;--surface-2:#18231f;--line:#26332f;--fg:#e7edea;--muted:#92a29c;
+  --accent:#7f9cff;--accent-soft:#1c2848;--on-accent:#0c1311;--sand:#e0b65a;--sand-soft:#3a3120;
+  --band:#060a09;--band-fg:#eef3f1;--band-muted:#8fa09a;--band-card:#121b18;
+  --win:#4cc488;--loss:#ef7a72;--warn:#e3a94b;--good:#4cc488;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1311;--surface:#141d1a;--surface-2:#18231f;--line:#26332f;--fg:#e7edea;--muted:#92a29c;
+  --accent:#7f9cff;--accent-soft:#1c2848;--on-accent:#0c1311;--sand:#e0b65a;--sand-soft:#3a3120;
+  --band:#060a09;--band-fg:#eef3f1;--band-muted:#8fa09a;--band-card:#121b18;
+  --win:#4cc488;--loss:#ef7a72;--warn:#e3a94b;--good:#4cc488;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.45}
+img{max-width:100%}
+[hidden]{display:none!important}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;padding:22px 14px;display:flex;flex-direction:column;gap:22px;border-right:1px solid var(--line);background:var(--surface);z-index:5}
+.logo{font:700 1.7rem var(--font-display);letter-spacing:.01em;padding-inline:10px;line-height:1;text-decoration:none}
+.logo span{color:var(--accent)}
+.logo small{display:block;font:600 .72rem var(--font-display);letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:6px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;text-decoration:none;font-weight:600;color:var(--muted)}
+.nav a svg{width:18px;height:18px;flex:none}
+.nav a:hover{background:var(--surface-2);color:var(--fg)}
+.nav a.off{opacity:.55;cursor:default}
+.nav a.off:hover{background:none;color:var(--muted)}
+.nav a[aria-current="page"]{background:var(--accent);color:var(--on-accent)}
+.nav .soon{margin-left:auto;font:600 .66rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:1px 7px;color:var(--muted)}
+.nav .sep{height:1px;background:var(--line);margin:8px 10px}
+.haku{position:relative;padding-inline:4px}
+.haku input{width:100%;font:inherit;font-size:.9rem;color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+.haku-tulos{position:absolute;left:4px;right:4px;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);overflow:hidden;z-index:20}
+.haku-tulos a{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;text-decoration:none;font-size:.9rem}
+.haku-tulos a:hover,.haku-tulos a.on{background:var(--accent-soft)}
+.haku-tulos a small{color:var(--muted);font:600 .8rem var(--font-display)}
+.haku-tulos .ei{padding:8px 10px;color:var(--muted);font-size:.85rem}
+.side .foot{margin-top:auto;font-size:.78rem;color:var(--muted);padding-inline:10px}
+.main{padding-inline:24px;padding-block:22px 48px;display:flex;flex-direction:column;gap:18px;min-width:0}
+
+/* Yhteiset rakennuspalikat */
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
+.top h1{font:700 2.1rem var(--font-display);margin:0;line-height:1}
+.top p{margin:4px 0 0;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;font:600 .8rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--sand)}
+.band{background:var(--band);color:var(--band-fg);border-radius:var(--r);padding:16px;display:grid;grid-template-columns:minmax(220px,320px) minmax(0,1fr);gap:16px}
+.eyebrow{font:600 .74rem var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--band-muted)}
+.cols{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:16px;align-items:start}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card h3{font:700 1.15rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;margin:0}
+.card .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.hint{font-size:.8rem;color:var(--muted)}
+.more{font:600 .8rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+.note{font-size:.78rem;color:var(--muted);margin:0}
+.insight{font-size:.88rem;background:var(--surface-2);border-radius:10px;padding:10px 12px;margin:0}
+.list{display:flex;flex-direction:column}
+.li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+.li .tag{font:700 .9rem var(--font-display);color:var(--muted)}
+.li .t{min-width:0}
+.li .t small{display:block;color:var(--muted);font-size:.82rem}
+.arrow{color:var(--muted);padding-inline:3px}
+.badge{font:600 .68rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.badge.ok{background:color-mix(in srgb,var(--win) 16%,transparent);color:var(--win)}
+.badge.one{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.badge.koonti{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.badge.huhu{background:color-mix(in srgb,var(--loss) 14%,transparent);color:var(--loss)}
+.empty{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:.9rem}
+.empty b{color:var(--fg)}
+.teamchips{display:flex;flex-wrap:wrap;gap:5px}
+.teamchips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 9px;font:600 .8rem var(--font-display);cursor:pointer}
+.teamchips button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+@media (max-width:1180px){.cols{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:860px){.band{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:no-preference){.card,.band{animation:rise .35s ease both}@keyframes rise{from{transform:translateY(4px)}to{transform:none}}}
+
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:sticky;top:0;height:auto;flex-direction:row;align-items:center;gap:12px;padding:10px 16px;border-right:0;border-bottom:1px solid var(--line)}
+  .logo{font-size:1.3rem;padding-inline:0;flex:none}
+  .side .logo small,.side .foot,.nav .sep{display:none}
+  .side{flex-wrap:wrap}
+  .haku{order:3;flex:1 1 100%;padding-inline:0}
+  .nav{flex-direction:row;overflow-x:auto;min-width:0;flex:1;scrollbar-width:none}
+  .nav a{white-space:nowrap;padding:7px 10px}
+  .nav .soon,.nav a.off{display:none}
+  .main{padding-inline:16px}
+}
+</style>
+__TYYLI__
+</head><body>
+<div class="app">
+  <aside class="side">
+    <a class="logo" href="index.html">YDIN <span>2027</span><small>Superpesis-analytiikka</small></a>
+    <div class="haku" role="search">
+      <input type="search" id="haku" placeholder="Hae pelaajaa" autocomplete="off" aria-label="Hae pelaajaa">
+      <div class="haku-tulos" id="hakuTulos" hidden></div>
+    </div>
+    <nav class="nav" aria-label="Päävalikko">__NAV__</nav>
+    <div class="foot">Tilastot päivitetty __PAIVITETTY__<br>Lähde: pesistulokset.fi</div>
+  </aside>
+  <main class="main">
+__SISALTO__
+  </main>
+</div>
+<script>
+window.YDIN_HAKU = __HAKU__;
+(function(){
+  const inp=document.getElementById("haku"), out=document.getElementById("hakuTulos"); if(!inp) return;
+  const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  let hits=[], on=0;
+  const go=h=>{ location.href="pelaajat.html?p="+h[0]; };
+  function show(){
+    const q=norm(inp.value.trim()); if(q.length<2){ out.hidden=true; return; }
+    hits=window.YDIN_HAKU.filter(h=>norm(h[1]).includes(q)).slice(0,8); on=0;
+    out.innerHTML = hits.length ? hits.map((h,i)=>`<a href="pelaajat.html?p=${h[0]}" class="${i===0?"on":""}">${h[1].replace(/[&<>]/g,"")}<small>${h[2]}</small></a>`).join("") : `<div class="ei">Ei osumia</div>`;
+    out.hidden=false;
+  }
+  inp.addEventListener("input",show);
+  inp.addEventListener("keydown",e=>{
+    if(out.hidden||!hits.length) return;
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); on=(on+(e.key==="ArrowDown"?1:hits.length-1))%hits.length; [...out.children].forEach((a,i)=>a.classList.toggle("on",i===on)); }
+    if(e.key==="Enter"){ e.preventDefault(); go(hits[on]); }
+    if(e.key==="Escape"){ out.hidden=true; }
+  });
+  document.addEventListener("click",e=>{ if(!e.target.closest(".haku")) out.hidden=true; });
+})();
+</script>
+__SKRIPTI__
+</body></html>
