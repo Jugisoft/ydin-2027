@@ -1,0 +1,449 @@
+<title>YDIN 2027 Koti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: vasen navigaatiopalkki + tumma tulosnauha ylhäällä + 12 sarakkeen korttiruudukko (bento). Mobiilissa yksi sarake ja navigaatio ylälaitaan. */
+:root{
+  --bg:#eceff0;          /* viileä harmaa pohja, hento nurmen vivahde */
+  --surface:#ffffff;
+  --surface-2:#f5f7f7;
+  --line:#dde2e2;
+  --fg:#131d1a;
+  --muted:#5f6c68;
+  --accent:#1f47c7;      /* koboltti */
+  --accent-soft:#e4eafb;
+  --on-accent:#ffffff;
+  --sand:#c99a3a;        /* kentän hiekka */
+  --sand-soft:#f3e8cd;
+  --band:#111a17;        /* tumma tulosnauha */
+  --band-fg:#eef3f1;
+  --band-muted:#8fa09a;
+  --band-card:#1b2622;
+  --win:#1d7a4a; --loss:#c2413a; --warn:#b7791f;
+  --font-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1311;--surface:#141d1a;--surface-2:#18231f;--line:#26332f;--fg:#e7edea;--muted:#92a29c;
+  --accent:#7f9cff;--accent-soft:#1c2848;--on-accent:#0c1311;--sand:#e0b65a;--sand-soft:#3a3120;
+  --band:#060a09;--band-fg:#eef3f1;--band-muted:#8fa09a;--band-card:#121b18;
+  --win:#4cc488;--loss:#ef7a72;--warn:#e3a94b;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1311;--surface:#141d1a;--surface-2:#18231f;--line:#26332f;--fg:#e7edea;--muted:#92a29c;
+  --accent:#7f9cff;--accent-soft:#1c2848;--on-accent:#0c1311;--sand:#e0b65a;--sand-soft:#3a3120;
+  --band:#060a09;--band-fg:#eef3f1;--band-muted:#8fa09a;--band-card:#121b18;
+  --win:#4cc488;--loss:#ef7a72;--warn:#e3a94b;color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.45}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;padding:22px 14px;display:flex;flex-direction:column;gap:22px;border-right:1px solid var(--line);background:var(--surface)}
+.logo{font:700 1.7rem var(--font-display);letter-spacing:.01em;padding-inline:10px;line-height:1}
+.logo span{color:var(--accent)}
+.logo small{display:block;font:600 .72rem var(--font-display);letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:6px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;text-decoration:none;font-weight:600;color:var(--muted)}
+.nav a svg{width:18px;height:18px;flex:none}
+.nav a:hover{background:var(--surface-2);color:var(--fg)}
+.nav a.off{opacity:.55;cursor:default}
+.nav a.off:hover{background:none;color:var(--muted)}
+.nav a[aria-current="page"]{background:var(--accent);color:var(--on-accent)}
+.nav .soon{margin-left:auto;font:600 .66rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:1px 7px;color:var(--muted)}
+.side .foot{margin-top:auto;font-size:.78rem;color:var(--muted);padding-inline:10px}
+
+.main{padding-inline:24px;padding-block:22px 48px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
+.top h1{font:700 2.1rem var(--font-display);margin:0;line-height:1}
+.top p{margin:4px 0 0;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;font:600 .8rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--sand)}
+
+/* Tumma nauha */
+.band{background:var(--band);color:var(--band-fg);border-radius:var(--r);padding:16px;display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:16px}
+.champ{display:flex;flex-direction:column;justify-content:space-between;gap:10px;padding:6px 6px 6px 4px}
+.eyebrow{font:600 .74rem var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--band-muted)}
+.champ h2{font:700 2.3rem var(--font-display);line-height:.95;margin:4px 0 0;text-wrap:balance}
+.champ h2 em{font-style:normal;color:var(--sand)}
+.champ .sub{color:var(--band-muted);font-size:.9rem}
+.series{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;min-width:0;scrollbar-width:thin}
+.serie{flex:0 0 168px;background:var(--band-card);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.serie.final{background:var(--sand);color:#1a1406}
+.serie.final .eyebrow{color:#5b4614}
+.serie .row{display:flex;justify-content:space-between;align-items:center;font-weight:600}
+.serie .row b{font:700 1.3rem var(--font-display);font-variant-numeric:tabular-nums}
+.serie .row.lose{opacity:.55}
+
+/* Kaksi itsenäistä saraketta */
+.cols{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:16px;align-items:start}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:1180px){.cols{grid-template-columns:minmax(0,1fr)}}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.c7{grid-column:span 7}.c5{grid-column:span 5}.c12{grid-column:span 12}.c4{grid-column:span 4}.c8{grid-column:span 8}
+.card h3{font:700 1.15rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;margin:0}
+.card .head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.card .head .hint{font-size:.8rem;color:var(--muted)}
+.more{font:600 .8rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+
+/* Sarjataulukko */
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.92rem}
+th{font:600 .74rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th.l,td.l{text-align:left}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr.sel{background:var(--accent-soft)}
+tbody tr.cut td{border-bottom:2px dashed var(--line)}
+td.pos{color:var(--muted);width:2em}
+td.tm{font-weight:700}
+td.tm small{display:block;font-weight:500;color:var(--muted);font-size:.78rem}
+td.pts{font:700 1.1rem var(--font-display)}
+.form{display:inline-flex;gap:3px}
+.form i{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font:700 .68rem var(--font-display);color:#fff;font-style:normal}
+.form i.w{background:var(--win)} .form i.l{background:var(--loss)} .form i.wk{background:var(--win);opacity:.6} .form i.lk{background:var(--loss);opacity:.6}
+.spark{width:84px;height:24px;display:block}
+.spark path{fill:none;stroke:var(--accent);stroke-width:1.6}
+.spark circle{fill:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--muted)}
+
+/* Kärkipelaajat */
+.leaders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.leader{background:var(--surface-2);border-radius:11px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.leader .lab{font:600 .72rem var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.leader .who{display:flex;align-items:center;gap:9px;min-width:0}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 .85rem var(--font-display);background:var(--accent-soft);color:var(--accent);flex:none}
+.leader .nm{font-weight:700;line-height:1.15;min-width:0}
+.leader .nm small{display:block;font-weight:500;color:var(--muted)}
+.leader .val{font:700 2.1rem var(--font-display);line-height:1;font-variant-numeric:tabular-nums}
+.leader .val small{font-size:1rem;color:var(--muted);font-weight:600}
+.runners{font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;gap:1px}
+.runners span{display:flex;justify-content:space-between;gap:8px}
+
+/* Kaaviot */
+.chart{width:100%;height:auto;display:block}
+.chart .grid line{stroke:var(--line)}
+.chart .axis text,.chart .ql{font:500 11px var(--font-body);fill:var(--muted)}
+.chart .ql{font:600 10.5px var(--font-display);letter-spacing:.1em;text-transform:uppercase}
+.chart .dot{fill:var(--surface);stroke:var(--accent);stroke-width:2;cursor:pointer}
+.chart .dot.top4{fill:var(--accent)}
+.chart .dot.sel{fill:var(--sand);stroke:var(--fg);stroke-width:2.5}
+.chart .lbl{font:700 12px var(--font-display);fill:var(--fg);pointer-events:none}
+.chart .avg{stroke:var(--muted);stroke-dasharray:3 4}
+.chart .up{fill:var(--accent)} .chart .down{fill:var(--loss)}
+.chart .val{font:700 13px var(--font-display);fill:var(--fg)}
+.chart .cat{font:600 11px var(--font-display);letter-spacing:.08em;fill:var(--muted);text-transform:uppercase}
+.teamchips{display:flex;flex-wrap:wrap;gap:5px}
+.teamchips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 9px;font:600 .8rem var(--font-display);cursor:pointer}
+.teamchips button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.insight{font-size:.88rem;background:var(--surface-2);border-radius:10px;padding:10px 12px;margin:0}
+.insight b{font-weight:700}
+
+/* Siirrot */
+.transfers{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px}
+.tlist{display:flex;flex-direction:column;max-height:430px;overflow-y:auto;padding-right:4px}
+.tr{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.tr .d{font:600 .78rem var(--font-display);color:var(--muted);letter-spacing:.04em}
+.tr .p{font-weight:700;min-width:0}
+.tr .p small{display:block;font-weight:500;color:var(--muted)}
+.tr .p small b{color:var(--fg);font-weight:600}
+.tr a{text-decoration:none}
+.badge{font:600 .68rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.badge.ok{background:color-mix(in srgb,var(--win) 16%,transparent);color:var(--win)}
+.badge.one{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.badge.koonti{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.badge.huhu{background:color-mix(in srgb,var(--loss) 14%,transparent);color:var(--loss)}
+.net{display:flex;flex-direction:column;gap:6px}
+.netrow{display:grid;grid-template-columns:46px minmax(0,1fr) minmax(0,1fr) 30px;align-items:center;gap:6px;font-size:.84rem;cursor:pointer;border-radius:6px;padding:1px 2px}
+.netrow:hover{background:var(--surface-2)}
+.netrow.sel{background:var(--accent-soft)}
+.netrow b{font:700 .9rem var(--font-display)}
+.netrow .out{display:flex;justify-content:flex-end}
+.netrow .out i,.netrow .in i{display:block;height:10px;border-radius:3px}
+.netrow .out i{background:var(--loss);opacity:.75}
+.netrow .in i{background:var(--win)}
+.netrow .n{text-align:right;font:700 .9rem var(--font-display);font-variant-numeric:tabular-nums}
+.netcap{display:grid;grid-template-columns:46px 1fr 1fr 30px;gap:6px;font:600 .7rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.netcap span:nth-child(2){text-align:right}
+
+/* Listat */
+.list{display:flex;flex-direction:column}
+.li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+.li .tag{font:700 .9rem var(--font-display);color:var(--muted)}
+.li .t{min-width:0}
+.li .t b{font-weight:700}
+.li .t small{display:block;color:var(--muted);font-size:.82rem}
+.arrow{color:var(--muted);padding-inline:3px}
+.empty{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:.9rem}
+.empty b{color:var(--fg)}
+.note{font-size:.78rem;color:var(--muted);margin:0}
+
+@media (max-width:1180px){.c7,.c5,.c4,.c8{grid-column:span 12}}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:static;height:auto;flex-direction:row;align-items:center;flex-wrap:wrap;gap:10px;padding:12px 16px;border-right:0;border-bottom:1px solid var(--line)}
+  .side .logo small,.side .foot{display:none}
+  .nav{flex-direction:row;overflow-x:auto;max-width:100%}
+  .nav a{white-space:nowrap}
+  .nav .soon{display:none}
+  .main{padding-inline:16px}
+  .band{grid-template-columns:minmax(0,1fr)}
+  .transfers{grid-template-columns:minmax(0,1fr)}
+  .leaders{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
+@media (max-width:440px){.leaders{grid-template-columns:minmax(0,1fr)} .hide-s{display:none} td.tm small{display:none} td,th{padding-inline:5px}}
+@media (prefers-reduced-motion:no-preference){.card,.band{animation:rise .35s ease both}@keyframes rise{from{transform:translateY(4px)}to{transform:none}}}
+</style>
+
+<div class="app">
+  <aside class="side">
+    <div class="logo">YDIN <span>2027</span><small>Superpesis-analytiikka</small></div>
+    <nav class="nav" aria-label="Päävalikko">
+      <a href="index.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Koti</a>
+      <a aria-disabled="true" class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Ottelut<span class="soon">tulossa</span></a>
+      <a aria-disabled="true" class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Sarjataulukko<span class="soon">tulossa</span></a>
+      <a aria-disabled="true" class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/></svg>Joukkueet<span class="soon">tulossa</span></a>
+      <a href="pelaajat.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Pelaajat</a>
+      <a aria-disabled="true" class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>Siirrot<span class="soon">tulossa</span></a>
+      <a aria-disabled="true" class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/></svg>Sisältö<span class="soon">tulossa</span></a>
+    </nav>
+    <div class="foot" id="stamp"></div>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div><h1>Koti</h1><p>Miesten Superpesis · kausi 2026 pelattu, siirtokausi kohti 2027:ää</p></div>
+      <span class="pill"><i></i>Siirtokausi käynnissä</span>
+    </div>
+
+    <section class="band" aria-label="Kauden 2026 ratkaisut">
+      <div class="champ">
+        <div><div class="eyebrow">Suomen mestari 2026</div><h2 id="champ"></h2></div>
+        <div class="sub" id="champsub"></div>
+      </div>
+      <div class="series" id="series"></div>
+    </section>
+
+    <div class="cols">
+    <div class="col col-l">
+      <section class="card">
+        <div class="head"><h3>Runkosarja 2026</h3><span class="hint">Valitse joukkue: kaaviot ja siirrot seuraavat valintaa</span></div>
+        <div class="tbl"><table>
+          <thead><tr><th class="l">#</th><th class="l">Joukkue</th><th class="hide-s">O</th><th>V</th><th>H</th><th class="hide-s">Juoksut</th><th class="l hide-s">Pistekulku</th><th class="l">Vire</th><th>P</th></tr></thead>
+          <tbody id="stand"></tbody>
+        </table></div>
+        <div class="legend"><span>Vire = viisi viimeistä runkosarjaottelua (vaalea = ratkesi kotiutuskilpailussa)</span><span>Katkoviiva: 8 parasta pudotuspeleihin</span></div>
+      </section>
+      <section class="card">
+        <div class="head"><h3>Kuka menestyy: kotiutus vs. torjunta</h3><span class="hint">Runkosarja, %</span></div>
+        <svg class="chart" id="scatter" viewBox="0 0 640 380" role="img" aria-label="Joukkueiden kotiutus- ja torjuntaprosentti"></svg>
+        <p class="insight" id="scatterNote"></p>
+      </section>
+      <section class="card">
+        <div class="head"><h3>Siirtomarkkinat 2027</h3><span class="hint" id="trHint"></span></div>
+        <div class="transfers">
+          <div class="tlist" id="tlist"></div>
+          <div>
+            <div class="netcap"><span></span><span>Lähteneet</span><span>Tulleet</span><span></span></div>
+            <div class="net" id="net"></div>
+            <p class="note" style="margin-top:10px">Superpesis 2027 -joukkueet. Lähteneisiin lasketaan myös lopettaneet ja ne, joiden sopimus ei jatku.</p>
+          </div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="head"><h3>Ajankohtaista</h3><span class="hint" id="newsStamp"></span></div>
+        <div class="list" id="news"></div>
+      </section>
+    </div>
+    <div class="col col-r">
+      <section class="card">
+        <div class="head"><h3>Kauden kärki</h3><a class="more" href="pelaajat.html">Kaikki pelaajat →</a></div>
+        <div class="leaders" id="leaders"></div>
+        <p class="note">Runkosarja. KL% vähintään 60 kärkilyöntiyritystä.</p>
+      </section>
+      <section class="card">
+        <div class="head"><h3>Jaksot</h3><span class="hint" id="jaksoTeam"></span></div>
+        <div class="teamchips" id="jaksoChips" role="group" aria-label="Joukkue"></div>
+        <svg class="chart" id="jaksot" viewBox="0 0 420 300" role="img" aria-label="Juoksut jaksoittain"></svg>
+        <p class="insight" id="jaksoNote"></p>
+      </section>
+      <section class="card">
+        <div class="head"><h3>Pelinjohtajat</h3></div>
+        <div class="list" id="pj"></div>
+      </section>
+      <section class="card">
+        <div class="head"><h3>Loukkaantumiset ja huhut</h3></div>
+        <div id="inj"></div>
+        <div class="list" id="rumors"></div>
+      </section>
+    </div>
+    </div>
+    <p class="note">Lähteet: pesistulokset.fi (tilastot, tulokset) ja Jarvis-seuranta (seurojen tiedotteet, media, Supervuoro-koonti). Varmuus merkitty jokaiseen siirtoon.</p>
+  </main>
+</div>
+
+<script>
+const D = __DATA__;
+const $ = id => document.getElementById(id);
+const fi = v => v==null ? "–" : String(v).replace(".", ",");
+const TEAMS27 = ["ViVe","SoJy","KPL","Manse","Tahko","KiPa","JoMa","PattU","KeKi","IPV","Ura","PuMu"];
+let SEL = null;
+try{ SEL = localStorage.getItem("ydin-koti-sel") || null; }catch(e){}
+const setSel = t => { SEL = (SEL===t ? null : t); try{ SEL?localStorage.setItem("ydin-koti-sel",SEL):localStorage.removeItem("ydin-koti-sel") }catch(e){} renderAll(); };
+const esc = s => String(s??"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+$("stamp").textContent = "Tilastot päivitetty " + new Date(D.paivitetty).toLocaleDateString("fi-FI");
+
+/* Nauha */
+function band(){
+  const fin = D.pudotus.find(s=>s.kierros==="Loppuottelu");
+  const nm = D.taulukko.find(t=>t.lyh===fin.a)?.nimi || fin.a;
+  $("champ").innerHTML = esc(nm).replace(/^(\S+)\s/, "$1 <em>") + "</em>";
+  $("champsub").textContent = `Loppuottelusarja ${fin.a}–${fin.b} ${fin.wa}–${fin.wb}. Runkosarjan voittaja ${D.taulukko[0].lyh} (${D.taulukko[0].P} p).`;
+  const order = ["Loppuottelu","Pronssiottelu","Välierä","Puolivälierä","Superpesis-karsinta","Putoamiskarsinta"];
+  const s = D.pudotus.slice().sort((a,b)=>order.indexOf(a.kierros)-order.indexOf(b.kierros));
+  $("series").innerHTML = s.map(x=>`<div class="serie ${x.kierros==="Loppuottelu"?"final":""}">
+    <span class="eyebrow">${x.kierros}</span>
+    <div class="row"><span>${x.a}</span><b>${x.wa}</b></div>
+    <div class="row lose"><span>${x.b}</span><b>${x.wb}</b></div></div>`).join("");
+}
+
+/* Sarjataulukko */
+function spark(arr){
+  let c=0; const pts=arr.map(p=>c+=p), max=Math.max(...D.taulukko.map(t=>t.P)), n=pts.length;
+  const xy=pts.map((v,i)=>[2+i*(80/(n-1)), 22-v/max*20]);
+  return `<svg class="spark" viewBox="0 0 84 24" aria-hidden="true"><path d="M${xy.map(p=>p.map(v=>v.toFixed(1)).join(" ")).join(" L")}"/><circle cx="${xy[n-1][0]}" cy="${xy[n-1][1]}" r="2.4"/></svg>`;
+}
+function stand(){
+  $("stand").innerHTML = D.taulukko.map((t,i)=>`<tr data-t="${t.lyh}" tabindex="0" class="${t.lyh===SEL?"sel":""} ${i===7?"cut":""}">
+    <td class="pos l">${i+1}</td><td class="tm l">${t.lyh}<small>${esc(t.nimi.split(",")[0])}</small></td>
+    <td class="hide-s">${t.O}</td><td>${t.V}</td><td>${t.H}</td><td class="hide-s">${t.juoksut}–${t.paastetyt}</td>
+    <td class="l hide-s">${spark(t.pistekulku)}</td>
+    <td class="l"><span class="form">${t.vire.map(v=>{const k=/[k]$/i.test(v.t); return `<i class="${v.v?"w":"l"}${k?"k":""}" title="${v.pvm} ${v.koti?"":"@"}${v.vs} ${v.t}">${v.v?"V":"H"}</i>`}).join("")}</span></td>
+    <td class="pts">${t.P}</td></tr>`).join("");
+}
+
+/* Kärki */
+function leaders(){
+  const P = D.pelaajat;
+  const top=(arr,f,n=3)=>arr.slice().sort((a,b)=>f(b)-f(a)).slice(0,n);
+  const ini = n => n.split(" ").map(s=>s[0]).slice(0,2).join("");
+  const C = [
+    {lab:"Eniten YHT", f:p=>p.YHT, v:p=>p.YHT, s:p=>`${p.K}+${p.L} · ${p.T} T`},
+    {lab:"Paras KL%", f:p=>p.KLY>=60?p["KL%"]:-1, v:p=>`${fi(p["KL%"])}<small> %</small>`, s:p=>`${p.KL}/${p.KLY}`},
+    {lab:"Eniten kunnareita", f:p=>p.K, v:p=>p.K, s:p=>`${p.O} ottelua`},
+    {lab:"Eniten tuotuja", f:p=>p.T, v:p=>p.T, s:p=>`${p.O} ottelua`},
+  ];
+  $("leaders").innerHTML = C.map(c=>{const [a,...r]=top(P,c.f); return `<div class="leader">
+    <span class="lab">${c.lab}</span>
+    <div class="who"><span class="av">${ini(a.nimi)}</span><span class="nm">${esc(a.nimi)}<small>${a.jk} · ${c.s(a)}</small></span></div>
+    <span class="val">${c.v(a)}</span>
+    <div class="runners">${r.map(p=>`<span><span>${esc(p.nimi)} · ${p.jk}</span><b>${String(c.v(p)).replace(/<[^>]+>/g,"")}</b></span>`).join("")}</div></div>`}).join("");
+}
+
+/* Hajontakuva */
+function scatter(){
+  const T=D.taulukko, W=640,H=380,m={l:44,r:16,t:16,b:40};
+  const xs=T.map(t=>t.kotiutus), ys=T.map(t=>t.torjunta);
+  const x0=Math.floor(Math.min(...xs)/5)*5, x1=Math.ceil(Math.max(...xs)/5)*5, y0=Math.floor(Math.min(...ys)/5)*5, y1=Math.ceil(Math.max(...ys)/5)*5;
+  const X=v=>m.l+(v-x0)/(x1-x0)*(W-m.l-m.r), Y=v=>H-m.b-(v-y0)/(y1-y0)*(H-m.t-m.b);
+  const ax=xs.reduce((a,b)=>a+b)/xs.length, ay=ys.reduce((a,b)=>a+b)/ys.length;
+  let g=`<g class="grid">`; for(let v=x0;v<=x1;v+=5) g+=`<line x1="${X(v)}" x2="${X(v)}" y1="${m.t}" y2="${H-m.b}"/>`; for(let v=y0;v<=y1;v+=5) g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}"/>`; g+=`</g>`;
+  let a=`<g class="axis">`; for(let v=x0;v<=x1;v+=5) a+=`<text x="${X(v)}" y="${H-m.b+16}" text-anchor="middle">${v}</text>`; for(let v=y0;v<=y1;v+=5) a+=`<text x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+  a+=`<text x="${(W+m.l)/2}" y="${H-6}" text-anchor="middle">Kotiutus-% (oma kolmospesä kotiin)</text><text transform="translate(12 ${(H-m.b+m.t)/2}) rotate(-90)" text-anchor="middle">Torjunta-%</text></g>`;
+  const avg=`<line class="avg" x1="${X(ax)}" x2="${X(ax)}" y1="${m.t}" y2="${H-m.b}"/><line class="avg" x1="${m.l}" x2="${W-m.r}" y1="${Y(ay)}" y2="${Y(ay)}"/>`;
+  const q=`<text class="ql" x="${W-m.r-6}" y="${m.t+14}" text-anchor="end">Vahva molemmissa</text><text class="ql" x="${m.l+6}" y="${H-m.b-8}">Heikko molemmissa</text>`;
+  const top4=new Set(T.slice(0,4).map(t=>t.lyh));
+  const placed=[];
+  const d=T.slice().sort((a,b)=>a.torjunta-b.torjunta).map(t=>{const cx=X(t.kotiutus),cy=Y(t.torjunta),r=6+t.P/12;
+    let ly=cy+4; for(const q of placed){ if(Math.abs(q.x-cx)<60 && Math.abs(q.y-ly)<13) ly=q.y-13; } placed.push({x:cx,y:ly});
+    return `<g data-t="${t.lyh}"><circle class="dot ${top4.has(t.lyh)?"top4":""} ${t.lyh===SEL?"sel":""}" cx="${cx}" cy="${cy}" r="${r.toFixed(1)}"><title>${t.lyh}: kotiutus ${fi(t.kotiutus)} %, torjunta ${fi(t.torjunta)} %, ${t.P} p</title></circle>
+    <text class="lbl" x="${cx+r+4}" y="${ly}">${t.lyh}</text></g>`}).join("");
+  $("scatter").innerHTML=g+a+avg+q+d;
+  const t = T.find(x=>x.lyh===SEL);
+  if(t){
+    const rk=(k)=>T.slice().sort((a,b)=>b[k]-a[k]).findIndex(x=>x.lyh===t.lyh)+1;
+    $("scatterNote").innerHTML=`<b>${t.lyh}</b>: kotiutus ${fi(t.kotiutus)} % (${rk("kotiutus")}.), torjunta ${fi(t.torjunta)} % (${rk("torjunta")}.). Juoksuero ${t.juoksut-t.paastetyt>0?"+":""}${t.juoksut-t.paastetyt}.`;
+  } else {
+    const best=T.slice().sort((a,b)=>(b.kotiutus+b.torjunta)-(a.kotiutus+a.torjunta))[0];
+    $("scatterNote").innerHTML=`Pallon koko kertoo sarjapisteet, täytetyt pallot ovat runkosarjan neljä parasta. Katkoviivat ovat sarjan keskiarvot. Yhteensä parhaat luvut: <b>${best.lyh}</b> (${fi(best.kotiutus)} % ja ${fi(best.torjunta)} %).`;
+  }
+}
+
+/* Jaksot */
+function jaksot(){
+  const T=D.taulukko, t=T.find(x=>x.lyh===SEL)||T[0];
+  $("jaksoChips").innerHTML=T.map(x=>`<button data-t="${x.lyh}" aria-pressed="${x.lyh===t.lyh}">${x.lyh}</button>`).join("");
+  $("jaksoTeam").textContent=`${t.lyh}, runkosarja`;
+  const avg=k=>[T.reduce((s,x)=>s+x[k][0],0)/T.length, T.reduce((s,x)=>s+x[k][1],0)/T.length];
+  const data=[{c:"1. jakso",v:t.j1,a:avg("j1")},{c:"2. jakso",v:t.j2,a:avg("j2")}];
+  const max=Math.max(...T.flatMap(x=>[...x.j1,...x.j2])), W=420,H=300,mid=150,h=110,bw=70;
+  const s=v=>v/max*h;
+  let o=`<line x1="20" x2="${W-20}" y1="${mid}" y2="${mid}" stroke="var(--line)"/>`;
+  data.forEach((d,i)=>{const cx=110+i*200;
+    o+=`<rect class="up" x="${cx-bw/2}" y="${mid-s(d.v[0])}" width="${bw}" height="${s(d.v[0])}" rx="5"/>`;
+    o+=`<rect class="down" x="${cx-bw/2}" y="${mid}" width="${bw}" height="${s(d.v[1])}" rx="5" opacity=".8"/>`;
+    o+=`<line x1="${cx-bw/2-8}" x2="${cx+bw/2+8}" y1="${mid-s(d.a[0])}" y2="${mid-s(d.a[0])}" class="avg"/>`;
+    o+=`<line x1="${cx-bw/2-8}" x2="${cx+bw/2+8}" y1="${mid+s(d.a[1])}" y2="${mid+s(d.a[1])}" class="avg"/>`;
+    o+=`<text class="val" x="${cx}" y="${mid-s(d.v[0])-6}" text-anchor="middle">${d.v[0]}</text>`;
+    o+=`<text class="val" x="${cx}" y="${mid+s(d.v[1])+16}" text-anchor="middle">${d.v[1]}</text>`;
+    o+=`<text class="cat" x="${cx}" y="${H-4}" text-anchor="middle">${d.c}</text>`;
+  });
+  o+=`<text class="cat" x="20" y="14">▲ Tehdyt juoksut</text><text class="cat" x="20" y="${H-22}">▼ Päästetyt</text>`;
+  $("jaksot").innerHTML=o;
+  const e1=t.j1[0]-t.j1[1], e2=t.j2[0]-t.j2[1];
+  const sgn=v=>(v>0?"+":"")+v;
+  $("jaksoNote").innerHTML=`<b>${t.lyh}</b> voitti 1. jaksot juoksuin ${sgn(e1)} ja 2. jaksot ${sgn(e2)}. Katkoviiva on sarjan keskiarvo.`;
+}
+
+/* Siirrot */
+const tm = s => (s||"").split(/[\s(]/)[0];
+function badge(v){ if(/huhu/.test(v)) return `<span class="badge huhu">huhu</span>`; if(/koonti/.test(v)) return `<span class="badge koonti">koonti</span>`; if(/yksi/.test(v)) return `<span class="badge one">yksi lähde</span>`; return `<span class="badge ok">vahvistettu</span>`; }
+function transfers(){
+  const S=D.vault.siirrot;
+  const rows=S.filter(r=>!SEL || tm(r[2])===SEL || tm(r[3])===SEL);
+  $("trHint").textContent = SEL ? `${SEL}: ${rows.length} merkintää` : `${S.length} merkintää · uusin ensin`;
+  const dest = r => { const t=r[3]; if(/^\?/.test(t)) return "ei jatka"; if(/lopettaa/.test(t)) return "lopettaa"; return t; };
+  $("tlist").innerHTML = rows.length ? rows.map(r=>`<div class="tr"><span class="d">${/koonti/.test(r[0])?"koonti":r[0].replace(/\.2026$/,"")}</span>
+    <span class="p">${esc(r[1])}<small><b>${esc(tm(r[2])||r[2])}</b><span class="arrow">→</span><b>${esc(dest(r))}</b></small></span>
+    ${r[6]?`<a href="${esc(r[6])}" target="_blank" rel="noopener" title="${esc(r[5])}">${badge(r[4])}</a>`:badge(r[4])}</div>`).join("")
+    : `<div class="empty"><b>Ei siirtoja</b>Joukkueelle ei ole vielä kirjattu siirtoja.</div>`;
+  const cnt={}; TEAMS27.forEach(t=>cnt[t]={i:0,o:0});
+  S.forEach(r=>{const f=tm(r[2]),t=tm(r[3]); if(cnt[f]) cnt[f].o++; if(cnt[t]) cnt[t].i++;});
+  const mx=Math.max(...Object.values(cnt).flatMap(c=>[c.i,c.o]),1);
+  const list=TEAMS27.slice().sort((a,b)=>(cnt[b].i-cnt[b].o)-(cnt[a].i-cnt[a].o));
+  $("net").innerHTML=list.map(t=>{const c=cnt[t],n=c.i-c.o; return `<div class="netrow ${t===SEL?"sel":""}" data-t="${t}" title="${t}: ${c.i} tullutta, ${c.o} lähtenyttä">
+    <b>${t}</b><span class="out"><i style="width:${c.o/mx*100}%"></i></span><span class="in"><i style="width:${c.i/mx*100}%"></i></span>
+    <span class="n" style="color:${n>0?"var(--win)":n<0?"var(--loss)":"var(--muted)"}">${n>0?"+":""}${n}</span></div>`}).join("");
+}
+
+/* PJ, uutiset, huhut */
+function lists(){
+  const P=D.vault.pj.filter(r=>r[3]!=="Jatkaa").concat(D.vault.pj.filter(r=>r[3]==="Jatkaa"));
+  $("pj").innerHTML=P.map(r=>{const vaihto=r[3]!=="Jatkaa"; return `<div class="li"><span class="tag">${r[0]}</span><span class="t">
+    ${vaihto?`${esc(r[1])}<span class="arrow">→</span><b>${r[2]==="?"?"avoin":esc(r[2])}</b>`:`<b>${esc(r[2])}</b> jatkaa`}
+    <small>${esc(r[7]).replace(/\[\[|\]\]/g,"")}</small></span></div>`}).join("");
+  $("newsStamp").textContent="Jarvis tarkisti "+D.vault.paiv;
+  const items=[...D.vault.muutokset.map(s=>({k:"Siirrot",s})),...D.vault.seurattavat.slice(0,2).map(s=>({k:"Seuraa",s}))];
+  $("news").innerHTML=items.map(x=>`<div class="li"><span class="tag">${x.k}</span><span class="t">${md(x.s)}</span></div>`).join("");
+  $("inj").innerHTML=`<div class="empty"><b>Ei julkaistuja loukkaantumisia</b>Tähän tulevat vain seuran tai pelaajan itse julkaisemat tiedot.</div>`;
+  $("rumors").innerHTML=D.vault.huhut.map(r=>`<div class="li"><span class="tag">${r[2]}</span><span class="t">${md(r[1].replace(/\s*–\s*\*\*huhu\*\*/,""))} <span class="badge huhu">huhu</span><small>${esc(r[4])}</small></span></div>`).join("");
+}
+
+function renderAll(){ stand(); scatter(); jaksot(); transfers(); }
+document.addEventListener("click",e=>{
+  const el=e.target.closest("#stand tr[data-t], #scatter g[data-t], #net .netrow, #jaksoChips button"); if(!el) return;
+  const t=el.dataset.t; if(el.closest("#jaksoChips")){ SEL=t; try{localStorage.setItem("ydin-koti-sel",t)}catch(_){} renderAll(); } else setSel(t);
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Enter"){const tr=e.target.closest("#stand tr[data-t]"); if(tr) setSel(tr.dataset.t);} });
+band(); leaders(); lists(); renderAll();
+</script>
