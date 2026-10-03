@@ -1,0 +1,17 @@
+{
+ "kausi": 2026,
+ "paivitetty": "2026-10-03T14:51",
+ "rivit_jatko_alempi": {
+  "joukkue_ottelut": 12,
+  "pelaaja_ottelut": 144
+ },
+ "rivit_jatko_ylempi": {
+  "joukkue_ottelut": 50,
+  "pelaaja_ottelut": 600
+ },
+ "rivit_runko": {
+  "joukkue_ottelut": 396,
+  "pelaaja_ottelut": 4752
+ },
+ "seasonSeries": 2945
+}
