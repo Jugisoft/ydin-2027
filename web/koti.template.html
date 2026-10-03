@@ -51,6 +51,8 @@
 .perf .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:.9rem}
 .perf .row:last-child{border-bottom:0}
 .perf .row b{font-variant-numeric:tabular-nums}
+.perf .pn{display:flex;align-items:center;gap:8px;min-width:0}
+.perf .pn img{width:26px;height:26px;border-radius:50%;object-fit:cover;object-position:top;background:var(--surface-2)}
 .perf .lab{font:600 .72rem var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:6px}
 @media (max-width:860px){.transfers{grid-template-columns:minmax(0,1fr)} .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:440px){.teams{grid-template-columns:minmax(0,1fr)}}
@@ -178,12 +180,12 @@ function teams(){
   const rank={}; D.taulukko.forEach((t,i)=>rank[t.lyh]=i+1);
   const nimi={}; D.taulukko.forEach(t=>nimi[t.lyh]=t.nimi.split(",")[0]);
   $("teams").innerHTML=TEAMS27.map(t=>`<button type="button" class="team ${t===SEL?"sel":""}" data-t="${t}">
-    <span><b>${t}</b><br><small>${esc(nimi[t]||NOUSIJAT[t]||"")}</small></span>
+    <span style="display:flex;align-items:center;gap:8px">${(D.logot||{})[t]?`<img src="${D.logot[t]}" alt="" loading="lazy" style="width:26px;height:26px;object-fit:contain">`:""}<span><b>${t}</b><br><small>${esc(nimi[t]||NOUSIJAT[t]||"")}</small></span></span>
     ${rank[t]?`<small>(${rank[t]}.)</small>`:`<span class="tagup">nousija</span>`}</button>`).join("");
 }
 function perf(){
   const P=D.pelaajat, top=(f,n=3)=>P.slice().sort((a,b)=>f(b)-f(a)).slice(0,n);
-  const sec=(lab,f,v)=>`<div class="lab">${lab}</div>`+top(f).map(p=>`<div class="row"><span>${esc(p.nimi)} <small style="color:var(--muted)">${p.jk}</small></span><b>${v(p)}</b></div>`).join("");
+  const sec=(lab,f,v)=>`<div class="lab">${lab}</div>`+top(f).map(p=>`<div class="row"><span class="pn">${(D.kuvat||{})[String(p.id)]?`<img src="${D.kuvat[String(p.id)]}" alt="" loading="lazy">`:""}${esc(p.nimi)} <small style="color:var(--muted)">${p.jk}</small></span><b>${v(p)}</b></div>`).join("");
   $("perf").innerHTML = sec("YHT (K+L+T)",p=>p.YHT,p=>p.YHT) + sec("KL% (väh. 60 KLY)",p=>p.KLY>=60?p["KL%"]:-1,p=>fi(p["KL%"])+" %") + sec("Kunnarit",p=>p.K,p=>p.K);
 }
 function render(){ transfers(); teams(); }
