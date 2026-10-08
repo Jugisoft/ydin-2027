@@ -341,15 +341,16 @@ function card(p){
   // Suomalainen pesäpallokenttä (Jugin YDIN 2026 -kenttäkuvan geometria): epäsymmetrinen viisikulmio, koti alhaalla,
   // ykköspesä kotipesän ja kolmospesän välisellä linjalla, kakkonen oikealla ja kolmonen vasemmalla sivurajalla.
   // Jokaisessa pesässä kärkilyöntiprosentti tilanteessa, jossa kärkietenijä on tällä pesällä (KL%0 = kotipesältä).
+  // Laatikot pesävälien keskelle: KL%0 koti–1, KL%1 1–2, KL%2 2–3, KL%3 3–koti (keskipiste x,y)
   const B=[
-    {n:0, bx:190, by:655, cx:226, cy:600, t:"kentälle"},
-    {n:1, bx:100, by:507, cx:122, cy:512, t:"1-tilanne"},
-    {n:2, bx:352, by:352, cx:224, cy:278, t:"2-tilanne"},
-    {n:3, bx:28,  by:352, cx:44,  cy:366, t:"kotiutus"},
+    {n:0, x:142, y:584, t:"kentällemeno"},
+    {n:1, x:228, y:432, t:"1-tilanne"},
+    {n:2, x:190, y:352, t:"2-tilanne"},
+    {n:3, x:72,  y:448, t:"kotiutus"},
   ];
   const vals=B.map(b=>p["KLp"+b.n]);
   const best=Math.max(...vals.map((v,i)=>p["KLY"+i]>=10?v:-1));
-  const svg=`<svg class="field-svg" viewBox="0 236 370 480" role="img" aria-label="Kärkilyöntiprosentit pesäpallokentällä: KL%0 kotipesältä, KL%1, KL%2 ja KL%3">
+  const svg=`<svg class="field-svg" viewBox="0 268 370 448" role="img" aria-label="Kärkilyöntiprosentit pesäpallokentällä: KL%0 kotipesältä, KL%1, KL%2 ja KL%3">
     <defs><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--surface)" stop-opacity="1"/><stop offset="1" stop-color="var(--surface)" stop-opacity="0"/></linearGradient></defs>
     <path class="kentta" d="M25 236 L25 495 L152 655 L198 655 L358 405 L358 236 Z"/>
     <path class="raja" d="M25 236 L25 495 L152 655 M198 655 L358 405 L358 236"/>
@@ -360,10 +361,10 @@ function card(p){
     <circle class="pesa" cx="100" cy="507" r="11"/><circle class="lautanen" cx="190" cy="655" r="7"/>
     <rect x="0" y="236" width="370" height="40" fill="url(#fade)"/>
     ${B.map((b,i)=>{const v=vals[i],y=p["KLY"+b.n],hot=y>=10&&v===best&&best>=0, pieni=y>0&&y<10;
-      return `<g class="chip ${hot?"hot":""} ${pieni?"pieni":""}"><rect x="${b.cx}" y="${b.cy}" width="124" height="64" rx="10"/>
-      <text class="lbl" x="${b.cx+10}" y="${b.cy+18}"><tspan class="k">KL%${b.n}</tspan> ${b.t}</text>
-      <text class="pct" x="${b.cx+10}" y="${b.cy+43}">${fmtP(v)}${v==null?"":" %"}</text>
-      <text class="cnt" x="${b.cx+10}" y="${b.cy+57}">${p["KL"+b.n]}/${y}${pieni?" · pieni otos":""}</text></g>`}).join("")}
+      return `<g class="chip ${hot?"hot":""} ${pieni?"pieni":""}"><rect x="${b.x-64}" y="${b.y-33}" width="128" height="66" rx="10"/>
+      <text class="lbl" x="${b.x}" y="${b.y-15}" text-anchor="middle"><tspan class="k">KL%${b.n}</tspan> ${b.t}</text>
+      <text class="pct" x="${b.x}" y="${b.y+11}" text-anchor="middle">${fmtP(v)}${v==null?"":" %"}</text>
+      <text class="cnt" x="${b.x}" y="${b.y+26}" text-anchor="middle">${p["KL"+b.n]}/${y}${pieni?" · pieni otos":""}</text></g>`}).join("")}
   </svg>`;
   const kuva=(DATA.kuvat||{})[String(p.id)], logo=(DATA.logot||{})[p.jk];
   const ini=p.nimi.split(" ").map(x=>x[0]).slice(0,2).join("");
