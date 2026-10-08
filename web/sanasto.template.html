@@ -28,7 +28,7 @@ dl.terms dd .calc code{font:600 .82rem ui-monospace,Menlo,Consolas,monospace;bac
 <div class="top">
   <div><h1>Selitteet</h1><p>Mitä sivuston lyhenteet ja mittarit tarkoittavat ja miten ne lasketaan, sivu kerrallaan</p></div>
 </div>
-<div class="search" role="search"><input type="search" id="q" placeholder="Hae termiä, esim. KL%3, päästetyt, torjunta" aria-label="Hae selitteistä"></div>
+<div class="search" role="search"><input type="search" id="q" placeholder="Hae termiä, esim. KL%3, vastustajan tekemät juoksut, torjunta" aria-label="Hae selitteistä"></div>
 <nav class="jump" id="jump" aria-label="Siirry osioon"></nav>
 <div id="sections" class="col"></div>
 <p class="note none" id="ei" hidden>Ei osumia. Kokeile toista hakusanaa.</p>
@@ -126,7 +126,7 @@ const S = [
  ["lukkarit","Lukkarit","lukkarit.html","Lukkarin otteluihin kohdistettu vastustajan kotiutuspeli. Luvut kuvaavat koko joukkueen puolustusta niissä otteluissa, joissa lukkari aloitti, joten ne eivät ole puhtaasti lukkarin omia.",[
   ["Lukkari","Kuka lasketaan","Pelaaja, joka aloitti ottelun lukkarin paikalla (pesistulokset.fi:n kokoonpano). Kesken ottelun tehdyt vaihdot eivät näy, joten koko ottelu kirjataan aloittajalle.","",""],
   ["V–H","Voitot–tappiot","Lukkarin aloittamien otteluiden voitot ja tappiot.","",UP],
-  ["Päästetyt","Päästetyt juoksut per ottelu","Vastustajan juoksut keskimäärin niissä otteluissa, joissa lukkari aloitti. Ei sisällä kotiutuskilpailua. Esim. 4,15 = vastustaja teki keskimäärin 4,15 juoksua ottelussa.","<code>vastustajan juoksut / ottelut</code>",DN],
+  ["Vastustajan tekemät juoksut / O","Lukkarin otteluissa","Vastustajan tekemät juoksut keskimäärin niissä otteluissa, joissa lukkari aloitti. Ei sisällä kotiutuskilpailua. Esim. 4,15 = vastustaja teki keskimäärin 4,15 juoksua ottelussa. Luku kuvaa koko joukkueen puolustusta. Se ei ole lukkarin päästämät juoksut (kaksi väärää syöttöä ja vapaa), joita ottelutason tilastoissa ei ole.","<code>vastustajan juoksut / ottelut</code>",DN],
   ["3-til.","Kolmostilanteet per ottelu","Vastustajan tilanteet, joissa etenijä oli 3. pesällä. Vähemmän = vastustaja pääsi harvemmin kotiutusasemiin.","<code>vastustajan 3-tilanteet / ottelut</code>",DN],
   ["KL% v","Vastustajan kärkilyöntiprosentti","Kuinka hyvin vastustajan lyönnit onnistuivat lukkarin otteluissa.","<code>vastustajan KL / KLY</code>",DN],
   ["KL%0–2 v","Vastustajan KL% pesittäin","Sama pesittäin: 0 = tyhjät pesät (vastustajan kentällemenot), 1 ja 2 = 1- ja 2-tilanteet.","",DN],

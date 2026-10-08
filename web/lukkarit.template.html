@@ -20,15 +20,16 @@
 @media (max-width:1180px){.lgrid{grid-template-columns:minmax(0,1fr)}}
 .tablebox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto;min-width:0}
 table.lt{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.9rem}
-table.lt thead th{background:var(--surface);border-bottom:2px solid var(--fg);text-align:right;padding:0;white-space:nowrap}
-table.lt th button{all:unset;cursor:pointer;display:block;padding:9px 7px;font:600 .78rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+table.lt thead th{background:var(--surface);border-bottom:2px solid var(--fg);text-align:center;padding:0;white-space:nowrap;vertical-align:bottom}
+table.lt thead th.wrap{white-space:normal;min-width:96px;line-height:1.15}
+table.lt th button{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;text-align:center;padding:9px 7px;font:600 .78rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 table.lt th button:focus-visible{outline:2px solid var(--accent)}
 table.lt th[aria-sort] button{color:var(--fg)}
 table.lt th[aria-sort="descending"] button::after{content:" ▾";color:var(--accent)}
 table.lt th[aria-sort="ascending"] button::after{content:" ▴";color:var(--accent)}
 table.lt th.grp{font:600 .66rem var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center;padding:6px 4px 0;border-bottom:0}
-table.lt .l{text-align:left}
-table.lt td{padding:7px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.lt .l,table.lt th.l button{text-align:left}
+table.lt td{padding:7px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
 table.lt tbody tr{cursor:pointer}
 table.lt tbody tr:hover{background:var(--surface-2)}
 table.lt tbody tr.sel{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
@@ -84,8 +85,8 @@ table.lt .pb{display:none}
 .kchart .vy{fill:var(--fg)} .kchart .vk{fill:var(--accent)}
 .kchart .base{stroke:var(--line)}
 table.mini{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.82rem}
-table.mini th{font:600 .66rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;padding:4px 5px;border-bottom:1px solid var(--line)}
-table.mini td{padding:5px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+table.mini th{font:600 .66rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;padding:4px 5px;border-bottom:1px solid var(--line)}
+table.mini td{padding:5px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
 table.mini .l{text-align:left}
 table.mini tr:last-child td{border-bottom:0}
 table.mini tr.nyt td{font-weight:700}
@@ -127,7 +128,7 @@ table.mini a:hover{color:var(--accent);text-decoration:underline}
 </div>
 
 <section class="band" aria-label="Sarjan lukkarit">
-  <div class="bandhead"><div><span class="eyebrow" id="bandEye"></span><h2 id="bandTitle"></h2></div><p>Luvut ovat vastustajan kotiutuspeliä niissä otteluissa, joissa lukkari aloitti. Vähemmän päästettyä ja matalampi KL% vastaan on parempi.</p></div>
+  <div class="bandhead"><div><span class="eyebrow" id="bandEye"></span><h2 id="bandTitle"></h2></div><p>Luvut ovat vastustajan kotiutuspeliä niissä otteluissa, joissa lukkari aloitti. Vähemmän vastustajan tekemiä juoksuja ja matalampi KL% vastaan on parempi. Luvut ovat koko joukkueen puolustusta, eivät lukkarin omia päästöjä.</p></div>
   <div class="stats" id="stats"></div>
 </section>
 
@@ -199,7 +200,7 @@ function sarja(R){ const s = {id:0, O:0, jk:{}, ...Object.fromEntries(SUM.map(k=
 const COLS = [
   {k:"O", t:"O", f:s=>s.O, fmt:s=>s.O, ti:"Ottelut lukkarina"},
   {k:"vh", t:"V–H", f:s=>s.vp, fmt:s=>`${s.voitto}–${s.H}`, hide:true, ti:"Voitot–tappiot (järjestys voitto%)"},
-  {k:"pv", t:"Päästetyt", f:s=>s.pv, fmt:s=>fi(s.pv,2), dir:-1, key:true, ti:"Vastustajan juoksut / ottelu"},
+  {k:"pv", t:"Vastustajan tekemät juoksut / O", wrap:true, f:s=>s.pv, fmt:s=>fi(s.pv,2), dir:-1, key:true, ti:"Vastustajan juoksut per ottelu lukkarin aloittamissa otteluissa (ei lukkarin päästämiä vapaita)"},
   {k:"kol", t:"3-til.", f:s=>s.kol, fmt:s=>fi(s.kol,1), dir:-1, hide:true, ti:"Vastustajan kolmostilanteet / ottelu"},
   {k:"klv", t:"KL% v", f:s=>s.klv, fmt:s=>fi(s.klv), dir:-1, key:true, sep:true, ti:"Vastustajan kärkilyöntiprosentti"},
   {k:"kl0", pb:true, t:"KL%0 v", f:s=>s.kl0, fmt:s=>fi(s.kl0), dir:-1, hide:true, ti:"Vastustajan KL% kotipesältä"},
@@ -243,10 +244,10 @@ function band(R){
   const a = paras(s=>s.pv,1), b = paras(s=>s.klv,1), c = paras(s=>s.torj,-1);
   const yksi = Object.values(R.reduce((m,r)=>{ (m[r[ix.jk]] ||= new Set()).add(r[ix.lukkari]); return m; },{})).filter(s=>s.size===1).length;
   const tiles = [
-    ["Päästetyt / ottelu", fi(SARJA.pv,2), "sarjan keskiarvo"],
+    ["Vastustajan tekemät juoksut / ottelu", fi(SARJA.pv,2), "sarjan keskiarvo"],
     ["KL% vastaan", fi(SARJA.klv)+" %", "sarjan keskiarvo"],
     ["Torjunta%", fi(SARJA.torj)+" %", "sarjan keskiarvo"],
-    ["Vähiten päästettyjä", a?fi(a.pv,2):"–", a?`${nimi(a.id)} · ${a.joukkue}`:"väh. 10 ottelua"],
+    ["Vähiten vastustajan tekemiä juoksuja", a?fi(a.pv,2):"–", a?`${nimi(a.id)} · ${a.joukkue}`:"väh. 10 ottelua"],
     ["Matalin KL% vastaan", b?fi(b.klv)+" %":"–", b?`${nimi(b.id)} · ${b.joukkue}`:"väh. 10 ottelua"],
     ["Yhden lukkarin joukkueet", yksi, "sama aloittaja joka ottelussa"],
   ];
@@ -256,7 +257,7 @@ function band(R){
 function taulu(){
   $("head").innerHTML = `<th class="l"><button tabindex="-1" style="cursor:default">#</button></th><th class="l"><button tabindex="-1" style="cursor:default">Lukkari</button></th>` +
     COLS.map(c=>{ const s = st.sort===c.k ? (st.dir<0?"descending":"ascending") : null;
-      return `<th class="${c.hide?"hide-s":""} ${c.sep?"sep":""} ${c.pb?"pb":""}" ${s?`aria-sort="${s}"`:""}><button data-s="${c.k}" title="${c.ti||""}${c.dir<0?" · pienempi on parempi":c.dir>0?" · suurempi on parempi":""}">${c.t}</button></th>`; }).join("");
+      return `<th class="${c.hide?"hide-s":""} ${c.sep?"sep":""} ${c.pb?"pb":""} ${c.wrap?"wrap":""}" ${s?`aria-sort="${s}"`:""}><button data-s="${c.k}" title="${c.ti||""}${c.dir<0?" · pienempi on parempi":c.dir>0?" · suurempi on parempi":""}">${c.t}</button></th>`; }).join("");
   const arvot = Object.fromEntries(COLS.map(c=>[c.k, LIST.map(c.f)]));
   $("body").innerHTML = LIST.length ? LIST.map((s,i)=>`<tr data-id="${s.id}" tabindex="0" class="${s.id===st.sel?"sel":""}">
     <td class="rk l">${i+1}</td><td class="nm l">${esc(nimi(s.id))}<small>${esc(s.joukkue)}</small></td>
@@ -269,7 +270,7 @@ function taulu(){
 const PCT_HI="#d8323b", PCT_LO="#3a63b4";
 function prosentit(s){
   const pool = ALL.filter(x=>x.O>=10);
-  const rows = [["Päästetyt / O","pv",-1,x=>fi(x.pv,2)],["KL% vastaan","klv",-1,x=>fi(x.klv)],["KL%0 vastaan","kl0",-1,x=>fi(x.kl0)],["KL%1 vastaan","kl1",-1,x=>fi(x.kl1)],
+  const rows = [["Vast. tekemät juoksut / O","pv",-1,x=>fi(x.pv,2)],["KL% vastaan","klv",-1,x=>fi(x.klv)],["KL%0 vastaan","kl0",-1,x=>fi(x.kl0)],["KL%1 vastaan","kl1",-1,x=>fi(x.kl1)],
     ["KL%2 vastaan","kl2",-1,x=>fi(x.kl2)],["Torjunta%","torj",1,x=>fi(x.torj)],["3-tilanteet / O","kol",-1,x=>fi(x.kol,1)],["Kunnarit v. / O","kv",-1,x=>fi(x.kv,2)],["Voitto%","vp",1,x=>fi(x.vp,0)]];
   const html = rows.map(([t,k,dir,fmt])=>{
     const grp = pool.filter(x=>x[k]!=null), val = s[k];
@@ -306,9 +307,9 @@ function kehitys(id){
   pts.forEach(q=>{ g+=`<circle class="pt" cx="${q[0]}" cy="${q[1]}" r="4"/><text class="vk" x="${q[0]+6}" y="${q[1]-6}">${fi(q[2])}</text>`; });
   const lyo = k => { const r=(((D.lyonti||{})[k]||{})[st.v]||{})[String(id)]; if(!r) return null; const o=Object.fromEntries(D.hkentat.map((h,i)=>[h,r[i]])); return o; };
   const tab = rows.slice().reverse().map(r=>{ const b=lyo(r.kausi); return `<tr class="${r.kausi===st.k?"nyt":""}"><td class="l">${r.kausi}</td><td class="l">${esc(r.joukkue)}</td><td>${r.O}</td><td>${r.voitto}–${r.H}</td><td>${fi(r.pv,2)}</td><td>${fi(r.klv)}</td><td>${fi(r.torj)}</td><td>${b?`${b.K}+${b.L} / ${b.T}`:"–"}</td></tr>`; }).join("");
-  return `<div class="sec"><h4>Kehitys <small>palkki päästetyt / O, viiva KL% vastaan</small></h4>
-    <svg class="kchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Päästetyt juoksut ja KL% vastaan kausittain">${g}</svg>
-    <div style="overflow-x:auto"><table class="mini"><thead><tr><th class="l">Kausi</th><th class="l">Jk</th><th>O</th><th>V–H</th><th title="Päästetyt / ottelu">Päästetyt</th><th title="Vastustajan KL%">KL% v</th><th>Torj%</th><th title="Oma lyönti: K+L / T">Lyönti</th></tr></thead><tbody>${tab}</tbody></table></div></div>`;
+  return `<div class="sec"><h4>Kehitys <small>palkki vastustajan tekemät juoksut / O, viiva KL% vastaan</small></h4>
+    <svg class="kchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Vastustajan juoksut ja KL% vastaan kausittain">${g}</svg>
+    <div style="overflow-x:auto"><table class="mini"><thead><tr><th class="l">Kausi</th><th class="l">Jk</th><th>O</th><th>V–H</th><th title="Vastustajan tekemät juoksut / ottelu">Vast. juoksut</th><th title="Vastustajan KL%">KL% v</th><th>Torj%</th><th title="Oma lyönti: K+L / T">Lyönti</th></tr></thead><tbody>${tab}</tbody></table></div></div>`;
 }
 
 function loki(id){
@@ -322,7 +323,7 @@ function loki(id){
     return `<tr><td class="l">${pv(r[ix.pvm])}</td><td class="l">${nyt?`<a href="ottelut.html?o=${r[ix.ottelu]}">${vs}</a>`:vs}</td><td><span class="wl ${w?"w":"l"}">${w?"V":"H"}</span></td><td>${r[ix.jaksot]}–${r[ix.jaksot_v]}</td><td>${r[ix.juoksut_v]}</td><td>${fi(kl)}</td><td>${r[ix.KL3_v]}/${r[ix.KLY3_v]}</td></tr>`;
   }).join("");
   return `<div class="sec"><h4>Viimeisimmät ottelut <small>${R.length>12?`12 / ${R.length}`:`${R.length} ottelua`}</small></h4>
-    <div style="overflow-x:auto"><table class="mini"><thead><tr><th class="l">Pvm</th><th class="l">Vastustaja</th><th></th><th>Jaksot</th><th title="Päästetyt juoksut">Päästetyt</th><th title="Vastustajan KL%">KL% v</th><th title="Vastustajan kotiutukset 3. pesältä">KL3 v</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+    <div style="overflow-x:auto"><table class="mini"><thead><tr><th class="l">Pvm</th><th class="l">Vastustaja</th><th></th><th>Jaksot</th><th title="Vastustajan tekemät juoksut ottelussa">Vast. juoksut</th><th title="Vastustajan KL%">KL% v</th><th title="Vastustajan kotiutukset 3. pesältä">KL3 v</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 
 function kortti(){
@@ -336,7 +337,7 @@ function kortti(){
       <div><h2>${nm}</h2><div class="meta">${lg(jk)?`<img class="logo-s" src="${lg(jk)}" alt="">`:""}${esc(s.joukkue)} · lukkari ${st.v==="runko"?"runkosarja":"koko kausi"} ${st.k}</div></div></div>
     <div class="kpis">
       <div class="kpi"><span>Ottelut</span><strong>${s.O}</strong><small>${s.voitto}–${s.H}</small></div>
-      <div class="kpi"><span>Päästetyt</span><strong>${fi(s.pv,2)}</strong><small>${e(s.pv,SARJA.pv)}</small></div>
+      <div class="kpi"><span title="Vastustajan tekemät juoksut / ottelu">Vast. juoksut / O</span><strong>${fi(s.pv,2)}</strong><small>${e(s.pv,SARJA.pv)}</small></div>
       <div class="kpi"><span>KL% v</span><strong>${fi(s.klv)}</strong><small>${e(s.klv,SARJA.klv,1)}</small></div>
       <div class="kpi"><span>Torjunta%</span><strong>${fi(s.torj)}</strong><small>${e(s.torj,SARJA.torj,1)}</small></div>
     </div>
