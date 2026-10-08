@@ -36,7 +36,7 @@ header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-be
 .toggle{display:flex;align-items:center;gap:6px;font-size:.88rem;color:var(--muted);cursor:pointer}
 .toggle input{accent-color:var(--accent)}
 
-.pgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+.pgrid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:18px;align-items:start}
 @media (max-width:1100px){.pgrid{grid-template-columns:minmax(0,1fr)}}
 
 .tablebox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto;min-width:0}
@@ -98,13 +98,22 @@ tr.small td.pc b{opacity:.45}
 .kpi span{font:600 .72rem var(--font-display);letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
 .kpi strong{font:700 1.5rem var(--font-display);font-variant-numeric:tabular-nums}
 .field-svg{width:100%;height:auto;display:block}
-.field-svg .grass{fill:var(--bg)}
-.field-svg .path{stroke:var(--line);stroke-width:2;fill:none;stroke-dasharray:4 5}
-.field-svg .base{fill:var(--surface);stroke:var(--fg);stroke-width:1.5}
-.field-svg .base.hot{fill:var(--sand)}
-.field-svg .pct{font:700 17px var(--font-display);fill:var(--fg)}
-.field-svg .lbl{font:600 10.5px var(--font-display);letter-spacing:.08em;fill:var(--muted);text-transform:uppercase}
+.field-svg .kentta{fill:color-mix(in srgb,var(--sand) 26%,var(--surface))}
+.field-svg .raja,.field-svg .linja{fill:none;stroke:var(--surface);stroke-width:4;stroke-linejoin:round}
+.field-svg .linja{stroke-width:3}
+.field-svg .kp{fill:color-mix(in srgb,var(--sand) 26%,var(--surface));stroke:var(--surface);stroke-width:4}
+.field-svg .kpk{fill:none;stroke:var(--surface);stroke-width:3}
+.field-svg .pesa{fill:var(--surface);stroke:var(--muted);stroke-width:1.5}
+.field-svg .lautanen{fill:var(--fg)}
+.field-svg .chip rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.field-svg .chip.hot rect{fill:var(--sand-soft);stroke:var(--sand);stroke-width:2.5}
+.field-svg .chip.pieni{opacity:.6}
+.field-svg .lbl{font:600 11.5px var(--font-body);fill:var(--muted)}
+.field-svg .lbl .k{font:700 13px var(--font-display);fill:var(--accent);letter-spacing:.02em}
+.field-svg .pct{font:700 25px var(--font-display);fill:var(--fg)}
 .field-svg .cnt{font:500 11px var(--font-body);fill:var(--muted)}
+.kenttabox h4{margin:2px 0 6px;font:700 .95rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:baseline}
+.kenttabox h4 small{font:600 .66rem var(--font-display);letter-spacing:.1em;color:var(--muted)}
 .note{font-size:.8rem;color:var(--muted);margin:0}
 /* Prosenttipisteet (Baseball Savantin tapaan): punainen = sarjan kärkeä, sininen = heikompi */
 .pr{display:flex;flex-direction:column;gap:5px}
@@ -329,19 +338,32 @@ function kehitys(p){
 
 function card(p){
   if(!p){$("card").innerHTML=`<p class="note">Valitse pelaaja taulukosta.</p>`;return}
-  // Pesäpallokenttä: koti alhaalla, pesät siksakissa 1 (vasen) → 2 (oikea) → 3 (vasen ylhäällä)
-  const B=[{x:150,y:282,n:0,t:"Koti"},{x:62,y:196,n:1,t:"1-pesä"},{x:238,y:120,n:2,t:"2-pesä"},{x:74,y:46,n:3,t:"3-pesä"}];
+  // Suomalainen pesäpallokenttä (Jugin YDIN 2026 -kenttäkuvan geometria): epäsymmetrinen viisikulmio, koti alhaalla,
+  // ykköspesä kotipesän ja kolmospesän välisellä linjalla, kakkonen oikealla ja kolmonen vasemmalla sivurajalla.
+  // Jokaisessa pesässä kärkilyöntiprosentti tilanteessa, jossa kärkietenijä on tällä pesällä (KL%0 = kotipesältä).
+  const B=[
+    {n:0, bx:190, by:655, cx:226, cy:600, t:"kentälle"},
+    {n:1, bx:100, by:507, cx:122, cy:512, t:"1-tilanne"},
+    {n:2, bx:352, by:352, cx:224, cy:278, t:"2-tilanne"},
+    {n:3, bx:28,  by:352, cx:44,  cy:366, t:"kotiutus"},
+  ];
   const vals=B.map(b=>p["KLp"+b.n]);
   const best=Math.max(...vals.map((v,i)=>p["KLY"+i]>=10?v:-1));
-  const svg=`<svg class="field-svg" viewBox="0 0 300 320" role="img" aria-label="Kärkilyöntiprosentit lähtöpesittäin">
-    <path class="grass" d="M150 312 L10 210 Q20 20 150 6 Q280 20 290 210 Z"/>
-    <path class="path" d="M150 282 L62 196 L238 120 L74 46 L150 282"/>
-    ${B.map((b,i)=>{const v=vals[i],y=p["KLY"+b.n],hot=y>=10&&v===best&&best>=0;
-      const tx=b.x<150?b.x+20:b.x-20, anc=b.x<150?"start":"end";
-      return `<rect class="base ${hot?"hot":""}" x="${b.x-9}" y="${b.y-9}" width="18" height="18" rx="${b.n===0?9:2}" transform="rotate(${b.n===0?0:45} ${b.x} ${b.y})"/>
-      <text class="lbl" x="${tx}" y="${b.y-12}" text-anchor="${anc}">${b.t}</text>
-      <text class="pct" x="${tx}" y="${b.y+6}" text-anchor="${anc}">${fmtP(v)}${v==null?"":" %"}</text>
-      <text class="cnt" x="${tx}" y="${b.y+21}" text-anchor="${anc}">${p["KL"+b.n]}/${y}${y<10&&y>0?" · pieni otos":""}</text>`}).join("")}
+  const svg=`<svg class="field-svg" viewBox="0 236 370 480" role="img" aria-label="Kärkilyöntiprosentit pesäpallokentällä: KL%0 kotipesältä, KL%1, KL%2 ja KL%3">
+    <defs><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--surface)" stop-opacity="1"/><stop offset="1" stop-color="var(--surface)" stop-opacity="0"/></linearGradient></defs>
+    <path class="kentta" d="M25 236 L25 495 L152 655 L198 655 L358 405 L358 236 Z"/>
+    <path class="raja" d="M25 236 L25 495 L152 655 M198 655 L358 405 L358 236"/>
+    <path class="raja" d="M136 655 L370 655"/>
+    <path class="kp" d="M146 655 A44 44 0 0 0 234 655 Z"/><path class="kpk" d="M158 655 A32 32 0 0 0 222 655"/>
+    <path class="linja" d="M28 352 L352 352 M100 507 L352 352 M25 400 L190 655"/>
+    <path class="pesa" d="M28 336 A16 16 0 0 0 28 368 Z"/><path class="pesa" d="M352 336 A16 16 0 0 1 352 368 Z"/>
+    <circle class="pesa" cx="100" cy="507" r="11"/><circle class="lautanen" cx="190" cy="655" r="7"/>
+    <rect x="0" y="236" width="370" height="40" fill="url(#fade)"/>
+    ${B.map((b,i)=>{const v=vals[i],y=p["KLY"+b.n],hot=y>=10&&v===best&&best>=0, pieni=y>0&&y<10;
+      return `<g class="chip ${hot?"hot":""} ${pieni?"pieni":""}"><rect x="${b.cx}" y="${b.cy}" width="124" height="64" rx="10"/>
+      <text class="lbl" x="${b.cx+10}" y="${b.cy+18}"><tspan class="k">KL%${b.n}</tspan> ${b.t}</text>
+      <text class="pct" x="${b.cx+10}" y="${b.cy+43}">${fmtP(v)}${v==null?"":" %"}</text>
+      <text class="cnt" x="${b.cx+10}" y="${b.cy+57}">${p["KL"+b.n]}/${y}${pieni?" · pieni otos":""}</text></g>`}).join("")}
   </svg>`;
   const kuva=(DATA.kuvat||{})[String(p.id)], logo=(DATA.logot||{})[p.jk];
   const ini=p.nimi.split(" ").map(x=>x[0]).slice(0,2).join("");
@@ -351,10 +373,10 @@ function card(p){
     <div class="kpi"><span>T</span><strong>${p.T}</strong></div>
     <div class="kpi"><span>YHT</span><strong>${p.YHT}</strong></div>
     <div class="kpi"><span>KL%</span><strong>${fmtP(p.KLp)}</strong></div></div>
-    ${kehitys(p)}
+    <div class="kenttabox"><h4>Kärkilyönnit pesittäin <small>kärkietenijän lähtöpesä</small></h4>${svg}
+    <p class="note">KL%1 = 1-tilanteen purku eli kärkietenijä ykköspesällä, KL%2 = 2-tilanne, KL%3 = kotiutus kolmospesältä, KL%0 = kentällemeno tyhjiltä pesiltä. Korostettu = pelaajan vahvin (väh. 10 yritystä).</p></div>
     ${prosentit(p)}
-    ${svg}
-    <p class="note">Kärkilyöntiprosentti sen pesän mukaan, jolta kärkietenijä lähtee. Hiekanvärinen pesä on pelaajan vahvin (väh. 10 yritystä).</p>
+    ${kehitys(p)}
     ${kuva||logo?`<p class="kred">Kuvat ja logot: pesistulokset.fi</p>`:""}`;
 }
 
