@@ -1,0 +1,178 @@
+<!--TYYLI-->
+<style>
+/* Selitteet: haku + sivukohtaiset osiot. Jokainen termi: lyhenne, nimi, selitys, laskenta, suunta. */
+.jump{display:flex;flex-wrap:wrap;gap:6px}
+.jump a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font:600 .85rem var(--font-display);text-decoration:none}
+.jump a:hover{border-color:var(--accent);color:var(--accent)}
+.search input{width:min(100%,420px);font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.sec{scroll-margin-top:16px}
+.sec .head h3 a{text-decoration:none}
+.sec .head a.more{white-space:nowrap}
+.sec > p{margin:0;color:var(--muted);font-size:.92rem;max-width:80ch}
+dl.terms{margin:0;display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr);border-top:1px solid var(--line)}
+dl.terms dt,dl.terms dd{margin:0;padding:10px 0;border-bottom:1px solid var(--line)}
+dl.terms dt{padding-right:14px}
+dl.terms dt b{display:block;font:700 1.15rem var(--font-display);line-height:1.1}
+dl.terms dt span{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
+dl.terms dd p{margin:0;max-width:78ch}
+dl.terms dd .calc{margin-top:4px;font-size:.84rem;color:var(--muted)}
+dl.terms dd .calc code{font:600 .82rem ui-monospace,Menlo,Consolas,monospace;background:var(--surface-2);border-radius:5px;padding:1px 5px;color:var(--fg)}
+.dir{display:inline-block;margin-left:6px;font:600 .66rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:1px 7px;vertical-align:2px}
+.dir.up{background:color-mix(in srgb,var(--win) 15%,transparent);color:var(--win)}
+.dir.dn{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+.hl{background:color-mix(in srgb,var(--sand) 45%,transparent);border-radius:3px}
+.none{color:var(--muted)}
+@media (max-width:640px){dl.terms{grid-template-columns:minmax(0,1fr)} dl.terms dt{border-bottom:0;padding-bottom:0} dl.terms dd{padding-top:4px}}
+</style>
+<!--SISALTO-->
+<div class="top">
+  <div><h1>Selitteet</h1><p>Mitä sivuston lyhenteet ja mittarit tarkoittavat ja miten ne lasketaan, sivu kerrallaan</p></div>
+</div>
+<div class="search" role="search"><input type="search" id="q" placeholder="Hae termiä, esim. KL%3, päästetyt, torjunta" aria-label="Hae selitteistä"></div>
+<nav class="jump" id="jump" aria-label="Siirry osioon"></nav>
+<div id="sections" class="col"></div>
+<p class="note none" id="ei" hidden>Ei osumia. Kokeile toista hakusanaa.</p>
+
+<!--SKRIPTI-->
+<script>
+/* Sisältö: [id, otsikko, sivu (linkki) tai null, johdanto, termit [[lyhenne, nimi, selitys, laskenta, suunta ("up"=suurempi parempi, "dn"=pienempi parempi, "")]]] */
+const UP="up", DN="dn";
+const S = [
+ ["yleiset","Yleiset tilastotermit",null,"Lyöntitilastojen termit ovat samat kuin pesistulokset.fi:ssä. Ne toistuvat lähes kaikilla sivuilla.",[
+  ["O","Ottelut","Pelatut ottelut. Lukkarisivulla ottelut, jotka pelaaja aloitti lukkarina.","",""],
+  ["K","Kunnarit","Lyöjä pääsee omalla osuneella lyönnillään 3. pesälle, eikä häntä yritetä polttaa välipesille (kunniajuoksu). Kunnarit tilastoidaan vain kappaleina.","",UP],
+  ["L","Lyödyt","Juoksut, jotka lyöjä toi lyönnillään kotiin muista etenijöistä.","",UP],
+  ["T","Tuodut","Juoksut, jotka pelaaja itse juoksi kotipesään.","",UP],
+  ["K+L","Kunnarit + lyödyt","Kunnarit ja lyödyt yhdessä merkinnässä, esim. 2+65 = 2 kunnaria ja 65 lyötyä.","",""],
+  ["YHT","Yhteensä","Pelaajan kokonaispanos juoksuihin.","<code>K + L + T</code>",UP],
+  ["KL","Kärkilyönnit","Onnistuneet kärkilyönnit eli lyönnit, joilla kärkietenijä etenee. Kärkietenijä on pisimmällä oleva etenijä; tyhjillä pesillä lyöjä itse.","",UP],
+  ["KLY","Kärkilyöntiyritykset","Kaikki kärkilyöntiyritykset.","",""],
+  ["KL%","Kärkilyöntiprosentti","Tärkein yksittäinen lyöjän tehokkuusmittari.","<code>KL / KLY × 100</code>",UP],
+  ["KL%0","Kärkilyönti kotipesältä","Tyhjät pesät: lyöjä yrittää itse kentälle (kentällemeno). Numero tarkoittaa aina pesää, jolla kärkietenijä on lyöntihetkellä, ei pesää jolle edetään.","<code>KL0 / KLY0</code>",UP],
+  ["KL%1","Kärkilyönti 1. pesältä","Kärkietenijä ykköspesällä, puhekielessä 1-tilanteen purku.","<code>KL1 / KLY1</code>",UP],
+  ["KL%2","Kärkilyönti 2. pesältä","Kärkietenijä kakkospesällä, puhekielessä 2-tilanteen purku.","<code>KL2 / KLY2</code>",UP],
+  ["KL%3","Kärkilyönti 3. pesältä = kotiutus","Kärkietenijä kolmospesällä: onnistuuko lyöjä tuomaan hänet kotiin. Joukkueilla tätä kutsutaan kotiutusprosentiksi.","<code>KL3 / KLY3</code>",UP],
+  ["LV","Lyöntivuorot","Kuinka monta kertaa pelaaja tuli lyömään.","",""],
+  ["L%","Lyöty-%","Kuinka suuri osa lyöntiyrityksistä toi etenijän kotiin (pesistulokset.fi:n lyötyjen yritykset).","<code>L / L-yritykset × 100</code>",UP],
+  ["T%","Tuotu-%","Kuinka suuri osa pelaajan juoksuyrityksistä päättyi kotipesään.","<code>T / T-yritykset × 100</code>",UP],
+  ["Pieni otos","Alle 10 yritystä","Prosenttiluku alle kymmenestä yrityksestä on epävarma. Sivuilla ne on himmennetty tai jätetty pois vertailuista.","",""],
+  ["Prosenttipiste","1–99","Kuinka suuren osan vertailuryhmästä pelaaja ylittää. 90 = parempi kuin 90 % vertailuryhmästä. Väri punainen = kärki, sininen = heikompi. Mittareissa, joissa pienempi on parempi, asteikko on käännetty.","",""],
+ ]],
+ ["ottelumuoto","Ottelu, jaksot ja sarjapisteet",null,"Superpesiksen ottelu pelataan kahtena jaksona. Tulos kertoo voitetut jaksot.",[
+  ["Jakso","Ottelun puolisko","Kumpikin joukkue lyö kerran kummassakin jaksossa. Jakson voittaa se, joka tekee enemmän juoksuja.","",""],
+  ["2–0, 1–0","Jaksovoitot","2–0 = voitto molemmista jaksoista. 1–0 = toinen jakso voitettiin ja toinen päättyi tasan.","",""],
+  ["SV / S","Supervuoropari","Jos jaksot ovat 1–1, pudotuspeleissä pelataan ensin supervuoropari. S-merkki = ottelu ratkesi supervuoroparissa.","",""],
+  ["KK / K","Kotiutuskilpailu","Tasatilanteen ratkaisu: etenijä on 3. pesällä ja lyöjällä kolme lyöntiä tuoda hänet kotiin. Runkosarjassa 1–1-tilanne ratkaistaan suoraan kotiutuskilpailulla. K-merkki = ottelu ratkesi kotiutuskilpailussa.","",""],
+  ["P","Sarjapisteet","2–0-voitto 3 p, 1–0-voitto 2 p, supervuoropari- tai kotiutuskilpailuvoitto 2 p ja -tappio 1 p, muu tappio 0 p.","",UP],
+  ["Juoksut","Joukkueen tekemät juoksut","Sivuston juoksuluvut eivät sisällä kotiutuskilpailun juoksuja (pesistulokset.fi:n tilastot laskevat ne erikseen).","",""],
+ ]],
+ ["koti","Koti","index.html","Siirtokauden tilannekatsaus ja kauden 2026 kärjet.",[
+  ["Tulleet / lähteneet","Siirtomarkkinat 2027","Joukkueen uudet pelaajat ja lähtijät. Lähteneisiin lasketaan myös lopettaneet ja ne, joiden sopimus ei jatku.","",""],
+  ["Vahvistettu","Varmuus","Seuran tai sarjan tiedote, tai kaksi toisistaan riippumatonta lähdettä.","",""],
+  ["Yksi lähde","Varmuus","Tieto on yhdestä lähteestä, eikä seura ole vielä vahvistanut sitä.","",""],
+  ["Koonti","Varmuus","Tieto on Supervuoron sopimustilannekoonnista; tarkka julkaisupäivä ei ole tiedossa.","",""],
+  ["Huhu","Varmuus","Spekulaatio. Merkitään aina erikseen, eikä sitä lasketa siirroksi.","",""],
+  ["(sija)","Sarja 2027","Suluissa joukkueen sijoitus kaudella 2026.","",""],
+  ["PJ","Pelinjohtaja","Pelinjohtajat 2026 → 2027 ja tiedossa olevat vaihdokset.","",""],
+ ]],
+ ["kausi","Kausi 2026","kausi-2026.html","Päättyneen kauden sarjataulukko, pudotuspelit ja joukkueiden profiilit.",[
+  ["V / H","Voitot / tappiot","Runkosarjan voitot ja tappiot.","",""],
+  ["Pistekulku","Sarjapisteet otteluittain","Pieni käyrä kertyneistä pisteistä kauden mittaan.","",""],
+  ["Vire","5 viimeistä runkosarjaottelua","Vihreä = voitto, punainen = tappio. Vaaleampi sävy = supervuoropari- tai kotiutuskilpailuottelu.","",""],
+  ["Kotiutus%","Joukkueen kotiutusprosentti","Kuinka usein joukkue onnistui tuomaan 3. pesän etenijän kotiin.","<code>KL3 / KLY3</code> joukkueen omista lyönneistä",UP],
+  ["Torjunta%","Joukkueen torjuntaprosentti","Kuinka usein joukkue esti vastustajan kotiutuksen 3. pesältä.","<code>(vastustajan KLY3 − KL3) / vastustajan KLY3</code>",UP],
+  ["Kotiutus vs. torjunta","Nelikenttä","Katkoviivat ovat sarjan keskiarvot: oikealla ylhäällä joukkueet, jotka olivat keskiarvoa parempia sekä kotiutuksessa että torjunnassa. Täytetty pallo = runkosarjan neljä parasta.","",""],
+  ["Jaksot","Juoksut jaksoittain","Tehdyt ja päästetyt juoksut 1. ja 2. jaksossa.","",""],
+ ]],
+ ["joukkueet","Joukkueet","joukkueet.html","Joukkueen kehitys, pelaajat, kokoonpano 2027 ja siirrot.",[
+  ["Kehitys","Kaudet 2023–2026","Palkki = runkosarjan pisteet, viiva = sijoitus. Mitalit pudotuspeleistä.","",""],
+  ["Joukkue vs. sarja","Sijoitus 12 joukkueen joukossa","Joukkueen tunnusluvun sijoitus sarjassa (1. = paras). Päästetyissä pienempi on parempi.","",""],
+  ["Juoksut / ott.","Tehdyt juoksut per ottelu","","<code>juoksut / ottelut</code>",UP],
+  ["Päästetyt / ott.","Vastustajan juoksut per ottelu","","<code>vastustajan juoksut / ottelut</code>",DN],
+  ["Sopimus 2027","Kokoonpano","Pelaajat, joilla on sopimus kaudelle 2027. Pienellä kaudet, joille sopimus on tehty (esim. 2027 tai 2028+2029). Uusi pelaaja on korostettu.","",""],
+  ["Optio","Kokoonpano","Pelaajat, joiden sopimuksessa on optio kaudelle 2027.","",""],
+  ["Ilman sopimusta","Kokoonpano","Kauden 2026 pelaajat, joiden jatkosta ei ole tietoa.","",""],
+ ]],
+ ["pelaajat","Pelaajat","pelaajat.html","Lajiteltava lyöntitilastotaulukko ja pelaajakortti. Näkymät vastaavat vanhan YDINin välilehtiä.",[
+  ["Kausitilastot","Näkymä","O, K+L, T, YHT, KL, KLY ja KL%. Kärkilyönnit pesittäin saa näkyviin valinnasta.","",""],
+  ["Kotiuttajat","Näkymä","Järjestys KL%3:n mukaan eli kuka tuo 3. pesän etenijän kotiin.","",""],
+  ["Kentällemenijät","Näkymä","Järjestys KL%0:n mukaan eli kuka pääsee itse kentälle tyhjiltä pesiltä.","",""],
+  ["Tilanteet","Näkymä","KL%1 ja KL%2 eli 1- ja 2-tilanteiden purku.","",""],
+  ["Onnistuminen","Näkymä","L% ja T%.","",""],
+  ["Pudotuspelit vs. runko","Näkymä","Pelaajan KL% ja YHT per ottelu ylemmässä jatkosarjassa verrattuna saman pelaajan runkosarjaan. Muutos = pudotuspelit − runkosarja.","",""],
+  ["… vähintään","Liukusäädin","Näyttää vain pelaajat, joilla on vähintään valittu määrä näkymän yrityksiä (esim. KLY3 Kotiuttajissa).","",""],
+  ["Pesäkenttä","Pelaajakortti","Kärkilyöntiprosentti sen pesän mukaan, jolta kärkietenijä lähtee. Hiekanvärinen pesä on pelaajan vahvin (väh. 10 yritystä).","",""],
+  ["Prosenttipisteet","Pelaajakortti","Vertailuryhmä: saman sarjavaiheen pelaajat, joilla vähintään 30 KLY.","",""],
+  ["Kehitys","Pelaajakortti","Palkki = YHT, viiva = KL% kausittain 2023–2026.","",""],
+ ]],
+ ["ottelut","Ottelut","ottelut.html","Kauden ottelut päivittäin ja ottelukortti.",[
+  ["2–0","Tulos","Voitetut jaksot. Pienellä jaksojen juoksut, esim. 3–1, 2–0.","",""],
+  ["SV, KK","Jaksoluettelossa","SV = supervuoropari, KK = kotiutuskilpailu.","",""],
+  ["S / K","Merkki ottelurivillä","Ottelu ratkesi supervuoroparissa (S) tai kotiutuskilpailussa (K).","",""],
+  ["Vertailu","Ottelukortti","Joukkueiden juoksut, KL% (KL/KLY), kotiutus% (KL3/KLY3) ja kunnarit samassa ottelussa. Sininen palkki = parempi.","",""],
+  ["Lyöjät","Ottelukortti","Pelaajien K+L, T, YHT, KL/KLY ja LV (lyöntivuorot) ottelussa. Korostettu = joukkueen paras YHT.","",""],
+  ["Kotivoitot","Yhteenveto","Kuinka suuren osan otteluista kotijoukkue voitti.","",""],
+  ["Suurin juoksuero","Yhteenveto","Ottelu, jossa joukkueiden juoksujen ero oli suurin.","",""],
+ ]],
+ ["vire","Vire","vire.html","Joukkueiden ja pelaajien viimeiset ottelut verrattuna koko jaksoon (koko kausi tai runkosarja).",[
+  ["Ikkuna","3 / 5 / 8 ottelua","Kuinka monta viimeisintä ottelua vireeseen lasketaan.","",""],
+  ["Vireluokka","Liekeissä … Kriisi","Voittoprosentti ikkunassa: Liekeissä ≥ 80 %, Hyvässä vireessä ≥ 60 %, Tasainen ≥ 40 %, Haparoiva ≥ 20 %, muuten Kriisi.","",""],
+  ["Otteluruutu","3 p … 0 p, V/H","Runkosarjassa ottelusta saadut sarjapisteet, pudotuspeleissä ja karsinnoissa V = voitto, H = tappio. Ruutu avaa ottelun.","",""],
+  ["Suunta","Juoksuero-muutos","Onko joukkue parantanut vai heikentänyt: juoksuero per ottelu ikkunassa miinus koko jakson juoksuero per ottelu.","<code>(juoksut − päästetyt) / ottelut ikkunassa − sama koko jaksolla</code>",UP],
+  ["Käyrä","Juoksuero otteluittain","Jokaisen ottelun tehdyt miinus päästetyt juoksut. Korostettu alue = ikkuna.","",""],
+  ["Ero","Ikkuna − jakso","Vihreä = parempi kuin koko jaksolla, punainen = heikompi.","",""],
+  ["Nousussa / Laskussa","Pelaajat","Suurin KL%:n muutos ikkunassa verrattuna pelaajan omaan jaksoon. Mukana pelaajat, joilla väh. 10 ottelua ja ikkunassa väh. 10 KLY.","",""],
+ ]],
+ ["lukkarit","Lukkarit","lukkarit.html","Lukkarin otteluihin kohdistettu vastustajan kotiutuspeli. Luvut kuvaavat koko joukkueen puolustusta niissä otteluissa, joissa lukkari aloitti, joten ne eivät ole puhtaasti lukkarin omia.",[
+  ["Lukkari","Kuka lasketaan","Pelaaja, joka aloitti ottelun lukkarin paikalla (pesistulokset.fi:n kokoonpano). Kesken ottelun tehdyt vaihdot eivät näy, joten koko ottelu kirjataan aloittajalle.","",""],
+  ["V–H","Voitot–tappiot","Lukkarin aloittamien otteluiden voitot ja tappiot.","",UP],
+  ["Päästetyt","Päästetyt juoksut per ottelu","Vastustajan juoksut keskimäärin niissä otteluissa, joissa lukkari aloitti. Ei sisällä kotiutuskilpailua. Esim. 4,15 = vastustaja teki keskimäärin 4,15 juoksua ottelussa.","<code>vastustajan juoksut / ottelut</code>",DN],
+  ["3-til.","Kolmostilanteet per ottelu","Vastustajan tilanteet, joissa etenijä oli 3. pesällä. Vähemmän = vastustaja pääsi harvemmin kotiutusasemiin.","<code>vastustajan 3-tilanteet / ottelut</code>",DN],
+  ["KL% v","Vastustajan kärkilyöntiprosentti","Kuinka hyvin vastustajan lyönnit onnistuivat lukkarin otteluissa.","<code>vastustajan KL / KLY</code>",DN],
+  ["KL%0–2 v","Vastustajan KL% pesittäin","Sama pesittäin: 0 = tyhjät pesät (vastustajan kentällemenot), 1 ja 2 = 1- ja 2-tilanteet.","",DN],
+  ["Torj%","Torjuntaprosentti","Kuinka suuri osa vastustajan kotiutusyrityksistä 3. pesältä torjuttiin.","<code>(vastustajan KLY3 − KL3) / KLY3</code>",UP],
+  ["K v / O","Vastustajan kunnarit per ottelu","","",DN],
+  ["Värikoodi","Taulukko","Vihreä = sarjan parempaa puoliskoa, punainen = heikompaa lukkarin kannalta. Mitä voimakkaampi väri, sitä kauempana keskikohdasta.","",""],
+  ["Prosenttipisteet","Lukkarikortti","Vertailuryhmä: saman kauden lukkarit, joilla vähintään 10 ottelua.","",""],
+  ["vs. ka","Lukkarikortti","Ero sarjan kaikkien lukkariotteluiden keskiarvoon.","",""],
+  ["Lukkarikäyttö","Joukkueittain","Montako ottelua kukin lukkari aloitti.","",""],
+  ["Puuttuu","Vapaat ja kärpäset","Lukkarin vapaita (väärät syötöt) ja kärpäsiä ei ole ottelutason tilastoissa, joten niitä ei näytetä.","",""],
+ ]],
+ ["vertailu","Vertailu","vertailu.html","Kaksi joukkuetta tai kaksi pelaajaa rinnakkain. A = sininen, B = hiekka.",[
+  ["Korostus","Vahvempi","Värillinen luku ja täysi palkki = parempi arvo tässä mittarissa.","",""],
+  ["Keskinäiset","Joukkueet","Kauden ottelut joukkueiden välillä: voitot ja yhteenlasketut jaksovoitot.","",""],
+  ["Kaudet","Joukkueet","Runkosarjan sija ja pudotuspelien tulos 2023–2026; parempi sija korostettu.","",""],
+  ["YHT / ottelu","Pelaajat","","<code>YHT / ottelut</code>",UP],
+ ]],
+ ["tulostaulut","Tulostaulut","tulostaulut.html","Top 10 -listat. Tasatilanteessa sama sija.",[
+  ["Rajat","Prosenttilistat","Runkosarja: KL% väh. 100 KLY, pesäkohtaiset väh. 30 yritystä. Koko kausi noin 115 / 35. Kaudet 2023–2026: 300 / 90.","",""],
+  ["+ useita pelaajia","Raja-arvo","Kun moni pelaaja on samassa luvussa listan rajalla, heitä ei listata yksitellen.","",""],
+  ["Yhden ottelun ennätykset","Välilehti","Paras yksittäinen ottelu kaudella. Rivi avaa ottelun.","",""],
+  ["Joukkueet","Välilehti","Runkosarjan KL%, kotiutus%, torjunta%, juoksut ja päästetyt per ottelu sekä kunnarit.","",""],
+ ]],
+ ["lahteet","Lähteet ja päivitys",null,"",[
+  ["pesistulokset.fi","Tilastot","Kaikki tilastot ovat pesistulokset.fi:n julkisista ottelu- ja lyöntivuorotason tilastoista. Lyöntikohtaista tapahtumadataa ei käytetä.","",""],
+  ["Päivitys","Joka ilta","Tilastot päivittyvät automaattisesti joka ilta klo 22.05.","",""],
+  ["Jarvis-seuranta","Siirrot ja uutiset","Siirrot, pelinjohtajat ja huhut kerätään seurojen tiedotteista ja mediasta, ja niiden varmuus merkitään.","",""],
+ ]],
+];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const hl = (s, q) => { const t = esc(s); if(!q) return t; const i = norm(t).indexOf(q); return i<0 ? t : t.slice(0,i)+`<mark class="hl">${t.slice(i,i+q.length)}</mark>`+t.slice(i+q.length); };
+$("jump").innerHTML = S.map(([id,o])=>`<a href="#${id}">${esc(o)}</a>`).join("");
+function render(){
+  const q = norm($("q").value.trim());
+  let n = 0;
+  $("sections").innerHTML = S.map(([id,o,sivu,intro,T])=>{
+    const R = T.filter(t=>!q || norm(t.join(" ")).includes(q) || norm(o).includes(q));
+    if(!R.length) return ""; n += R.length;
+    return `<section class="card sec" id="${id}"><div class="head"><h3>${esc(o)}</h3>${sivu?`<a class="more" href="${sivu}">Avaa sivu →</a>`:""}</div>${intro?`<p>${esc(intro)}</p>`:""}
+      <dl class="terms">${R.map(([l,nm,sel,calc,dir])=>`<dt><b>${hl(l,q)}</b><span>${hl(nm,q)}</span></dt><dd><p>${hl(sel,q)}${dir===UP?`<span class="dir up">suurempi parempi</span>`:dir===DN?`<span class="dir dn">pienempi parempi</span>`:""}</p>${calc?`<div class="calc">Laskenta: ${calc}</div>`:""}</dd>`).join("")}</dl></section>`;
+  }).join("");
+  $("ei").hidden = n>0;
+}
+$("q").addEventListener("input", render);
+render();
+if(location.hash){ const el=document.getElementById(location.hash.slice(1)); if(el) el.scrollIntoView(); }
+</script>

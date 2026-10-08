@@ -367,12 +367,13 @@ IKONIT = {
     "vire": '<path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/>',
     "vertailu": '<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
     "lukkarit": '<circle cx="12" cy="6" r="3"/><path d="M12 9v6M8 21l4-6 4 6M6 12l6-2 6 2"/>',
+    "sanasto": '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M10 8h5"/>',
     "sisalto": '<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/>',
 }
 # (avain, otsikko, tiedosto tai None = tulossa)
 VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("joukkueet", "Joukkueet", "joukkueet.html"),
            ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"), ("vire", "Vire", "vire.html"),
-           ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), None, ("sisalto", "Sisältö", None)]
+           ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), None, ("sanasto", "Selitteet", "sanasto.html"), ("sisalto", "Sisältö", None)]
 
 def nav(nykyinen):
     osat = []
@@ -401,11 +402,13 @@ def rakenna(pohja, data, kohde, otsikko, valikko, haku, paivitetty):
     with open(os.path.join(WEB, "runko.html"), encoding="utf-8") as f:
         runko = f.read()
     tyyli, sisalto, skripti = osat(pohja)
-    korvaa = {"__OTSIKKO__": otsikko, "__TYYLI__": tyyli, "__NAV__": nav(valikko), "__PAIVITETTY__": paivitetty,
+    korvaa = {"__OTSIKKO__": otsikko, "__TYYLI__": tyyli, "__NAV__": nav(valikko), "__PAIVITETTY__": paivitetty, "__AVAIN__": valikko,
               "__HAKU__": js(haku), "__SISALTO__": sisalto, "__SKRIPTI__": skripti.replace("__DATA__", js(data))}
     html = runko
     for k, v in korvaa.items():
         html = html.replace(k, v, 1)
+    if valikko == "sanasto":
+        html = html.replace('<a class="apu"', '<a class="apu pois"', 1)
     os.makedirs(SITE, exist_ok=True)
     with open(os.path.join(SITE, kohde), "w", encoding="utf-8") as f:
         f.write(html)
@@ -435,6 +438,7 @@ def main():
     print("vire.html", rakenna("vire.template.html", vire_data(), "vire.html", "YDIN 2027 Vire", "vire", **yht))
     print("vertailu.html", rakenna("vertailu.template.html", vertailu_data(), "vertailu.html", "YDIN 2027 Vertailu", "vertailu", **yht))
     print("lukkarit.html", rakenna("lukkarit.template.html", lukkarit_data({h[0] for h in haku}), "lukkarit.html", "YDIN 2027 Lukkarit", "lukkarit", **yht))
+    print("sanasto.html", rakenna("sanasto.template.html", {}, "sanasto.html", "YDIN 2027 Selitteet", "sanasto", **yht))
     print([(t["lyh"], t["P"]) for t in k["taulukko"]])
 
 if __name__ == "__main__":
