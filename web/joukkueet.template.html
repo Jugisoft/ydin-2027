@@ -163,7 +163,7 @@ function rank(){
   const m=[
     ["Kotiutus-%",x=>x.kotiutus,1,v=>fi(v)],["Torjunta-%",x=>x.torjunta,1,v=>fi(v)],["KL%",x=>x["KL%"],1,v=>fi(v)],
     ["KL% kotipesältä",x=>x.KLpesat?.[0],1,v=>fi(v)],["KL% 1. pesältä",x=>x.KLpesat?.[1],1,v=>fi(v)],["KL% 2. pesältä",x=>x.KLpesat?.[2],1,v=>fi(v)],["KL% 3. pesältä",x=>x.KLpesat?.[3],1,v=>fi(v)],
-    ["Juoksut / ott.",x=>x.juoksut/x.O,1,v=>fi(v.toFixed(1))],["Päästetyt / ott.",x=>x.paastetyt/x.O,-1,v=>fi(v.toFixed(1))],["Vapaat",x=>x.vapaat,1,v=>v]
+    ["Juoksut / ott.",x=>x.juoksut/x.O,1,v=>fi(v.toFixed(1))],["Päästetyt / ott.",x=>x.paastetyt/x.O,-1,v=>fi(v.toFixed(1))]
   ];
   const n=A.length, HI="#d8323b", LO="#3a63b4";
   $("rank").innerHTML=m.map(([k,f,dir,fmt])=>{const val=f(t); if(val==null) return "";

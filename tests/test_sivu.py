@@ -24,3 +24,15 @@ def test_tulostaulujen_karjet():
     t = sivu.tulostaulut_data(set())
     for nimi, k in t["yksi_karjet"].items():
         assert 0 < len(k["rivit"]) <= 15, nimi
+
+def test_lukkari_kohdistus():
+    from ydin.lukkarit import rivit_kaudelta, KENTAT
+    ott = {5: {"pvm": "2026-06-01T15:00:00Z", "vaihe": 1}}
+    P = [{"match_id": 5, "team_id": 1, "player_id": 77, "defensive_position": "L"},
+         {"match_id": 5, "team_id": 1, "player_id": 78, "defensive_position": "S"},
+         {"match_id": 5, "team_id": 2, "player_id": 88, "defensive_position": "L"}]
+    J = [{"match_id": 5, "team_id": 1, "opponent_team_id": 2, "is_home": 1, "won": 1, "runs_opponent": 3, "pe_total_b3_opponent": 2, "pe_tries_b3_opponent": 5},
+         {"match_id": 5, "team_id": 2, "opponent_team_id": 1, "is_home": 0, "won": 0, "runs_opponent": 6}]
+    R = {r[3]: dict(zip(KENTAT, r)) for r in rivit_kaudelta(ott, {1: "A", 2: "B"}, P, J)}
+    assert R[77]["juoksut_v"] == 3 and R[77]["vs"] == "B" and R[77]["KL3_v"] == 2 and R[77]["KLY3_v"] == 5
+    assert R[88]["juoksut_v"] == 6 and R[88]["voitto"] == 0

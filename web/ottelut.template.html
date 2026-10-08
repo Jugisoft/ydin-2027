@@ -250,8 +250,6 @@ function vertailu(o){
     ["KL%", 100*h[1]/(h[2]||1), 100*v[1]/(v[2]||1), `${pc(h[1],h[2])}<small>${h[1]}/${h[2]}</small>`, `${pc(v[1],v[2])}<small>${v[1]}/${v[2]}</small>`, 1, 100],
     ["Kotiutus% (KL%3)", 100*h[3]/(h[4]||1), 100*v[3]/(v[4]||1), `${pc(h[3],h[4])}<small>${h[3]}/${h[4]}</small>`, `${pc(v[3],v[4])}<small>${v[3]}/${v[4]}</small>`, 1, 100],
     ["Kunnarit", h[5], v[5], h[5], v[5], 1],
-    ["Vapaat", h[6], v[6], h[6], v[6], 0],
-    ["Harhaheitot", h[7], v[7], h[7], v[7], 0],
   ];
   const rows = R.map(([lab,x,y,tx,ty,suunta,max])=>{
     const m = max || Math.max(x,y,1);

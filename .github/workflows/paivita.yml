@@ -31,6 +31,7 @@ jobs:
       - run: python -m pytest -q
       - run: python -m ydin.paivita --kausi ${{ github.event.inputs.kausi || '2026' }}
       - run: python -m ydin.historia
+      - run: python -m ydin.lukkarit
       - name: Tallenna data
         run: |
           git config user.name "ydin-bot"

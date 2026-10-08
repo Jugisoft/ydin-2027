@@ -1,0 +1,376 @@
+<!--TYYLI-->
+<style>
+/* Lukkarit: ohjausrivi, sarjan luvut (tumma nauha), lajiteltava lukkaritaulukko + valitun lukkarin kortti, lukkarikäyttö joukkueittain */
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:4px;width:fit-content;max-width:100%}
+.tabs button{font:600 .95rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:9px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.field{display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--muted)}
+.field input[type=range]{accent-color:var(--accent);width:120px}
+.field output{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600;min-width:2ch}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.st{background:var(--band-card);border-radius:10px;padding:12px;min-width:0}
+.st b{display:block;font:700 1.9rem var(--font-display);line-height:1;font-variant-numeric:tabular-nums}
+.st span{font:600 .68rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--band-muted)}
+.st small{display:block;color:var(--band-muted);font-size:.78rem;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bandhead{display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:4px}
+.bandhead h2{font:700 2rem var(--font-display);line-height:.95;margin:4px 0 0;text-wrap:balance}
+.bandhead p{color:var(--band-muted);font-size:.86rem;margin:0}
+.lgrid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+@media (max-width:1180px){.lgrid{grid-template-columns:minmax(0,1fr)}}
+.tablebox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto;min-width:0}
+table.lt{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.9rem}
+table.lt thead th{background:var(--surface);border-bottom:2px solid var(--fg);text-align:right;padding:0;white-space:nowrap}
+table.lt th button{all:unset;cursor:pointer;display:block;padding:9px 7px;font:600 .78rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+table.lt th button:focus-visible{outline:2px solid var(--accent)}
+table.lt th[aria-sort] button{color:var(--fg)}
+table.lt th[aria-sort="descending"] button::after{content:" ▾";color:var(--accent)}
+table.lt th[aria-sort="ascending"] button::after{content:" ▴";color:var(--accent)}
+table.lt th.grp{font:600 .66rem var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center;padding:6px 4px 0;border-bottom:0}
+table.lt .l{text-align:left}
+table.lt td{padding:7px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.lt tbody tr{cursor:pointer}
+table.lt tbody tr:hover{background:var(--surface-2)}
+table.lt tbody tr.sel{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+table.lt td.rk{color:var(--muted);width:2em}
+table.lt td.nm{font-weight:600}
+table.lt td.nm small{display:block;color:var(--muted);font-weight:500;font-size:.78rem}
+table.lt td.key{font-weight:700}
+table.lt td.sep,table.lt th.sep{border-left:1px solid var(--line)}
+table.lt .pb{display:none}
+.showbases table.lt .pb{display:table-cell}
+.toggle{display:flex;align-items:center;gap:6px;font-size:.88rem;color:var(--muted);cursor:pointer}
+.toggle input{accent-color:var(--accent)}
+.heat{border-radius:5px;padding:2px 6px;display:inline-block;min-width:3.4em}
+.foot{font-size:.8rem;color:var(--muted);padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px 16px}
+/* kortti */
+.lcard{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto}
+@media (max-width:1180px){.lcard{position:static;max-height:none}}
+.ph{display:flex;align-items:center;gap:12px}
+.ph .kuva,.ph .ini{width:68px;height:68px;border-radius:50%;flex:none}
+.ph .kuva{object-fit:cover;object-position:top;background:var(--surface-2);border:2px solid var(--line)}
+.ph .ini{display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font:700 1.4rem var(--font-display)}
+.ph h2{font:700 1.6rem var(--font-display);margin:0;line-height:1.05;text-wrap:balance}
+.ph h2 a{text-decoration:none}
+.ph h2 a:hover{color:var(--accent)}
+.ph .meta{color:var(--muted);font-size:.86rem;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.logo-s{width:18px;height:18px;object-fit:contain}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kpi span{display:block;font:600 .68rem var(--font-display);letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.kpi strong{font:700 1.45rem var(--font-display);font-variant-numeric:tabular-nums}
+.kpi small{display:block;color:var(--muted);font-size:.72rem}
+.sec h4{margin:2px 0 6px;font:700 .95rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sec h4 small{font:600 .66rem var(--font-display);letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.prow{display:grid;grid-template-columns:96px minmax(0,1fr) 46px;align-items:center;gap:8px;font-size:.82rem;margin-bottom:5px}
+.prow .k{font:600 .74rem var(--font-display);letter-spacing:.03em;color:var(--muted);text-align:right;line-height:1.1}
+.prow .tr{position:relative;height:8px;border-radius:4px;background:var(--surface-2)}
+.prow .tr i{position:absolute;inset:0 auto 0 0;border-radius:4px}
+.prow .tr b{position:absolute;top:50%;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;display:grid;place-items:center;font:700 .72rem var(--font-display);color:#fff;border:2px solid var(--surface)}
+.prow .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.prow.na .k,.prow.na .v{opacity:.5}
+.prscale{display:grid;grid-template-columns:96px minmax(0,1fr) 46px;gap:8px;font:600 .62rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.prscale span:nth-child(2){display:flex;justify-content:space-between}
+.pesat{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.pesa{background:var(--surface-2);border-radius:10px;padding:8px;text-align:center}
+.pesa span{display:block;font:600 .64rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pesa b{display:block;font:700 1.25rem var(--font-display);font-variant-numeric:tabular-nums}
+.pesa small{display:block;font-size:.72rem;font-weight:600}
+.pesa small.hyva{color:var(--win)} .pesa small.huono{color:var(--loss)}
+.kchart{width:100%;height:auto;display:block}
+.kchart .bar{fill:var(--sand);opacity:.75}
+.kchart .ln{fill:none;stroke:var(--accent);stroke-width:2}
+.kchart .pt{fill:var(--accent);stroke:var(--surface);stroke-width:2}
+.kchart text{font:600 10.5px var(--font-display);fill:var(--muted)}
+.kchart .vy{fill:var(--fg)} .kchart .vk{fill:var(--accent)}
+.kchart .base{stroke:var(--line)}
+table.mini{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.82rem}
+table.mini th{font:600 .66rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;padding:4px 5px;border-bottom:1px solid var(--line)}
+table.mini td{padding:5px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+table.mini .l{text-align:left}
+table.mini tr:last-child td{border-bottom:0}
+table.mini tr.nyt td{font-weight:700}
+table.mini a{text-decoration:none}
+table.mini a:hover{color:var(--accent);text-decoration:underline}
+.wl{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:5px;font:700 .66rem var(--font-display);color:#fff}
+.wl.w{background:var(--win)} .wl.l{background:var(--loss)}
+/* lukkarikäyttö */
+.kaytto{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.kt{background:var(--surface-2);border-radius:11px;padding:10px 12px;display:flex;flex-direction:column;gap:7px}
+.kt .h{display:flex;align-items:center;gap:8px;font-weight:700}
+.kt .h img{width:22px;height:22px;object-fit:contain}
+.kt .h small{margin-left:auto;font-weight:500;color:var(--muted);font-size:.78rem}
+.stack{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px}
+.stack i{display:block;height:100%}
+.kt ul{list-style:none;margin:0;padding:0;font-size:.84rem;display:flex;flex-direction:column;gap:2px}
+.kt li{display:flex;justify-content:space-between;gap:8px}
+.kt li button{all:unset;cursor:pointer;display:flex;align-items:center;gap:6px}
+.kt li button:hover{color:var(--accent)}
+.kt li button:focus-visible{outline:2px solid var(--accent)}
+.kt li i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.kt li span{color:var(--muted);font-variant-numeric:tabular-nums}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))} .hide-s{display:none} .kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+<!--SISALTO-->
+<div class="top">
+  <div><h1>Lukkarit</h1><p>Miesten Superpesis · lukkarin ottelut ja vastustajan kotiutuspeli hänen syöttäessään</p></div>
+  <span class="pill"><i></i><span id="kuvaus"></span></span>
+</div>
+
+<div class="controls">
+  <div class="tabs" role="group" aria-label="Kausi" id="kaudet"></div>
+  <div class="tabs" role="group" aria-label="Sarjavaihe" id="vaiheet">
+    <button data-v="runko" aria-pressed="true">Runkosarja</button>
+    <button data-v="kaikki" aria-pressed="false">Koko kausi</button>
+  </div>
+  <label class="toggle"><input type="checkbox" id="pesat"> KL% vastaan pesittäin</label>
+  <label class="field">Vähintään otteluita <input type="range" id="minO" min="1" max="20" step="1" value="5"><output id="minOv">5</output></label>
+</div>
+
+<section class="band" aria-label="Sarjan lukkarit">
+  <div class="bandhead"><div><span class="eyebrow" id="bandEye"></span><h2 id="bandTitle"></h2></div><p>Luvut ovat vastustajan kotiutuspeliä niissä otteluissa, joissa lukkari aloitti. Vähemmän päästettyä ja matalampi KL% vastaan on parempi.</p></div>
+  <div class="stats" id="stats"></div>
+</section>
+
+<div class="lgrid">
+  <div class="tablebox" id="tablebox">
+    <table class="lt">
+      <thead><tr id="head"></tr></thead>
+      <tbody id="body"></tbody>
+    </table>
+    <div class="foot"><span id="count"></span><span>Väri: vihreä = sarjan parempaa puoliskoa, punainen = heikompaa (lukkarin kannalta).</span><span>Lähde: pesistulokset.fi</span></div>
+  </div>
+  <aside class="card lcard" id="card" aria-live="polite"></aside>
+</div>
+
+<section class="card">
+  <div class="head"><h3>Lukkarikäyttö joukkueittain</h3><span class="hint" id="kayttoHint"></span></div>
+  <div class="kaytto" id="kaytto"></div>
+</section>
+
+<p class="note">Lukkari = ottelun kokoonpanossa lukkarin paikalla aloittanut pelaaja. Kesken ottelun tehdyt lukkarivaihdot eivät näy datassa, joten koko ottelun puolustusluvut kohdistuvat aloittajalle. Juoksut ilman kotiutuskilpailua. KL%0–KL%3 vastaan = vastustajan kärkilyöntiprosentti sen mukaan, miltä pesältä kärkietenijä lähtee. Torjunta% = vastustajan epäonnistuneet kotiutusyritykset 3. pesältä. Kolmostilanteet = vastustajan tilanteet, joissa etenijä oli 3. pesällä. Lukkarin vapaita ja kärpäsiä ei ole ottelutason datassa.</p>
+
+<!--SKRIPTI-->
+<script>
+const D = __DATA__;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fi = (v,d=1) => v==null||!isFinite(v) ? "–" : v.toFixed(d).replace(".", ",");
+const pct = (a,b) => b ? 100*a/b : null;
+const F = D.kentat, ix = Object.fromEntries(F.map((k,i)=>[k,i]));
+const KAUDET = Object.keys(D.kaudet).map(Number).sort((a,b)=>a-b);
+const LINK = new Set(D.linkit);
+const nimi = id => (D.nimet||{})[String(id)] || "?";
+const lg = t => (D.logot||{})[t];
+
+const st = {k: KAUDET[KAUDET.length-1], v:"runko", min:5, sort:"pv", dir:1, sel:null};
+try{ const s=JSON.parse(localStorage.getItem("ydin-lukkarit")||"{}"); if(KAUDET.includes(s.k)) st.k=s.k; if(s.v) st.v=s.v; }catch(e){}
+try{ const q=new URLSearchParams(location.search).get("l"); if(q) st.sel=+q; }catch(e){}
+const save = () => { try{ localStorage.setItem("ydin-lukkarit", JSON.stringify({k:st.k, v:st.v})); }catch(e){} };
+
+$("kaudet").innerHTML = KAUDET.map(k=>`<button data-k="${k}" aria-pressed="${k===st.k}">${k}</button>`).join("");
+
+/* Rivit -> lukkarikohtaiset summat */
+function rivit(k, v){ return (D.kaudet[k]||[]).filter(r => v==="kaikki" || r[ix.vaihe]===1); }
+const SUM = ["voitto","jaksot","jaksot_v","juoksut_v","j1_v","j2_v","juoksut","KL_v","KLY_v","KL0_v","KLY0_v","KL1_v","KLY1_v","KL2_v","KLY2_v","KL3_v","KLY3_v","kolmos_v","K_v"];
+function summat(R){
+  const M = new Map();
+  for(const r of R){
+    const id = r[ix.lukkari]; let s = M.get(id);
+    if(!s){ s = {id, O:0, jk:{}, ...Object.fromEntries(SUM.map(k=>[k,0]))}; M.set(id,s); }
+    s.O++; s.jk[r[ix.jk]] = (s.jk[r[ix.jk]]||0)+1;
+    for(const k of SUM) s[k] += r[ix[k]];
+  }
+  for(const s of M.values()) johda(s);
+  return [...M.values()];
+}
+function johda(s){
+  s.joukkue = Object.entries(s.jk).sort((a,b)=>b[1]-a[1]).map(x=>x[0]).join(" / ");
+  s.H = s.O - s.voitto; s.vp = pct(s.voitto, s.O);
+  s.pv = s.juoksut_v/s.O; s.p1 = s.j1_v/s.O; s.p2 = s.j2_v/s.O;
+  s.klv = pct(s.KL_v, s.KLY_v);
+  for(let n=0;n<4;n++) s["kl"+n] = pct(s["KL"+n+"_v"], s["KLY"+n+"_v"]);
+  s.torj = s.KLY3_v ? 100*(s.KLY3_v - s.KL3_v)/s.KLY3_v : null;
+  s.kol = s.kolmos_v/s.O; s.kv = s.K_v/s.O;
+  return s;
+}
+function sarja(R){ const s = {id:0, O:0, jk:{}, ...Object.fromEntries(SUM.map(k=>[k,0]))}; for(const r of R){ s.O++; for(const k of SUM) s[k]+=r[ix[k]]; } return johda(s); }
+
+/* Sarakkeet: suunta -1 = pienempi parempi lukkarille */
+const COLS = [
+  {k:"O", t:"O", f:s=>s.O, fmt:s=>s.O, ti:"Ottelut lukkarina"},
+  {k:"vh", t:"V–H", f:s=>s.vp, fmt:s=>`${s.voitto}–${s.H}`, hide:true, ti:"Voitot–tappiot (järjestys voitto%)"},
+  {k:"pv", t:"Päästetyt", f:s=>s.pv, fmt:s=>fi(s.pv,2), dir:-1, key:true, ti:"Vastustajan juoksut / ottelu"},
+  {k:"kol", t:"3-til.", f:s=>s.kol, fmt:s=>fi(s.kol,1), dir:-1, hide:true, ti:"Vastustajan kolmostilanteet / ottelu"},
+  {k:"klv", t:"KL% v", f:s=>s.klv, fmt:s=>fi(s.klv), dir:-1, key:true, sep:true, ti:"Vastustajan kärkilyöntiprosentti"},
+  {k:"kl0", pb:true, t:"KL%0 v", f:s=>s.kl0, fmt:s=>fi(s.kl0), dir:-1, hide:true, ti:"Vastustajan KL% kotipesältä"},
+  {k:"kl1", pb:true, t:"KL%1 v", f:s=>s.kl1, fmt:s=>fi(s.kl1), dir:-1, hide:true, ti:"Vastustajan KL% 1. pesältä"},
+  {k:"kl2", pb:true, t:"KL%2 v", f:s=>s.kl2, fmt:s=>fi(s.kl2), dir:-1, hide:true, ti:"Vastustajan KL% 2. pesältä"},
+  {k:"torj", t:"Torj%", f:s=>s.torj, fmt:s=>fi(s.torj), dir:1, ti:"Torjunta%: vastustajan epäonnistuneet kotiutusyritykset 3. pesältä"},
+  {k:"kv", t:"K v / O", f:s=>s.kv, fmt:s=>fi(s.kv,2), dir:-1, hide:true, ti:"Vastustajan kunnarit / ottelu"},
+];
+const HI = "#1d7a4a", LO = "#c2413a";
+function heat(val, all, dir){
+  if(val==null || !dir) return "";
+  const v = all.filter(x=>x!=null).sort((a,b)=>a-b); if(v.length<4) return "";
+  const r = (v.filter(x=>x<val).length + v.filter(x=>x===val).length/2)/v.length; // 0..1 (pieni -> suuri)
+  const hyva = dir<0 ? 1-r : r, d = Math.abs(hyva-.5)*2;
+  if(d<.25) return "";
+  return `background:color-mix(in srgb, ${hyva>.5?HI:LO} ${Math.round(8+d*22)}%, transparent)`;
+}
+
+let LIST = [], SARJA = null, ALL = [];
+function render(){
+  document.querySelectorAll("#kaudet button").forEach(b=>b.setAttribute("aria-pressed", +b.dataset.k===st.k));
+  document.querySelectorAll("#vaiheet button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.v===st.v));
+  const R = rivit(st.k, st.v);
+  ALL = summat(R); SARJA = sarja(R);
+  LIST = ALL.filter(s=>s.O>=st.min);
+  const c = COLS.find(c=>c.k===st.sort) || COLS[2];
+  LIST.sort((a,b)=> st.dir*((c.f(a)??99)-(c.f(b)??99)) || b.O-a.O);
+  $("kuvaus").textContent = `${st.v==="runko"?"Runkosarja":"Koko kausi"} ${st.k}`;
+  band(R);
+  taulu();
+  if(st.sel==null || !ALL.some(s=>s.id===st.sel)) st.sel = LIST.length ? LIST[0].id : (ALL[0]||{}).id;
+  kortti();
+  kaytto(R);
+}
+
+function band(R){
+  $("bandEye").textContent = `${st.v==="runko"?"Runkosarja":"Koko kausi"} ${st.k}`;
+  $("bandTitle").textContent = `${ALL.length} lukkaria, ${R.length/2|0} ottelua`;
+  const Q = ALL.filter(s=>s.O>=10);
+  const paras = (f,dir)=> Q.slice().sort((a,b)=>dir*(f(a)-f(b)))[0];
+  const a = paras(s=>s.pv,1), b = paras(s=>s.klv,1), c = paras(s=>s.torj,-1);
+  const yksi = Object.values(R.reduce((m,r)=>{ (m[r[ix.jk]] ||= new Set()).add(r[ix.lukkari]); return m; },{})).filter(s=>s.size===1).length;
+  const tiles = [
+    ["Päästetyt / ottelu", fi(SARJA.pv,2), "sarjan keskiarvo"],
+    ["KL% vastaan", fi(SARJA.klv)+" %", "sarjan keskiarvo"],
+    ["Torjunta%", fi(SARJA.torj)+" %", "sarjan keskiarvo"],
+    ["Vähiten päästettyjä", a?fi(a.pv,2):"–", a?`${nimi(a.id)} · ${a.joukkue}`:"väh. 10 ottelua"],
+    ["Matalin KL% vastaan", b?fi(b.klv)+" %":"–", b?`${nimi(b.id)} · ${b.joukkue}`:"väh. 10 ottelua"],
+    ["Yhden lukkarin joukkueet", yksi, "sama aloittaja joka ottelussa"],
+  ];
+  $("stats").innerHTML = tiles.map(([l,v,s])=>`<div class="st"><span>${l}</span><b>${v}</b><small title="${esc(s)}">${esc(s)}</small></div>`).join("");
+}
+
+function taulu(){
+  $("head").innerHTML = `<th class="l"><button tabindex="-1" style="cursor:default">#</button></th><th class="l"><button tabindex="-1" style="cursor:default">Lukkari</button></th>` +
+    COLS.map(c=>{ const s = st.sort===c.k ? (st.dir<0?"descending":"ascending") : null;
+      return `<th class="${c.hide?"hide-s":""} ${c.sep?"sep":""} ${c.pb?"pb":""}" ${s?`aria-sort="${s}"`:""}><button data-s="${c.k}" title="${c.ti||""}${c.dir<0?" · pienempi on parempi":c.dir>0?" · suurempi on parempi":""}">${c.t}</button></th>`; }).join("");
+  const arvot = Object.fromEntries(COLS.map(c=>[c.k, LIST.map(c.f)]));
+  $("body").innerHTML = LIST.length ? LIST.map((s,i)=>`<tr data-id="${s.id}" tabindex="0" class="${s.id===st.sel?"sel":""}">
+    <td class="rk l">${i+1}</td><td class="nm l">${esc(nimi(s.id))}<small>${esc(s.joukkue)}</small></td>
+    ${COLS.map(c=>`<td class="${c.hide?"hide-s":""} ${c.sep?"sep":""} ${c.key?"key":""} ${c.pb?"pb":""}"><span class="heat" style="${heat(c.f(s), arvot[c.k], c.dir)}">${c.fmt(s)}</span></td>`).join("")}</tr>`).join("")
+    : `<tr><td colspan="${COLS.length+2}" class="l" style="padding:20px;color:var(--muted)">Ei lukkareita rajauksella.</td></tr>`;
+  $("count").textContent = `${LIST.length} lukkaria (väh. ${st.min} ottelua)`;
+}
+
+/* Prosenttipisteet sarjan lukkareihin (väh. 10 ottelua) nähden; lukkarin kannalta parempi = korkeampi piste */
+const PCT_HI="#d8323b", PCT_LO="#3a63b4";
+function prosentit(s){
+  const pool = ALL.filter(x=>x.O>=10);
+  const rows = [["Päästetyt / O","pv",-1,x=>fi(x.pv,2)],["KL% vastaan","klv",-1,x=>fi(x.klv)],["KL%0 vastaan","kl0",-1,x=>fi(x.kl0)],["KL%1 vastaan","kl1",-1,x=>fi(x.kl1)],
+    ["KL%2 vastaan","kl2",-1,x=>fi(x.kl2)],["Torjunta%","torj",1,x=>fi(x.torj)],["3-tilanteet / O","kol",-1,x=>fi(x.kol,1)],["Kunnarit v. / O","kv",-1,x=>fi(x.kv,2)],["Voitto%","vp",1,x=>fi(x.vp,0)]];
+  const html = rows.map(([t,k,dir,fmt])=>{
+    const grp = pool.filter(x=>x[k]!=null), val = s[k];
+    if(s.O<10 || grp.length<5 || val==null) return `<div class="prow na"><span class="k">${t}</span><span class="tr"></span><span class="v">${fmt(s)}</span></div>`;
+    const below = grp.filter(x=>dir>0 ? x[k]<val : x[k]>val).length, eq = grp.filter(x=>x[k]===val).length;
+    const pc = Math.max(1, Math.min(99, Math.round(100*(below+eq/2)/grp.length)));
+    const col = `color-mix(in srgb, ${PCT_HI} ${pc}%, ${PCT_LO})`;
+    return `<div class="prow" title="${t}: parempi kuin ${pc} % sarjan lukkareista (${grp.length})"><span class="k">${t}</span><span class="tr"><i style="width:${pc}%;background:${col};opacity:.35"></i><b style="left:${pc}%;background:${col}">${pc}</b></span><span class="v">${fmt(s)}</span></div>`;
+  }).join("");
+  return `<div class="sec"><h4>Prosenttipisteet <small>vertailu: väh. 10 ottelua</small></h4>
+    <div class="prscale"><span></span><span><span>heikko</span><span>keskitaso</span><span>kärki</span></span><span></span></div>${html}
+    ${s.O<10?`<p class="note">Alle 10 ottelua – prosenttipisteitä ei lasketa.</p>`:""}</div>`;
+}
+
+function pesat(s){
+  const P = ["Kotipesältä","1. pesältä","2. pesältä","3. pesältä"];
+  return `<div class="sec"><h4>Vastustajan KL% pesittäin <small>vs. sarjan ka</small></h4><div class="pesat">${P.map((t,n)=>{
+    const v = s["kl"+n], ka = SARJA["kl"+n], e = v!=null&&ka!=null ? v-ka : null, y = s["KLY"+n+"_v"];
+    return `<div class="pesa" title="${s["KL"+n+"_v"]}/${y}"><span>${t}</span><b>${fi(v)}</b><small class="${e==null?"":e<0?"hyva":"huono"}">${e==null?"":(e>0?"+":"")+fi(e)}</small></div>`; }).join("")}</div></div>`;
+}
+
+function kehitys(id){
+  const rows = KAUDET.map(k=>{ const R = rivit(k, st.v).filter(r=>r[ix.lukkari]===id); if(!R.length) return null;
+    const s = summat(R)[0]; s.kausi=k; return s; }).filter(Boolean);
+  if(!rows.length) return "";
+  const W=320,H=150,m={l:8,r:8,t:22,b:22}, n=rows.length, bw=Math.min(40,(W-m.l-m.r)/n*.5);
+  const X=i=>m.l+(i+.5)*(W-m.l-m.r)/n, maxY=Math.max(...rows.map(r=>r.pv),1);
+  const kv=rows.map(r=>r.klv).filter(v=>v!=null), kmin=Math.floor((Math.min(...kv)-4)/2)*2, kmax=Math.ceil((Math.max(...kv)+4)/2)*2;
+  const Yb=v=>H-m.b-v/maxY*(H-m.t-m.b), Yk=v=>H-m.b-(v-kmin)/(kmax-kmin||1)*(H-m.t-m.b);
+  let g=`<line class="base" x1="${m.l}" x2="${W-m.r}" y1="${H-m.b}" y2="${H-m.b}"/>`;
+  rows.forEach((r,i)=>{ g+=`<rect class="bar" x="${X(i)-bw/2}" y="${Yb(r.pv)}" width="${bw}" height="${H-m.b-Yb(r.pv)}" rx="3"/><text class="vy" x="${X(i)}" y="${H-m.b-5}" text-anchor="middle">${fi(r.pv,1)}</text><text x="${X(i)}" y="${H-6}" text-anchor="middle">${r.kausi}</text>`; });
+  const pts=rows.map((r,i)=>r.klv==null?null:[X(i),Yk(r.klv),r.klv]).filter(Boolean);
+  if(pts.length>1) g+=`<path class="ln" d="M${pts.map(q=>q[0].toFixed(1)+" "+q[1].toFixed(1)).join(" L")}"/>`;
+  pts.forEach(q=>{ g+=`<circle class="pt" cx="${q[0]}" cy="${q[1]}" r="4"/><text class="vk" x="${q[0]+6}" y="${q[1]-6}">${fi(q[2])}</text>`; });
+  const lyo = k => { const r=(((D.lyonti||{})[k]||{})[st.v]||{})[String(id)]; if(!r) return null; const o=Object.fromEntries(D.hkentat.map((h,i)=>[h,r[i]])); return o; };
+  const tab = rows.slice().reverse().map(r=>{ const b=lyo(r.kausi); return `<tr class="${r.kausi===st.k?"nyt":""}"><td class="l">${r.kausi}</td><td class="l">${esc(r.joukkue)}</td><td>${r.O}</td><td>${r.voitto}–${r.H}</td><td>${fi(r.pv,2)}</td><td>${fi(r.klv)}</td><td>${fi(r.torj)}</td><td>${b?`${b.K}+${b.L} / ${b.T}`:"–"}</td></tr>`; }).join("");
+  return `<div class="sec"><h4>Kehitys <small>palkki päästetyt / O, viiva KL% vastaan</small></h4>
+    <svg class="kchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Päästetyt juoksut ja KL% vastaan kausittain">${g}</svg>
+    <div style="overflow-x:auto"><table class="mini"><thead><tr><th class="l">Kausi</th><th class="l">Jk</th><th>O</th><th>V–H</th><th title="Päästetyt / ottelu">Päästetyt</th><th title="Vastustajan KL%">KL% v</th><th>Torj%</th><th title="Oma lyönti: K+L / T">Lyönti</th></tr></thead><tbody>${tab}</tbody></table></div></div>`;
+}
+
+function loki(id){
+  const R = rivit(st.k, st.v).filter(r=>r[ix.lukkari]===id).slice().reverse();
+  if(!R.length) return "";
+  const nyt = st.k===D.kausi;
+  const pv = s => { const [y,m,d]=s.split("-"); return `${+d}.${+m}.`; };
+  const rows = R.slice(0,12).map(r=>{
+    const w = r[ix.voitto], kl = pct(r[ix.KL_v], r[ix.KLY_v]);
+    const vs = `${r[ix.koti]?"":"@ "}${esc(r[ix.vs])}`;
+    return `<tr><td class="l">${pv(r[ix.pvm])}</td><td class="l">${nyt?`<a href="ottelut.html?o=${r[ix.ottelu]}">${vs}</a>`:vs}</td><td><span class="wl ${w?"w":"l"}">${w?"V":"H"}</span></td><td>${r[ix.jaksot]}–${r[ix.jaksot_v]}</td><td>${r[ix.juoksut_v]}</td><td>${fi(kl)}</td><td>${r[ix.KL3_v]}/${r[ix.KLY3_v]}</td></tr>`;
+  }).join("");
+  return `<div class="sec"><h4>Viimeisimmät ottelut <small>${R.length>12?`12 / ${R.length}`:`${R.length} ottelua`}</small></h4>
+    <div style="overflow-x:auto"><table class="mini"><thead><tr><th class="l">Pvm</th><th class="l">Vastustaja</th><th></th><th>Jaksot</th><th title="Päästetyt juoksut">Päästetyt</th><th title="Vastustajan KL%">KL% v</th><th title="Vastustajan kotiutukset 3. pesältä">KL3 v</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+function kortti(){
+  const s = ALL.find(x=>x.id===st.sel);
+  if(!s){ $("card").innerHTML = `<p class="note">Valitse lukkari taulukosta.</p>`; return; }
+  const kuva = (D.kuvat||{})[String(s.id)], jk = Object.keys(s.jk).sort((a,b)=>s.jk[b]-s.jk[a])[0];
+  const ini = esc(nimi(s.id).split(" ").map(x=>x[0]).slice(0,2).join(""));
+  const nm = LINK.has(s.id) ? `<a href="pelaajat.html?p=${s.id}" title="Avaa pelaajakortti">${esc(nimi(s.id))}</a>` : esc(nimi(s.id));
+  const e = (a,b,d=2) => { const x=a-b; return `${x>0?"+":""}${fi(x,d)} vs. ka`; };
+  $("card").innerHTML = `<div class="ph">${kuva?`<img class="kuva" src="${kuva}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;ini&quot;>${ini}</span>'">`:`<span class="ini">${ini}</span>`}
+      <div><h2>${nm}</h2><div class="meta">${lg(jk)?`<img class="logo-s" src="${lg(jk)}" alt="">`:""}${esc(s.joukkue)} · lukkari ${st.v==="runko"?"runkosarja":"koko kausi"} ${st.k}</div></div></div>
+    <div class="kpis">
+      <div class="kpi"><span>Ottelut</span><strong>${s.O}</strong><small>${s.voitto}–${s.H}</small></div>
+      <div class="kpi"><span>Päästetyt</span><strong>${fi(s.pv,2)}</strong><small>${e(s.pv,SARJA.pv)}</small></div>
+      <div class="kpi"><span>KL% v</span><strong>${fi(s.klv)}</strong><small>${e(s.klv,SARJA.klv,1)}</small></div>
+      <div class="kpi"><span>Torjunta%</span><strong>${fi(s.torj)}</strong><small>${e(s.torj,SARJA.torj,1)}</small></div>
+    </div>
+    ${prosentit(s)}
+    ${pesat(s)}
+    ${kehitys(s.id)}
+    ${loki(s.id)}
+    ${kuva||lg(jk)?`<p class="note">Kuvat ja logot: pesistulokset.fi</p>`:""}`;
+}
+
+const VARIT = ["var(--accent)","var(--sand)","#3a8f7a","#8a5cc2","var(--muted)"];
+function kaytto(R){
+  const T = {};
+  for(const r of R){ const t=r[ix.jk]; (T[t] ||= new Map()); const m=T[t]; m.set(r[ix.lukkari], (m.get(r[ix.lukkari])||0)+1); }
+  const tiimit = Object.keys(T).sort((a,b)=>T[a].size-T[b].size || a.localeCompare(b,"fi"));
+  $("kayttoHint").textContent = "Aloitukset lukkarina · klikkaa nimeä";
+  $("kaytto").innerHTML = tiimit.map(t=>{
+    const L = [...T[t].entries()].sort((a,b)=>b[1]-a[1]), n = L.reduce((x,y)=>x+y[1],0);
+    return `<div class="kt"><div class="h">${lg(t)?`<img src="${lg(t)}" alt="">`:""}${esc(t)}<small>${L.length} lukkari${L.length>1?"a":""} · ${n} ott.</small></div>
+      <div class="stack">${L.map(([id,c],i)=>`<i style="width:${100*c/n}%;background:${VARIT[Math.min(i,4)]}" title="${esc(nimi(id))} ${c}"></i>`).join("")}</div>
+      <ul>${L.map(([id,c],i)=>`<li><button data-id="${id}"><i style="background:${VARIT[Math.min(i,4)]}"></i>${esc(nimi(id))}</button><span>${c}</span></li>`).join("")}</ul></div>`;
+  }).join("");
+}
+
+const valitse = id => { st.sel=+id; if(!LIST.some(s=>s.id===st.sel)){ const s=ALL.find(x=>x.id===st.sel); if(s && s.O<st.min){ st.min=s.O; $("minO").value=s.O; $("minOv").textContent=s.O; } } render();
+  if(window.innerWidth<1180) $("card").scrollIntoView({behavior:"smooth",block:"start"}); };
+$("kaudet").addEventListener("click",e=>{const b=e.target.closest("button[data-k]"); if(!b) return; st.k=+b.dataset.k; save(); render();});
+$("vaiheet").addEventListener("click",e=>{const b=e.target.closest("button[data-v]"); if(!b) return; st.v=b.dataset.v; save(); render();});
+$("pesat").addEventListener("change",e=>$("tablebox").classList.toggle("showbases",e.target.checked));
+$("minO").addEventListener("input",e=>{st.min=+e.target.value; $("minOv").textContent=st.min; render();});
+$("head").addEventListener("click",e=>{const b=e.target.closest("button[data-s]"); if(!b) return; const c=COLS.find(x=>x.k===b.dataset.s);
+  if(st.sort===c.k) st.dir*=-1; else { st.sort=c.k; st.dir = c.dir<0 ? 1 : -1; } render();});
+$("body").addEventListener("click",e=>{const tr=e.target.closest("tr[data-id]"); if(tr) valitse(tr.dataset.id);});
+$("body").addEventListener("keydown",e=>{ if(e.key==="Enter"){ const tr=e.target.closest("tr[data-id]"); if(tr) valitse(tr.dataset.id);} });
+$("kaytto").addEventListener("click",e=>{const b=e.target.closest("button[data-id]"); if(b) valitse(b.dataset.id);});
+render();
+</script>

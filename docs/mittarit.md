@@ -20,7 +20,21 @@ Lähde: pesistulokset.fi stats-tool, ottelukohtaiset rivit (`stats-tool/players`
 | torjunta% | (pe_tries_b3_opponent − pe_total_b3_opponent) / pe_tries_b3_opponent |
 | KL%, KL%0–3 | pe_total(_bn) / pe_tries_total (pe_tries_bn) |
 | juoksut jaksoittain | runs_p0–p3 (+ _opponent) |
-| vapaat, harhaheitot | walks, wild_throws (+ _opponent) |
+| (walks, wild_throws) | **Ei käytössä.** `walks` ei ole lukkarin vapaat (vain 0–3 per joukkue per kausi, oikeita vapaita ~3 per ottelu). `wild_throws`-kentän suunta (heittänyt vai hyötynyt joukkue) varmistamatta. |
+
+## Lukkari
+Lähde: pelaajarivin `defensive_position` = "L" (tasan yksi per joukkue per ottelu, ottelun kokoonpano). Lukkarille kohdistetaan joukkueen ottelukohtaiset `*_opponent`-luvut. Kesken ottelun tehdyt vaihdot eivät näy.
+
+| Mittari | Laskenta |
+| --- | --- |
+| O, V–H | lukkarin aloittamat ottelut, `won` |
+| Päästetyt / O | runs_opponent / O (ilman kotiutuskilpailua); jaksoittain runs_p0/p1_opponent |
+| KL% v, KL%0–2 v | pe_total(_bn)_opponent / pe_tries(_bn)_opponent |
+| Torjunta% | (pe_tries_b3_opponent − pe_total_b3_opponent) / pe_tries_b3_opponent |
+| 3-tilanteet / O | rab3_opponent / O (vastustajan tilanteet, joissa etenijä 3. pesällä; ≥ KLY3) |
+| K v / O | homeruns_opponent / O |
+
+Ei saatavilla ilman tapahtumadataa: lukkarin vapaat (väärät syötöt, 0-tilanne/kolmostilanne/täydet pesät) ja kärpäset.
 
 ## Validointi
 - 3.10.2026: kausi 2026 runkosarja, 196 pelaajaa – 195 täsmää viralliseen kausisummaan (O, K, L, T, KL, KLY, KL3, KLY3); 1 ero korjattu (O = matches-kenttä).

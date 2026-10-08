@@ -277,6 +277,28 @@ def tulostaulut_data(haku_idt):
             "linkit": sorted(haku_idt & kaikki_id),
             "kuvat": {str(p): kuvat["pelaajat"][str(p)] for p in kaikki_id if str(p) in kuvat["pelaajat"]}, "logot": kuvat["logot"]}
 
+def lukkarit_data(haku_idt):
+    """Lukkarit-sivu: aloittavan lukkarin ottelurivit kausilta 2023– (ks. ydin/lukkarit.py) + lukkareiden omat lyöntitilastot."""
+    kaudet, kentat, nimet, pids = {}, None, {}, set()
+    for k in range(KAUSI - 10, KAUSI + 1):
+        try:
+            d = lue(f"lukkarit_{k}.json")
+        except FileNotFoundError:
+            continue
+        kaudet[k] = d["rivit"]; kentat = d["kentat"]; nimet.update(d["nimet"])
+        pids |= {r[3] for r in d["rivit"]}
+    lyonti = {}
+    for k in kaudet:
+        try:
+            h = lue(f"historia_{k}.json")
+        except FileNotFoundError:
+            continue
+        lyonti[k] = {laji: {pid: r for pid, r in h[laji].items() if int(pid) in pids} for laji in ("runko", "kaikki")}
+    kuvat = lue_kuvat()
+    return {"kausi": KAUSI, "kentat": kentat, "kaudet": kaudet, "nimet": nimet, "lyonti": lyonti, "hkentat": ["jk"] + HKENTAT,
+            "linkit": sorted(haku_idt & pids), "kuvat": {str(p): kuvat["pelaajat"][str(p)] for p in pids if str(p) in kuvat["pelaajat"]},
+            "logot": kuvat["logot"]}
+
 HKENTAT = ["O", "K", "L", "T", "KL", "KLY", "KL0", "KLY0", "KL1", "KLY1", "KL2", "KLY2", "KL3", "KLY3"]
 
 def lue_kuvat():
@@ -292,12 +314,13 @@ IKONIT = {
     "ottelut": '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
     "joukkueet": '<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/>',
     "tulostaulut": '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',
+    "lukkarit": '<circle cx="12" cy="6" r="3"/><path d="M12 9v6M8 21l4-6 4 6M6 12l6-2 6 2"/>',
     "sisalto": '<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/>',
 }
 # (avain, otsikko, tiedosto tai None = tulossa)
 VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("joukkueet", "Joukkueet", "joukkueet.html"),
            ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"),
-           ("tulostaulut", "Tulostaulut", "tulostaulut.html"), None, ("sisalto", "Sisältö", None)]
+           ("lukkarit", "Lukkarit", "lukkarit.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), None, ("sisalto", "Sisältö", None)]
 
 def nav(nykyinen):
     osat = []
@@ -357,6 +380,7 @@ def main():
     print("pelaajat.html", rakenna("pelaajat.template.html", pd, "pelaajat.html", "YDIN 2027 Pelaajat", "pelaajat", **yht))
     print("ottelut.html", rakenna("ottelut.template.html", ottelut_data(), "ottelut.html", "YDIN 2027 Ottelut", "ottelut", **yht))
     print("tulostaulut.html", rakenna("tulostaulut.template.html", tulostaulut_data({h[0] for h in haku}), "tulostaulut.html", "YDIN 2027 Tulostaulut", "tulostaulut", **yht))
+    print("lukkarit.html", rakenna("lukkarit.template.html", lukkarit_data({h[0] for h in haku}), "lukkarit.html", "YDIN 2027 Lukkarit", "lukkarit", **yht))
     print([(t["lyh"], t["P"]) for t in k["taulukko"]])
 
 if __name__ == "__main__":
