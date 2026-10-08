@@ -60,7 +60,9 @@ def koti_data(vientipolku=SEURANTA):
                          "kotiutus": j["kotiutus%"], "torjunta": j["torjunta%"], "KL%": j["KL%"],
                          "j1": [j["runs_p0"], j["runs_p0_opponent"]], "j2": [j["runs_p1"], j["runs_p1_opponent"]],
                          "vapaat": j["walks"], "harhaheitot": j["wild_throws"],
-                         "vapaat_v": j["walks_opponent"], "KLpesat": [j.get(f"KL%{n}") for n in range(4)]})
+                         "vapaat_v": j["walks_opponent"], "KLpesat": [j.get(f"KL%{n}") for n in range(4)],
+                         # pesät: [oma KL, oma KLY, vastustajan KL, vastustajan KLY] lähtöpesittäin 0–3
+                         "pesat": [[j[f"pe_total_b{n}"], j[f"pe_tries_b{n}"], j[f"pe_total_b{n}_opponent"], j[f"pe_tries_b{n}_opponent"]] for n in range(4)]})
     taulukko.sort(key=lambda x: (-x["P"], -x["V"]))
 
     # pudotuspelit ja karsinnat

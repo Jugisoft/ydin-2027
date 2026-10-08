@@ -88,6 +88,11 @@ table.t tr.nyt td{font-weight:700}
     </div>
     <div class="col">
       <section class="card">
+        <div class="head"><h3>Pesäväleittäin 2026</h3><span class="teamchips" id="kenttaTab" role="group" aria-label="Sisä- vai ulkopeli"><button data-k="sisa" aria-pressed="true">Sisäpeli</button><button data-k="ulko" aria-pressed="false">Ulkopeli</button></span></div>
+        <div id="kentta"></div>
+        <p class="note" id="kenttaNote"></p>
+      </section>
+      <section class="card">
         <div class="head"><h3>Joukkue vs. sarja 2026</h3><span class="hint">Sijoitus 12 joukkueen joukossa</span></div>
         <div class="rk" id="rank"></div>
       </section>
@@ -187,7 +192,25 @@ function siirrot(){
   $("io").innerHTML = `<div><h4 class="in">Tulleet (${sis.length})</h4><ul>${sis.map(r=>li(r,"← "+r[2])).join("")||"<li><small>Ei vielä</small></li>"}</ul></div>
     <div><h4 class="out">Lähteneet (${ulos.length})</h4><ul>${ulos.map(r=>li(r,"→ "+dest(r))).join("")||"<li><small>Ei vielä</small></li>"}</ul></div>`;
 }
-function render(){ picker(); hero(); kehitys(); pelaajat(); rank(); kokoonpano(); siirrot(); document.title=`YDIN 2027 ${T}`; }
+let KMODE="sisa";
+function kentta(){
+  document.querySelectorAll("#kenttaTab button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===KMODE));
+  const A=D.taulukko, t=A.find(x=>x.lyh===T);
+  if(!t || !t.pesat){ $("kentta").innerHTML=`<div class="empty"><b>Ei kenttätilastoja</b>Joukkue ei pelannut Superpesistä 2026.</div>`; $("kenttaNote").textContent=""; return; }
+  const sisa = KMODE==="sisa", nimet=["kentällemeno","1-tilanne","2-tilanne","kotiutus"];
+  const arvo = (x,n) => { const p=x.pesat[n]; return sisa ? (p[1]?100*p[0]/p[1]:null) : (p[3]?100*(p[3]-p[2])/p[3]:null); };
+  const vals=[0,1,2,3].map(n=>arvo(t,n)), best=Math.max(...vals.filter(v=>v!=null));
+  const L=[0,1,2,3].map(n=>{ const v=vals[n], sarja=A.map(x=>arvo(x,n)).filter(v=>v!=null), ka=sarja.reduce((a,b)=>a+b,0)/sarja.length;
+    const sij=1+sarja.filter(x=>x>v).length, e=v-ka, p=t.pesat[n];
+    const maara = sisa ? `${p[0]}/${p[1]}` : `${p[3]-p[2]}/${p[3]} torjuttu`;
+    return {k:(sisa?"KL%":"TORJ%")+n, t:nimet[n], v, hot:v===best, sub:`${sij}. sarjassa · ${e>0?"+":""}${e.toFixed(1).replace(".",",")} vs ka`, subCls: e>=0?"ero-plus":"ero-miinus", title:maara}; });
+  $("kentta").innerHTML = window.YDIN_KENTTA(L, `${T} ${sisa?"sisäpeli":"ulkopeli"} pesäväleittäin`);
+  $("kenttaNote").textContent = sisa
+    ? `Sisäpeli: ${T}:n kärkilyöntiprosentti sen mukaan, miltä pesältä kärkietenijä lähtee (KL%0 kentällemeno, KL%1 1-tilanne, KL%2 2-tilanne, KL%3 kotiutus). Alla sija 12 joukkueen joukossa ja ero sarjan keskiarvoon. Korostettu = joukkueen vahvin.`
+    : `Ulkopeli: kuinka suuren osan vastustajan kärkilyöntiyrityksistä ${T} torjui kussakin tilanteessa (TORJ%3 = torjunta% kolmospesältä). Suurempi on parempi. Alla sija ja ero sarjan keskiarvoon. Korostettu = joukkueen vahvin.`;
+}
+$("kenttaTab").addEventListener("click",e=>{const b=e.target.closest("button[data-k]"); if(!b) return; KMODE=b.dataset.k; kentta();});
+function render(){ picker(); hero(); kehitys(); pelaajat(); kentta(); rank(); kokoonpano(); siirrot(); document.title=`YDIN 2027 ${T}`; }
 $("picker").addEventListener("click",e=>{const b=e.target.closest("button[data-t]"); if(!b) return; T=b.dataset.t; try{localStorage.setItem("ydin-joukkue",T); history.replaceState(null,"","?t="+T);}catch(_){} render();});
 render();
 </script>

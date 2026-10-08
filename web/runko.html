@@ -66,6 +66,26 @@ button{font:inherit;color:inherit}
 .apu:hover{background:var(--accent);color:var(--on-accent)}
 .apu.pois{display:none}
 
+
+/* Yhteinen pesäpallokenttä (YDIN_KENTTA): Jugin YDIN 2026 -kenttäkuvan geometria. Laatikot pesävälien keskellä. */
+.kentta-svg{width:100%;height:auto;display:block}
+.kentta-svg .kentta{fill:color-mix(in srgb,var(--sand) 26%,var(--surface))}
+.kentta-svg .raja,.kentta-svg .linja{fill:none;stroke:var(--surface);stroke-width:4;stroke-linejoin:round}
+.kentta-svg .linja{stroke-width:3}
+.kentta-svg .kp{fill:color-mix(in srgb,var(--sand) 26%,var(--surface));stroke:var(--surface);stroke-width:4}
+.kentta-svg .kpk{fill:none;stroke:var(--surface);stroke-width:3}
+.kentta-svg .pesa{fill:var(--surface);stroke:var(--muted);stroke-width:1.5}
+.kentta-svg .lautanen{fill:var(--fg)}
+.kentta-svg .paluu{fill:none;stroke:var(--muted);stroke-width:2;stroke-dasharray:5 6;opacity:.7}
+.kentta-svg .chip rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.kentta-svg .chip.hot rect{fill:var(--sand-soft);stroke:var(--sand);stroke-width:2.5}
+.kentta-svg .chip.pieni{opacity:.6}
+.kentta-svg .lbl{font:600 11.5px var(--font-body);fill:var(--muted)}
+.kentta-svg .lbl .k{font:700 13px var(--font-display);fill:var(--accent);letter-spacing:.02em}
+.kentta-svg .pct{font:700 27px var(--font-display);fill:var(--fg)}
+.kentta-svg .cnt{font:500 11px var(--font-body);fill:var(--muted)}
+.kentta-svg .cnt.ero-plus{fill:var(--win);font-weight:700} .kentta-svg .cnt.ero-miinus{fill:var(--loss);font-weight:700}
+
 /* Yhteiset rakennuspalikat */
 .top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
 .top h1{font:700 2.1rem var(--font-display);margin:0;line-height:1}
@@ -143,6 +163,23 @@ __SISALTO__
 </div>
 <script>
 window.YDIN_HAKU = __HAKU__;
+/* YDIN_KENTTA(laatikot, otsikko): laatikot = [{k:"KL%1", t:"1-tilanne", v:56.2, sub:"50/89", hot:bool, pieni:bool, subCls:""}] järjestyksessä 0 koti–1, 1 1–2, 2 2–3, 3 3–koti */
+window.YDIN_KENTTA = function(L, aria){
+  const P=[{x:142,y:584},{x:228,y:432},{x:190,y:352},{x:12,y:452}];
+  const f=v=>v==null?"–":v.toFixed(1).replace(".",",")+" %";
+  return `<svg class="kentta-svg" viewBox="-56 268 426 440" role="img" aria-label="${aria||"Pesäpallokenttä"}">
+    <path class="kentta" d="M25 236 L25 495 L152 655 L198 655 L358 405 L358 236 Z"/>
+    <path class="raja" d="M25 236 L25 495 L152 655 M198 655 L358 405 L358 236"/><path class="raja" d="M136 655 L370 655"/>
+    <path class="kp" d="M146 655 A44 44 0 0 0 234 655 Z"/><path class="kpk" d="M158 655 A32 32 0 0 0 222 655"/>
+    <path class="linja" d="M25 352 L358 352 M100 507 L358 352 M25 400 L190 655"/><path class="paluu" d="M14 360 L12 498 L140 664 L172 676"/>
+    <path class="pesa" d="M25 335 A17 17 0 0 1 25 369 Z"/><path class="pesa" d="M358 335 A17 17 0 0 0 358 369 Z"/>
+    <circle class="pesa" cx="100" cy="507" r="11"/><circle class="lautanen" cx="190" cy="655" r="7"/>
+    ${L.map((b,i)=>{const p=P[i]; return `<g class="chip ${b.hot?"hot":""} ${b.pieni?"pieni":""}"><rect x="${p.x-64}" y="${p.y-33}" width="128" height="66" rx="10"/>
+      <text class="lbl" x="${p.x}" y="${p.y-15}" text-anchor="middle"><tspan class="k">${b.k}</tspan> ${b.t}</text>
+      <text class="pct" x="${p.x}" y="${p.y+11}" text-anchor="middle">${f(b.v)}</text>
+      <text class="cnt ${b.subCls||""}" x="${p.x}" y="${p.y+26}" text-anchor="middle">${b.sub||""}</text></g>`}).join("")}
+  </svg>`;
+};
 (function(){
   const b=document.getElementById("menubtn"), side=b && b.closest(".side"); if(!b) return;
   const cur=document.querySelector('.nav a[aria-current="page"]');
