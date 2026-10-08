@@ -1,0 +1,180 @@
+<!--TYYLI-->
+<style>
+/* Tulostaulut: välilehdet (aikajänne) ja ruudukko Top 10 -listoja */
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:4px;width:fit-content;max-width:100%}
+.tabs button{font:600 .95rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:9px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.controls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.boards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr));gap:16px;align-items:start}
+.lb{gap:8px}
+.lb .head h3{font-size:1.05rem}
+.lb .head .hint{font-size:.74rem}
+.lbl{display:flex;flex-direction:column}
+.r{display:grid;grid-template-columns:22px 34px minmax(0,1fr) auto;gap:9px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit}
+.r:last-child{border-bottom:0}
+a.r:hover{background:var(--surface-2)}
+.r .n{font:700 .9rem var(--font-display);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.r .av{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:top;background:var(--surface-2);display:grid;place-items:center;font:700 .78rem var(--font-display);color:var(--accent)}
+.r .av.logo{object-fit:contain;border-radius:8px;background:none}
+.r .who{min-width:0;line-height:1.2}
+.r .who b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .who small{color:var(--muted);font-size:.78rem;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r .who small img{width:14px;height:14px;object-fit:contain}
+.r .val{font:700 1.3rem var(--font-display);font-variant-numeric:tabular-nums;text-align:right;line-height:1}
+.r .val small{display:block;font:500 .72rem var(--font-body);color:var(--muted);margin-top:2px}
+.r.first{padding-block:9px}
+.r.first .val{font-size:1.75rem;color:var(--accent)}
+.r.first .av{width:42px;height:42px}
+.r.first{grid-template-columns:22px 42px minmax(0,1fr) auto}
+.r.me{background:var(--accent-soft)}
+.tie{font-size:.78rem;color:var(--muted);padding:8px 0 0 31px}
+</style>
+<!--SISALTO-->
+<div class="top">
+  <div><h1>Tulostaulut</h1><p>Miesten Superpesiksen kärjet · klikkaa pelaajaa avataksesi pelaajakortin</p></div>
+  <span class="pill"><i></i><span id="kuvaus"></span></span>
+</div>
+
+<div class="controls">
+  <div class="tabs" role="group" aria-label="Aikajänne" id="tabs">
+    <button data-v="runko" aria-pressed="true">Runkosarja</button>
+    <button data-v="kausi" aria-pressed="false">Koko kausi</button>
+    <button data-v="ura" aria-pressed="false" id="uraBtn">Kaudet</button>
+    <button data-v="yksi" aria-pressed="false">Yhden ottelun ennätykset</button>
+    <button data-v="joukkueet" aria-pressed="false">Joukkueet</button>
+  </div>
+</div>
+<div class="teamchips" id="chips" role="group" aria-label="Joukkue"></div>
+
+<section class="boards" id="boards" aria-live="polite"></section>
+<p class="note" id="foot"></p>
+
+<!--SKRIPTI-->
+<script>
+const D = __DATA__;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fi = v => String(v).replace(".", ",");
+const pct = (a,b) => b ? 100*a/b : null;
+const LINK = new Set(D.linkit);
+const K0 = D.kaudet[0], K1 = D.kaudet[D.kaudet.length-1];
+$("uraBtn").textContent = `Kaudet ${K0}–${K1}`;
+
+const obj = r => { const o = Object.fromEntries(D.kentat.map((k,i)=>[k,r[i]])); o.YHT=o.K+o.L+o.T; if(r.length>D.kentat.length) o.kaudet=r[D.kentat.length]; return o; };
+const SETIT = { runko: D.runko.map(obj), kausi: D.kausi_kaikki.map(obj), ura: D.ura.map(obj) };
+// Yhden ottelun rivit: [id, nimi, jk, vastustaja, ottelu, pvm, vaihe, K, L, T, KL, KLY]
+const YKSI = D.yksi.map(([id,nimi,jk,vs,ottelu,pvm,vaihe,K,L,T,KL,KLY])=>({id,nimi,jk,vs,ottelu,pvm,vaihe,K,L,T,KL,KLY,YHT:K+L+T}));
+
+const st = {v:"runko", jk:null};
+try{ const s=localStorage.getItem("ydin-tulostaulut"); if(s && ["runko","kausi","ura","yksi","joukkueet"].includes(s)) st.v=s; }catch(e){}
+
+const av = p => { const u=(D.kuvat||{})[String(p.id)]; const ini=esc(p.nimi.split(" ").map(x=>x[0]).slice(0,2).join(""));
+  return u ? `<img class="av" src="${u}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;av&quot;>${ini}</span>'">` : `<span class="av">${ini}</span>`; };
+const lg = t => (D.logot||{})[t] ? `<img src="${D.logot[t]}" alt="">` : "";
+const pvm = s => { const [y,m,d]=s.split("-"); return `${+d}.${+m}.${y}`; };
+
+/* Sijoitus: tasatilanteessa sama numero */
+function lista(rows, f, fmt, sub, opts={}){
+  const n = opts.n || 10, dir = opts.dir || -1;
+  const ok = rows.filter(r => f(r)!=null && (!opts.min || opts.min(r)));
+  ok.sort((a,b)=> dir*(f(a)-f(b)) || (opts.tie ? opts.tie(a,b) : 0));
+  // Rajalla oleva tasapisteryhmä näytetään kokonaan, jos se mahtuu (enintään n+5 riviä); muuten se korvataan maininnalla.
+  let out = [], prev = null, rank = 0, raja = "";
+  ok.forEach((r,i)=>{ const v=f(r); if(v!==prev){ rank=i+1; prev=v; } out.push([rank,r]); });
+  if(out.length > n){
+    const vRaja = f(out[n-1][1]), yli = out.filter(([_,r])=>dir*(f(r)-vRaja) < 0), ryhma = out.filter(([_,r])=>f(r)===vRaja);
+    if(yli.length + ryhma.length <= n+5) out = yli.concat(ryhma);
+    else { out = yli; raja = `<div class="tie">+ useita pelaajia luvulla ${fmt(ryhma[0][1])}</div>`; }
+  }
+  return out.map(([rk,r],i)=>{
+    const href = opts.href ? opts.href(r) : (LINK.has(r.id) ? `pelaajat.html?p=${r.id}` : null);
+    const tag = href ? "a" : "div";
+    return `<${tag} class="r ${i===0?"first":""}" ${href?`href="${href}"`:""}>
+      <span class="n">${rk}</span>${opts.kuva ? opts.kuva(r) : av(r)}
+      <span class="who"><b>${esc(opts.nimi ? opts.nimi(r) : r.nimi)}</b><small>${opts.alla ? opts.alla(r) : `${lg(r.jk)}${esc(r.jk)}`}</small></span>
+      <span class="val">${fmt(r)}${sub?`<small>${sub(r)}</small>`:""}</span></${tag}>`;
+  }).join("") + raja || `<div class="empty">Ei pelaajia rajauksella.</div>`;
+}
+const kortti = (otsikko, vihje, sisalto) => `<article class="card lb"><div class="head"><h3>${otsikko}</h3>${vihje?`<span class="hint">${vihje}</span>`:""}</div><div class="lbl">${sisalto}</div></article>`;
+
+function pelaajataulut(rows, kerroin, ura){
+  const minKLY = 100*kerroin, minP = 30*kerroin;
+  const P = rows.map(r=>({...r, KLp:pct(r.KL,r.KLY), KLp0:pct(r.KL0,r.KLY0), KLp1:pct(r.KL1,r.KLY1), KLp2:pct(r.KL2,r.KLY2), KLp3:pct(r.KL3,r.KLY3)}));
+  const p1 = v => fi(v.toFixed(1))+" %";
+  const kaudet = r => ura ? ` · ${r.kaudet} kautta` : "";
+  const B = [
+    ["YHT", "K + L + T", P, r=>r.YHT, r=>r.YHT, r=>`${r.K}+${r.L} · ${r.T} T`],
+    ["Kunnarit (K)", "", P, r=>r.K, r=>r.K, r=>`${r.O} ottelua${kaudet(r)}`],
+    ["Lyödyt (L)", "", P, r=>r.L, r=>r.L, r=>`${r.O} ottelua${kaudet(r)}`],
+    ["Tuodut (T)", "", P, r=>r.T, r=>r.T, r=>`${r.O} ottelua${kaudet(r)}`],
+    ["Kärkilyönnit (KL)", "", P, r=>r.KL, r=>r.KL, r=>`${r.KLY} yritystä`],
+    ["KL%", `väh. ${minKLY} KLY`, P, r=>r.KLp, r=>p1(r.KLp), r=>`${r.KL}/${r.KLY}`, {min:r=>r.KLY>=minKLY}],
+    ["KL% kotipesältä (KL%0)", `väh. ${minP} yritystä`, P, r=>r.KLp0, r=>p1(r.KLp0), r=>`${r.KL0}/${r.KLY0}`, {min:r=>r.KLY0>=minP}],
+    ["KL% 1. pesältä (KL%1)", `väh. ${minP} yritystä`, P, r=>r.KLp1, r=>p1(r.KLp1), r=>`${r.KL1}/${r.KLY1}`, {min:r=>r.KLY1>=minP}],
+    ["KL% 2. pesältä (KL%2)", `väh. ${minP} yritystä`, P, r=>r.KLp2, r=>p1(r.KLp2), r=>`${r.KL2}/${r.KLY2}`, {min:r=>r.KLY2>=minP}],
+    ["Kotiutus 3. pesältä (KL%3)", `väh. ${minP} yritystä`, P, r=>r.KLp3, r=>p1(r.KLp3), r=>`${r.KL3}/${r.KLY3}`, {min:r=>r.KLY3>=minP}],
+    ["Kotiutukset (KL3)", "", P, r=>r.KL3, r=>r.KL3, r=>`${r.KLY3} yritystä`],
+  ];
+  return B.map(([t,h,rows,f,fmt,sub,o])=>kortti(t,h,lista(rows,f,fmt,sub,{...(o||{}), tie:(a,b)=>b.YHT-a.YHT}))).join("");
+}
+
+function ennatykset(){
+  const R = st.jk ? YKSI.filter(r=>r.jk===st.jk) : YKSI;
+  const VA = {1:"", 2:" · pudotuspeli", 3:" · karsinta"};
+  const opts = {href:r=>`ottelut.html?o=${r.ottelu}`, alla:r=>`${lg(r.jk)}${esc(r.jk)} – ${esc(r.vs)} · ${pvm(r.pvm)}${VA[r.vaihe]||""}`, tie:(a,b)=>b.YHT-a.YHT || a.pvm.localeCompare(b.pvm)};
+  const B = [
+    ["YHT", "YHT yhdessä ottelussa", r=>r.YHT, r=>`${r.K}+${r.L} · ${r.T} T`],
+    ["K", "Kunnarit yhdessä ottelussa", r=>r.K, null],
+    ["L", "Lyödyt yhdessä ottelussa", r=>r.L, null],
+    ["T", "Tuodut yhdessä ottelussa", r=>r.T, null],
+    ["KL", "Kärkilyönnit yhdessä ottelussa", r=>r.KL, r=>`${r.KL}/${r.KLY}`],
+  ];
+  return B.map(([k,t,f,sub])=>{
+    const Kx = D.yksi_karjet[k], rivit = Kx.rivit.map(i=>YKSI[i]).filter(r=>!st.jk || r.jk===st.jk);
+    // joukkuerajauksella listan kärki voi jäädä vajaaksi, koska data sisältää vain koko sarjan kärjet
+    const huom = Kx.raja!=null && !st.jk ? `<div class="tie">+ useita pelaajia luvulla ${Kx.raja}</div>` : "";
+    return kortti(t, "", lista(rivit,f,f,sub,{...opts, n:99}) + huom);
+  }).join("");
+}
+
+function joukkuetaulut(){
+  const T = D.joukkueet.map(t=>({...t, id:t.jk, nimi:t.jk}));
+  const p1 = v => fi(v.toFixed(1))+" %";
+  const o = {kuva:t=>(D.logot||{})[t.jk]?`<img class="av logo" src="${D.logot[t.jk]}" alt="">`:`<span class="av">${esc(t.jk.slice(0,3))}</span>`, href:t=>`joukkueet.html?t=${encodeURIComponent(t.jk)}`, n:12};
+  const B = [
+    ["KL%", t=>100*t.KL/t.KLY, p1, t=>`${t.KL}/${t.KLY}`, -1],
+    ["Kotiutus% (KL%3)", t=>100*t.KL3/t.KLY3, p1, t=>`${t.KL3}/${t.KLY3}`, -1],
+    ["Torjunta%", t=>100*t.torj/t.torjY, p1, t=>`${t.torj}/${t.torjY} torjuttu`, -1],
+    ["Juoksut / ottelu", t=>t.juoksut/t.O, v=>fi(v.toFixed(2)), t=>`${t.juoksut} juoksua`, -1],
+    ["Vähiten päästettyjä / ottelu", t=>t.paastetyt/t.O, v=>fi(v.toFixed(2)), t=>`${t.paastetyt} päästetty`, 1],
+    ["Kunnarit", t=>t.K, v=>v, t=>`${t.Kv} vastaan`, -1],
+  ];
+  return B.map(([t,f,fmt,sub,dir])=>kortti(t, `runkosarja ${D.kausi}`, lista(T,f,t=>fmt(f(t)),sub,{...o, dir, alla:x=>`${esc(x.O)} ottelua`}))).join("");
+}
+
+function chips(){
+  const show = st.v!=="joukkueet";
+  $("chips").hidden = !show; if(!show) return;
+  const src = st.v==="yksi" ? YKSI : SETIT[st.v];
+  const tiimit = [...new Set(src.map(r=>r.jk))].filter(t=>t&&t!=="?").sort((a,b)=>a.localeCompare(b,"fi"));
+  if(st.jk && !tiimit.includes(st.jk)) st.jk=null;
+  $("chips").innerHTML = ["Kaikki",...tiimit].map(t=>`<button data-t="${esc(t)}" aria-pressed="${(t==="Kaikki"&&!st.jk)||t===st.jk}">${esc(t)}</button>`).join("");
+}
+
+function render(){
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.v===st.v));
+  chips();
+  const suod = rows => st.jk ? rows.filter(r=>r.jk===st.jk) : rows;
+  let html, kuv, foot = "Lähde: pesistulokset.fi. Tasatilanteessa sama sija.";
+  if(st.v==="runko"){ html = pelaajataulut(suod(SETIT.runko),1); kuv = `Runkosarja ${D.kausi}`; }
+  else if(st.v==="kausi"){ html = pelaajataulut(suod(SETIT.kausi),1.15); kuv = `Koko kausi ${D.kausi}`; foot = "Koko kausi = runkosarja, pudotuspelit ja karsinnat. "+foot; }
+  else if(st.v==="ura"){ html = pelaajataulut(suod(SETIT.ura),3,true); kuv = `Kaudet ${K0}–${K1}`; foot = `Kaudet ${K0}–${K1} yhteensä (runkosarja + jatko). Joukkue = viimeisin kausi; joukkuerajaus näyttää viimeisimmän joukkueen mukaan. `+foot; }
+  else if(st.v==="yksi"){ html = ennatykset(); kuv = `Kausi ${D.kausi}`; foot = "Yhden ottelun ennätykset kaudelta "+D.kausi+" (kaikki vaiheet). Klikkaa riviä avataksesi ottelun. "+foot; }
+  else { html = joukkuetaulut(); kuv = `Runkosarja ${D.kausi}`; foot = "Torjunta% = vastustajan epäonnistuneet kotiutusyritykset 3. pesältä. Juoksut ilman kotiutuskilpailua. "+foot; }
+  $("boards").innerHTML = html; $("kuvaus").textContent = kuv; $("foot").textContent = foot;
+}
+
+$("tabs").addEventListener("click",e=>{const b=e.target.closest("button"); if(!b) return; st.v=b.dataset.v; try{localStorage.setItem("ydin-tulostaulut",st.v)}catch(_){} render();});
+$("chips").addEventListener("click",e=>{const b=e.target.closest("button[data-t]"); if(!b) return; st.jk = b.dataset.t==="Kaikki"?null:b.dataset.t; render();});
+render();
+</script>
