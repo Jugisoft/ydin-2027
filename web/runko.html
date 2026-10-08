@@ -105,16 +105,21 @@ button{font:inherit;color:inherit}
 @media (max-width:860px){.band{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:no-preference){.card,.band{animation:rise .35s ease both}@keyframes rise{from{transform:translateY(4px)}to{transform:none}}}
 
+.menubtn{display:none}
 @media (max-width:860px){
   .app{grid-template-columns:minmax(0,1fr)}
-  .side{position:sticky;top:0;height:auto;flex-direction:row;align-items:center;gap:12px;padding:10px 16px;border-right:0;border-bottom:1px solid var(--line)}
+  .side{position:sticky;top:0;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 16px;border-right:0;border-bottom:1px solid var(--line)}
   .logo{font-size:1.3rem;padding-inline:0;flex:none}
-  .side .logo small,.side .foot,.nav .sep{display:none}
-  .side{flex-wrap:wrap}
+  .side .logo small,.side .foot{display:none}
+  /* Mobiilivalikko: nappi avaa kaikki sivut pystylistana */
+  .menubtn{display:inline-flex;align-items:center;gap:8px;margin-left:auto;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);border-radius:10px;padding:8px 12px;font:600 .95rem var(--font-display);letter-spacing:.04em;cursor:pointer}
+  .menubtn svg{width:18px;height:18px}
+  .menubtn .cur{color:var(--accent)}
   .haku{order:3;flex:1 1 100%;padding-inline:0}
-  .nav{flex-direction:row;overflow-x:auto;min-width:0;flex:1;scrollbar-width:none}
-  .nav a{white-space:nowrap;padding:7px 10px}
-  .nav .soon,.nav a.off{display:none}
+  .nav{order:4;flex:1 1 100%;display:none;flex-direction:column;gap:2px;max-height:calc(100vh - 140px);overflow-y:auto;padding:4px 0 8px}
+  .side.open .nav{display:flex}
+  .nav a{padding:11px 12px;font-size:1rem}
+  .nav .sep{display:block;margin:6px 12px}
   .main{padding-inline:16px}
 }
 </style>
@@ -127,7 +132,8 @@ __TYYLI__
       <input type="search" id="haku" placeholder="Hae pelaajaa" autocomplete="off" aria-label="Hae pelaajaa">
       <div class="haku-tulos" id="hakuTulos" hidden></div>
     </div>
-    <nav class="nav" aria-label="Päävalikko">__NAV__</nav>
+    <button type="button" class="menubtn" id="menubtn" aria-expanded="false" aria-controls="paavalikko"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Valikko</button>
+    <nav class="nav" id="paavalikko" aria-label="Päävalikko">__NAV__</nav>
     <div class="foot">Tilastot päivitetty __PAIVITETTY__<br>Lähde: pesistulokset.fi</div>
   </aside>
   <main class="main">
@@ -137,6 +143,15 @@ __SISALTO__
 </div>
 <script>
 window.YDIN_HAKU = __HAKU__;
+(function(){
+  const b=document.getElementById("menubtn"), side=b && b.closest(".side"); if(!b) return;
+  const cur=document.querySelector('.nav a[aria-current="page"]');
+  if(cur) b.insertAdjacentHTML("beforeend", ` <span class="cur">· ${cur.textContent.trim()}</span>`);
+  const set=o=>{ side.classList.toggle("open",o); b.setAttribute("aria-expanded",o); };
+  b.addEventListener("click",()=>set(!side.classList.contains("open")));
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") set(false); });
+  document.addEventListener("click",e=>{ if(side.classList.contains("open") && !e.target.closest(".side")) set(false); });
+})();
 (function(){
   const inp=document.getElementById("haku"), out=document.getElementById("hakuTulos"); if(!inp) return;
   const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
