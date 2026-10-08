@@ -56,38 +56,146 @@
 .perf .lab{font:600 .72rem var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:6px}
 @media (max-width:860px){.transfers{grid-template-columns:minmax(0,1fr)} .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:440px){.teams{grid-template-columns:minmax(0,1fr)}}
+
+/* Siirtopörssi: etusivun pääelementti. Jokainen joukkue yhdellä rivillä: lähteneiden tehot vasemmalle (punainen), tulleiden oikealle (vihreä). */
+.px{background:var(--band);color:var(--band-fg);border-radius:var(--r);padding:20px 20px 14px;display:flex;flex-direction:column;gap:12px}
+.px-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px;align-items:end}
+.px-head h2{font:700 3.2rem var(--font-display);line-height:.9;margin:0;letter-spacing:-.01em}
+.px-head p{margin:8px 0 0;color:var(--band-muted);font-size:.9rem;max-width:56ch}
+.px-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fact{background:var(--band-card);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-width:0;border:0;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.fact:hover{outline:1px solid var(--band-muted)}
+.fact .k{font-size:.78rem;color:var(--band-muted)}
+.fact .v{display:flex;align-items:center;gap:8px;font:700 1.25rem var(--font-display);line-height:1.05;min-width:0}
+.fact .v img{width:26px;height:26px;object-fit:contain;flex:none}
+.fact .v span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fact .s{font-size:.8rem;color:var(--band-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fact.up .v b{color:#5fd39a} .fact.dn .v b{color:#ff8f86}
+.px-axis{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1fr) 92px;gap:0 10px;font-size:.74rem;color:var(--band-muted);padding:0 8px}
+.px-axis span:nth-child(1){grid-column:2;text-align:right;padding-right:6px}
+.px-axis span:nth-child(2){padding-left:6px}
+.px-axis span:nth-child(3){text-align:right}
+.px-board{display:flex;flex-direction:column;gap:2px}
+.prow{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1fr) 92px;gap:0 10px;align-items:center;padding:7px 8px;border-radius:10px;cursor:pointer;border:0;background:none;color:inherit;font:inherit;text-align:left;width:100%}
+.prow:hover,.prow[aria-expanded="true"]{background:var(--band-card)}
+.prow:focus-visible{outline:2px solid #9fb4ff;outline-offset:1px}
+.prow .tn{display:flex;align-items:center;gap:9px;min-width:0}
+.prow .tn img,.prow .tn .ph{width:28px;height:28px;object-fit:contain;flex:none;background:#fff;border-radius:7px;padding:2px}
+.prow .tn .ph{display:grid;place-items:center;font:700 .66rem var(--font-display);color:#111}
+.prow .tn b{font:700 1.15rem var(--font-display);line-height:1}
+.prow .tn small{display:block;color:var(--band-muted);font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sd{display:flex;align-items:center;gap:6px;min-width:0;height:34px}
+.sd.o{flex-direction:row-reverse;border-right:2px solid rgba(255,255,255,.28);padding-right:6px}
+.sd.i{padding-left:6px}
+.bar{height:14px;border-radius:4px;flex:none;min-width:0;transform-origin:left center}
+.sd.o .bar{background:linear-gradient(90deg,#c2413a,#e0645c);transform-origin:right center}
+.sd.i .bar{background:linear-gradient(90deg,#2e9a63,#4cc488)}
+.sd .num{font:700 .95rem var(--font-display);font-variant-numeric:tabular-nums;flex:none}
+.sd.o .num{color:#ff8f86} .sd.i .num{color:#5fd39a}
+.faces{display:flex;flex:none}
+.faces span{width:24px;height:24px;border-radius:50%;background:#2a3833;border:2px solid var(--band);margin-left:-7px;display:grid;place-items:center;font:700 .55rem var(--font-display);color:var(--band-fg);overflow:hidden}
+.faces span img{width:100%;height:100%;object-fit:cover;object-position:top}
+.faces span.one{border-style:dashed;border-color:var(--band-muted)}
+.sd.o .faces span{margin-left:0;margin-right:-7px}
+.faces .more{background:none;border:0;font-size:.7rem;color:var(--band-muted);width:auto;margin-left:10px!important;margin-right:0!important}
+.sd.o .faces{margin-right:8px}
+.prow .nt{text-align:right;display:flex;flex-direction:column;align-items:flex-end;line-height:1}
+.prow .nt b{font:700 1.45rem var(--font-display);font-variant-numeric:tabular-nums}
+.prow .nt small{color:var(--band-muted);font-size:.72rem;margin-top:3px}
+.prow .nt.up b{color:#5fd39a} .prow .nt.dn b{color:#ff8f86} .prow .nt.eq b{color:var(--band-muted)}
+.zero{display:flex;align-items:center;gap:10px;color:var(--band-muted);font-size:.72rem;padding:2px 8px}
+.zero::before,.zero::after{content:"";flex:1;border-top:1px dashed rgba(255,255,255,.18)}
+.pdet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:6px 8px 14px 168px}
+.pdet h4{margin:0 0 6px;font:700 .95rem var(--font-display);color:var(--band-muted)}
+.pdet .pl{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08);text-decoration:none;color:inherit}
+.pdet .pl:last-child{border-bottom:0}
+.pdet .pl .av{width:32px;height:32px;border-radius:50%;background:#2a3833;overflow:hidden;display:grid;place-items:center;font:700 .62rem var(--font-display)}
+.pdet .pl .av img{width:100%;height:100%;object-fit:cover;object-position:top}
+.pdet .pl b{display:block;font-weight:600;font-size:.9rem}
+.pdet .pl small{color:var(--band-muted);font-size:.76rem}
+.pdet .pl .y{font:700 1.05rem var(--font-display);text-align:right;font-variant-numeric:tabular-nums}
+.pdet .pl .y small{display:block;font:500 .68rem var(--font-body)}
+.pdet .pj{grid-column:1 / -1;font-size:.84rem;color:var(--band-muted)}
+.pdet .pj b{color:var(--band-fg)}
+.pdet a.go{grid-column:1 / -1;color:#9fb4ff;font-size:.85rem}
+.px-note{margin:0;font-size:.75rem;color:var(--band-muted)}
+@media (prefers-reduced-motion:no-preference){.px.ready .bar{animation:grow .7s cubic-bezier(.2,.7,.2,1) both}@keyframes grow{from{transform:scaleX(0)}}}
+/* Tuoreimmat siirrot kuvineen */
+.lt-wrap{display:flex;flex-direction:column;gap:10px}
+.lt-wrap .head{display:flex;justify-content:space-between;align-items:baseline}
+.lt-wrap h3{font:700 1.15rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;margin:0}
+.lt-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.lc{flex:0 0 230px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:grid;grid-template-columns:52px minmax(0,1fr);gap:4px 10px;text-decoration:none;color:inherit}
+.lc:hover{border-color:var(--accent)}
+.lc .av{grid-row:1 / span 3;width:52px;height:52px;border-radius:50%;background:var(--surface-2);overflow:hidden;display:grid;place-items:center;font:700 .9rem var(--font-display);color:var(--accent)}
+.lc .av img{width:100%;height:100%;object-fit:cover;object-position:top}
+.lc .d{font-size:.74rem;color:var(--muted)}
+.lc b{font-weight:700;line-height:1.15}
+.lc .mv{font:700 1rem var(--font-display);display:flex;gap:6px;align-items:center}
+.lc .mv i{font-style:normal;color:var(--muted)}
+.lc .mv .to{color:var(--win)} .lc .mv .gone{color:var(--loss)}
+.lc .st{grid-column:1 / -1;font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);padding-top:6px;margin-top:4px}
+.lc.first{border-color:var(--sand);box-shadow:inset 0 0 0 1px var(--sand)}
+.odotus .li .tag{color:var(--loss)}
+.morebtn{align-self:flex-start;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font:600 .82rem var(--font-display);cursor:pointer;color:var(--fg)}
+@media (max-width:1100px){.px-head{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){
+  .px{padding:16px 12px 12px}
+  .px-head h2{font-size:2.5rem}
+  .px-axis{grid-template-columns:96px minmax(0,1fr) minmax(0,1fr) 54px;gap:0 6px;padding:0 4px}
+  .prow{grid-template-columns:96px minmax(0,1fr) minmax(0,1fr) 54px;gap:0 6px;padding:7px 4px}
+  .prow .tn img,.prow .tn .ph{width:22px;height:22px}
+  .prow .tn small{display:none}
+  .faces{display:none}
+  .prow .nt b{font-size:1.15rem}
+  .prow .nt small{font-size:.62rem;white-space:nowrap}
+  .px-facts{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .fact{padding:8px}
+  .fact .v{font-size:1rem;gap:5px}
+  .fact .v img{display:none}
+  .fact .s{display:none}
+  .fact .k{font-size:.7rem}
+  .pdet{grid-template-columns:minmax(0,1fr);padding:6px 4px 12px}
+}
 </style>
 <!--SISALTO-->
     <div class="top">
-      <div><h1>Koti</h1><p>Miesten Superpesis · siirtokausi kohti kautta 2027</p></div>
+      <div><h1>Siirtokausi 2027</h1><p>Miesten Superpesis · kuka vahvistuu paperilla ennen kautta 2027</p></div>
       <span class="pill"><i></i><span id="paiv"></span></span>
     </div>
 
-    <section class="band" aria-label="Siirtokausi 2027">
-      <div class="hero">
-        <div><div class="eyebrow">Siirtokausi käynnissä</div><h2>Superpesis <em>2027</em></h2></div>
-        <div class="kpis" id="kpis"></div>
-        <div class="sub" id="herosub"></div>
+    <section class="px" aria-labelledby="pxTitle">
+      <div class="px-head">
+        <div>
+          <h2 id="pxTitle">Siirtopörssi</h2>
+          <p>Palkit näyttävät, kuinka paljon tulleet ja lähteneet pelaajat tekivät tulosta runkosarjassa 2026 (YHT = K+L+T). Klikkaa joukkuetta nähdäksesi pelaajat.</p>
+        </div>
+        <div class="px-facts" id="pxFacts"></div>
       </div>
-      <div class="latest" id="latest" aria-label="Viimeisimmät siirrot"></div>
+      <div class="px-axis" aria-hidden="true"><span>Lähteneet</span><span>Tulleet</span><span>Netto</span></div>
+      <div class="px-board" id="board" role="list"></div>
+      <p class="px-note">Ykköspesiksestä tulleilla ei ole Superpesis-tehoja 2026, joten ne näkyvät vain kasvokuvina. Katkoviiva = yksi lähde. Huhut eivät ole mukana.</p>
+    </section>
+
+    <section aria-labelledby="ltTitle" class="lt-wrap">
+      <div class="head"><h3 id="ltTitle">Tuoreimmat siirrot</h3><a class="more" href="#kaikki">Kaikki siirrot</a></div>
+      <div class="lt-strip" id="latest"></div>
     </section>
 
     <div class="cols">
     <div class="col">
+      <section class="card odotus">
+        <div class="head"><h3>Odotetaan julkaisua</h3><span class="hint">Huhut ja avoimet paikat</span></div>
+        <div class="list" id="rumors"></div>
+      </section>
       <section class="card">
         <div class="head"><h3>Ajankohtaista</h3><span class="hint" id="newsStamp"></span></div>
         <div class="list" id="news"></div>
+        <button type="button" class="morebtn" id="newsMore" hidden></button>
       </section>
-      <section class="card" id="siirrot">
-        <div class="head"><h3>Siirtomarkkinat 2027</h3><span class="filter" id="trHint"></span></div>
-        <div class="transfers">
-          <div class="tlist" id="tlist"></div>
-          <div>
-            <div class="netcap"><span></span><span>Lähteneet</span><span>Tulleet</span><span></span></div>
-            <div class="net" id="net"></div>
-            <p class="note" style="margin-top:10px">Lähteneisiin lasketaan myös lopettaneet ja ne, joiden sopimus ei jatku. Valitse joukkue nähdäksesi sen siirrot.</p>
-          </div>
-        </div>
+      <section class="card" id="kaikki">
+        <div class="head"><h3>Kaikki siirrot</h3><span class="filter" id="trHint"></span></div>
+        <div class="tlist" id="tlist"></div>
       </section>
     </div>
     <div class="col">
@@ -96,9 +204,8 @@
         <div class="list" id="pj"></div>
       </section>
       <section class="card">
-        <div class="head"><h3>Loukkaantumiset ja huhut</h3></div>
+        <div class="head"><h3>Loukkaantumiset</h3></div>
         <div id="inj"></div>
-        <div class="list" id="rumors"></div>
       </section>
       <section class="card">
         <div class="head"><h3>Sarja 2027</h3><span class="hint">Suluissa sijoitus 2026 · avaa joukkuesivu</span></div>
@@ -129,26 +236,81 @@ function badge(v){ if(/huhu/.test(v)) return `<span class="badge huhu">huhu</spa
 const dest = r => { const t=r[3]; if(/^\?/.test(t)) return "ei jatka"; if(/lopettaa/.test(t)) return "lopettaa"; return t; };
 const pvm = r => /koonti/.test(r[0]) ? "koonti" : r[0].replace(/\.20\d\d$/,"");
 
-function hero(){
-  const S=V.siirrot, siir=S.filter(r=>!/^\?|lopettaa/.test(r[3]));
-  const vaihdot=V.pj.filter(r=>r[3]!=="Jatkaa").length, avoin=V.pj.filter(r=>r[2]==="?").length;
-  $("paiv").textContent = "Päivitetty " + V.paiv;
-  $("kpis").innerHTML = [[siir.length,"siirtoa"],[S.length-siir.length,"lähtöä / lopettajaa"],[vaihdot,"PJ-vaihdosta"],[avoin,"PJ-paikkaa auki"]]
-    .map(([n,l])=>`<div class="kpi"><b>${n}</b><span>${l}</span></div>`).join("");
-  const fin=D.pudotus.find(x=>x.kierros==="Loppuottelu"), mestari=fin?fin.a:null;
-  const mpj=V.pj.find(r=>r[0]===mestari);
-  $("herosub").textContent = `Nousijat Kannuksen Ura ja Puna-Mustat, pudonneet AA ja KoU.` + (mestari ? ` Mestari ${mestari}` + (mpj && mpj[2]==="?" ? " etsii uutta pelinjohtajaa." : ".") : "");
-  const dated = S.filter(r=>!/koonti/.test(r[0]) && !/^\?/.test(r[3])).slice(0,8);
-  const newest = dated[0]?.[0];
-  $("latest").innerHTML = dated.map((r,i)=>`<a class="lt ${i===0?"new":""}" href="${esc(r[6]||"#siirrot")}" ${r[6]?'target="_blank" rel="noopener"':""}>
-    <span class="d">${pvm(r)} · ${/yksi/.test(r[4])?"yksi lähde":"vahvistettu"}</span>
-    <span class="p">${esc(r[1])}</span>
-    <span class="m">${esc(tm(r[2]))}<i>→</i>${esc(tm(dest(r))||dest(r))}</span></a>`).join("");
+/* ---------- Siirtopörssi ---------- */
+const PS = D.pstat || {}, JY = D.jyht || {};
+const kasv = (n, cls="") => { const st = PS[n], u = st && st[8], ini = esc(n.split(" ").map(x=>x[0]).slice(0,2).join(""));
+  return u ? `<img src="${u}" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('${ini}'))">` : ini; };
+const yht = n => (PS[n] ? PS[n][3] : 0);
+const statRivi = n => { const st=PS[n]; return st ? `2026 ${esc(st[1])}: ${st[3]} YHT (${st[5]}+${st[6]}, ${st[7]} T), KL% ${fi(st[4])}` : "Ei Superpesis-otteluita 2026"; };
+const yksi = r => /yksi/.test(r[4]);
+function porssiData(){
+  const S = V.siirrot;
+  return TEAMS27.map(t=>{
+    const ins = S.filter(r=>tm(r[3])===t), outs = S.filter(r=>tm(r[2])===t);
+    const yi = ins.reduce((s,r)=>s+yht(r[1]),0), yo = outs.reduce((s,r)=>s+yht(r[1]),0);
+    const pj = V.pj.find(r=>r[0]===t);
+    return {t, ins, outs, yi, yo, net: yi-yo, pct: JY[t] ? 100*(yi-yo)/JY[t] : null, pj};
+  }).sort((a,b)=> b.net-a.net || (b.ins.length-b.outs.length)-(a.ins.length-a.outs.length));
 }
+let AUKI = null;
+try{ AUKI = localStorage.getItem("ydin-koti-auki") || null; }catch(e){}
+function faces(rows, max=5){
+  const r = rows.slice().sort((a,b)=>yht(b[1])-yht(a[1]));
+  return `<span class="faces">${r.slice(0,max).map(x=>`<span class="${yksi(x)?"one":""}" title="${esc(x[1])}: ${esc(statRivi(x[1]))}">${kasv(x[1])}</span>`).join("")}${r.length>max?`<span class="more">+${r.length-max}</span>`:""}</span>`;
+}
+function porssi(){
+  const P = porssiData(), mx = Math.max(...P.flatMap(p=>[p.yi,p.yo]), 1);
+  const ylin = P[0], alin = P[P.length-1], vilkkain = P.slice().sort((a,b)=>(b.ins.length+b.outs.length)-(a.ins.length+a.outs.length))[0];
+  const lg = t => (D.logot||{})[t] ? `<img src="${D.logot[t]}" alt="">` : "";
+  $("pxFacts").innerHTML = [
+    ["up", "Vahvistunut eniten", ylin, `<b>${ylin.net>0?"+":""}${ylin.net}</b>`, `${ylin.ins.length} tullutta, ${ylin.outs.length} lähtenyttä`],
+    ["dn", "Menettänyt eniten", alin, `<b>${alin.net}</b>`, `${alin.outs.length} lähtenyttä, ${alin.ins.length} tullutta`],
+    ["", "Vilkkain joukkue", vilkkain, `<b>${vilkkain.ins.length+vilkkain.outs.length}</b>`, `muutosta pelaajistoon`],
+  ].map(([c,k,p,v,s])=>`<button type="button" class="fact ${c}" data-t="${p.t}"><span class="k">${k}</span><span class="v">${lg(p.t)}<span>${esc(p.t)}</span>${v}</span><span class="s">${s}</span></button>`).join("");
+  let html = "", raja = false;
+  for(const p of P){
+    if(!raja && p.net<0){ raja = true; html += `<div class="zero">paperilla heikompi kuin 2026</div>`; }
+    const pjTxt = !p.pj ? "" : p.pj[2]==="?" ? "PJ auki" : p.pj[3]==="Jatkaa" ? `PJ ${esc(p.pj[2].split(" ").slice(-1)[0])}` : `Uusi PJ ${esc(p.pj[2].split(" ").slice(-1)[0])}`;
+    const nouse = !JY[p.t];
+    const cls = p.net>0?"up":p.net<0?"dn":"eq", auki = AUKI===p.t;
+    html += `<button type="button" class="prow" data-t="${p.t}" aria-expanded="${auki}" role="listitem">
+      <span class="tn">${lg(p.t)||`<span class="ph">${esc(p.t.slice(0,3))}</span>`}<span><b>${esc(p.t)}</b><small>${nouse?"nousija · ":""}${pjTxt}</small></span></span>
+      <span class="sd o">${p.yo?`<span class="bar" style="width:${70*p.yo/mx}%"></span><span class="num">−${p.yo}</span>`:""}${faces(p.outs)}</span>
+      <span class="sd i">${p.yi?`<span class="bar" style="width:${70*p.yi/mx}%"></span><span class="num">+${p.yi}</span>`:""}${faces(p.ins)}</span>
+      <span class="nt ${cls}"><b>${p.net>0?"+":""}${p.net}</b><small>${p.pct!=null?`${p.pct>0?"+":""}${fi(p.pct.toFixed(0))} % YHT`:"ei vertailua"}</small></span>
+    </button>`;
+    if(auki) html += detalji(p);
+  }
+  if(!raja) html += "";
+  $("board").innerHTML = html;
+}
+function detalji(p){
+  const rivi = r => { const st=PS[r[1]]; const suunta = tm(r[3])===p.t ? `${esc(tm(r[2])||r[2])} → ${esc(p.t)}` : `→ ${esc(dest(r))}`;
+    return `<div class="pl"><span class="av">${kasv(r[1])}</span><span><b>${esc(r[1])}</b><small>${suunta} · ${pvm(r)}${yksi(r)?" · yksi lähde":""}</small></span><span class="y">${st?st[3]:"–"}<small>${st?"YHT 2026":"Ykköspesis"}</small></span></div>`; };
+  const byY = rows => rows.slice().sort((a,b)=>yht(b[1])-yht(a[1]));
+  const pj = p.pj ? (p.pj[3]==="Jatkaa" ? `Pelinjohtaja <b>${esc(p.pj[2])}</b> jatkaa.` : p.pj[2]==="?" ? `Pelinjohtaja ${esc(p.pj[1])} lähtee, <b>seuraaja auki</b>.` : `Pelinjohtaja vaihtuu: ${esc(p.pj[1])} → <b>${esc(p.pj[2])}</b>.`) : "";
+  return `<div class="pdet" role="region" aria-label="${esc(p.t)}: siirrot">
+    <div><h4>Tulleet (${p.ins.length})</h4>${byY(p.ins).map(rivi).join("") || `<p class="px-note">Ei vielä uusia pelaajia.</p>`}</div>
+    <div><h4>Lähteneet (${p.outs.length})</h4>${byY(p.outs).map(rivi).join("") || `<p class="px-note">Ei lähtijöitä.</p>`}</div>
+    ${pj?`<div class="pj">${pj}</div>`:""}
+    <a class="go" href="joukkueet.html?t=${encodeURIComponent(p.t)}">Avaa ${esc(p.t)}:n joukkuesivu: kokoonpano 2027 ja kehitys</a></div>`;
+}
+function latest(){
+  $("paiv").textContent = "Päivitetty " + V.paiv;
+  const dated = V.siirrot.filter(r=>!/koonti/.test(r[0])).slice(0,10);
+  $("latest").innerHTML = dated.map((r,i)=>{ const d=dest(r), ok=TEAMS27.includes(tm(r[3]));
+    return `<a class="lc ${i===0?"first":""}" href="${esc(r[6]||"#kaikki")}" ${r[6]?'target="_blank" rel="noopener"':""}>
+    <span class="av">${kasv(r[1])}</span><span class="d">${pvm(r)} · ${yksi(r)?"yksi lähde":"vahvistettu"}</span>
+    <b>${esc(r[1])}</b><span class="mv">${esc(tm(r[2])||r[2])}<i>→</i><span class="${ok?"to":"gone"}">${esc(ok?tm(r[3]):d)}</span></span>
+    <span class="st">${esc(statRivi(r[1]))}</span></a>`; }).join("");
+}
+let KAIKKI_UUTISET = false;
 function news(){
   $("newsStamp").textContent = "Jarvis tarkisti " + V.paiv;
   const items=[...V.muutokset.map(s=>({k:"Siirrot",s})),...V.seurattavat.slice(0,2).map(s=>({k:"Seuraa",s}))];
-  $("news").innerHTML = items.map(x=>`<div class="li"><span class="tag">${x.k}</span><span class="t">${md(x.s)}</span></div>`).join("");
+  const N = KAIKKI_UUTISET ? items.length : 4;
+  $("news").innerHTML = items.slice(0,N).map(x=>`<div class="li"><span class="tag">${x.k}</span><span class="t">${md(x.s)}</span></div>`).join("");
+  const b=$("newsMore"); b.hidden = items.length<=4; b.textContent = KAIKKI_UUTISET ? "Näytä vähemmän" : `Näytä kaikki (${items.length})`;
 }
 function transfers(){
   const S=V.siirrot, rows=S.filter(r=>!SEL || tm(r[2])===SEL || tm(r[3])===SEL);
@@ -157,13 +319,6 @@ function transfers(){
     <span class="p">${esc(r[1])}<small><b>${esc(tm(r[2])||r[2])}</b><span class="arrow">→</span><b>${esc(dest(r))}</b></small></span>
     ${r[6]?`<a href="${esc(r[6])}" target="_blank" rel="noopener" title="${esc(r[5])}">${badge(r[4])}</a>`:badge(r[4])}</div>`).join("")
     : `<div class="empty"><b>Ei siirtoja</b>Joukkueelle ei ole vielä kirjattu siirtoja.</div>`;
-  const cnt={}; TEAMS27.forEach(t=>cnt[t]={i:0,o:0});
-  S.forEach(r=>{const f=tm(r[2]),t=tm(r[3]); if(cnt[f]) cnt[f].o++; if(cnt[t]) cnt[t].i++;});
-  const mx=Math.max(...Object.values(cnt).flatMap(c=>[c.i,c.o]),1);
-  const list=TEAMS27.slice().sort((a,b)=>(cnt[b].i-cnt[b].o)-(cnt[a].i-cnt[a].o));
-  $("net").innerHTML=list.map(t=>{const c=cnt[t],n=c.i-c.o; return `<div class="netrow ${t===SEL?"sel":""}" data-t="${t}" title="${t}: ${c.i} tullutta, ${c.o} lähtenyttä">
-    <b>${t}</b><span class="out"><i style="width:${c.o/mx*100}%"></i></span><span class="in"><i style="width:${c.i/mx*100}%"></i></span>
-    <span class="n" style="color:${n>0?"var(--win)":n<0?"var(--loss)":"var(--muted)"}">${n>0?"+":""}${n}</span></div>`}).join("");
 }
 function pj(){
   const P=V.pj.filter(r=>r[3]!=="Jatkaa").concat(V.pj.filter(r=>r[3]==="Jatkaa"));
@@ -174,7 +329,11 @@ function pj(){
 }
 function rumors(){
   $("inj").innerHTML=`<div class="empty"><b>Ei julkaistuja loukkaantumisia</b>Tähän tulevat vain seuran tai pelaajan itse julkaisemat tiedot.</div>`;
-  $("rumors").innerHTML=V.huhut.map(r=>`<div class="li"><span class="tag">${r[2]}</span><span class="t">${md(r[1].replace(/\s*–\s*\*\*huhu\*\*/,""))} <span class="badge huhu">huhu</span><small>${esc(r[4])}</small></span></div>`).join("");
+  const auki = V.huhut.filter(r=>!/vahvistui|✅/i.test(r[4]));
+  const pjAuki = V.pj.filter(r=>r[2]==="?");
+  $("rumors").innerHTML = auki.map(r=>`<div class="li"><span class="tag">${r[2]}</span><span class="t">${md(r[1].replace(/\s*–\s*\*\*huhu\*\*.*$/,""))} <span class="badge huhu">huhu</span><small>${esc(r[4])} · ${esc(r[3])}</small></span></div>`).join("")
+    + pjAuki.filter(r=>!auki.some(h=>h[2]===r[0] && /pelinjohtaj/i.test(h[1]))).map(r=>`<div class="li"><span class="tag">${r[0]}</span><span class="t">Pelinjohtajan paikka auki <small>${esc(r[1])} lähtee</small></span></div>`).join("")
+    || `<div class="empty"><b>Ei avoimia huhuja</b>Kun liikkeellä on vahvistamaton tieto, se näkyy tässä.</div>`;
 }
 function teams(){
   const rank={}; D.taulukko.forEach((t,i)=>rank[t.lyh]=i+1);
@@ -191,7 +350,11 @@ function perf(){
 function render(){ transfers(); teams(); }
 document.addEventListener("click",e=>{
   if(e.target.id==="clr"){ SEL=null; try{localStorage.removeItem("ydin-koti-sel")}catch(_){} render(); return; }
-  const el=e.target.closest("#net .netrow"); if(el) setSel(el.dataset.t);
+  if(e.target.id==="newsMore"){ KAIKKI_UUTISET=!KAIKKI_UUTISET; news(); return; }
+  const r=e.target.closest(".prow,.fact"); if(r){ const t=r.dataset.t; AUKI = (AUKI===t && r.classList.contains("prow")) ? null : t; SEL = AUKI;
+    try{ AUKI?localStorage.setItem("ydin-koti-auki",AUKI):localStorage.removeItem("ydin-koti-auki"); }catch(_){}
+    porssi(); render(); const el=document.querySelector(`.prow[data-t="${t}"]`); if(el && r.classList.contains("fact")) el.scrollIntoView({block:"center",behavior:"smooth"}); else if(el) el.focus({preventScroll:true}); }
 });
-hero(); news(); pj(); rumors(); perf(); render();
+latest(); porssi(); news(); pj(); rumors(); perf(); render();
+requestAnimationFrame(()=>document.querySelector(".px")?.classList.add("ready"));
 </script>

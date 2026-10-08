@@ -81,10 +81,23 @@ def koti_data(vientipolku=SEURANTA):
         V = json.load(f)
     meta = lue(f"meta_{KAUSI}.json")
     kuvat = lue_kuvat()
+    # Siirtopörssi: siirroissa mainittujen pelaajien kauden 2026 runkosarja (nimellä) + joukkueiden YHT 2026
+    kaikki_p = {}
+    for p in lue(f"pelaajat_{KAUSI}_runko.json"):
+        kaikki_p.setdefault(p["nimi"], p)
+    tlyh = {t["id"]: t["lyhenne"] for t in lue(f"joukkueet_{KAUSI}_runko.json")}
+    pstat = {}
+    for r in V.get("siirrot", []):
+        p = kaikki_p.get(r[1])
+        if p:
+            pstat[r[1]] = [p["id"], tlyh.get(p["joukkue"], "?"), p["O"], p["YHT"], p["KL%"], p["K"], p["L"], p["T"], kuvat["pelaajat"].get(str(p["id"]))]
+    jyht = collections.Counter()
+    for p in lue(f"pelaajat_{KAUSI}_runko.json"):
+        jyht[tlyh.get(p["joukkue"], "?")] += p["YHT"]
     return {"kausi": KAUSI, "paivitetty": meta["paivitetty"], "taulukko": taulukko, "pudotus": pudotus,
             "pelaajat": pelaajat, "vault": V,
             "kuvat": {str(p["id"]): kuvat["pelaajat"].get(str(p["id"])) for p in pelaajat if kuvat["pelaajat"].get(str(p["id"]))},
-            "logot": kuvat["logot"], "jhist": joukkuehistoria()}
+            "logot": kuvat["logot"], "jhist": joukkuehistoria(), "pstat": pstat, "jyht": dict(jyht)}
 
 KIERROSNIMET = {2: ["Puolivälierä"] * 4 + ["Välierä"] * 2 + ["Pronssiottelu", "Loppuottelu"], 3: ["Putoamiskarsinta", "Superpesis-karsinta"]}
 
