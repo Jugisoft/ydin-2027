@@ -134,12 +134,22 @@ tr.small td.pc b{opacity:.45}
     <button data-v="kaikki" aria-pressed="false">Koko kausi</button>
   </div>
 
+  <div class="tabs" role="group" aria-label="Näkymä" id="nakymat">
+    <button data-n="tilastot" aria-pressed="true">Kausitilastot</button>
+    <button data-n="kotiuttajat" aria-pressed="false">Kotiuttajat</button>
+    <button data-n="kentalle" aria-pressed="false">Kentällemenijät</button>
+    <button data-n="tilanteet" aria-pressed="false">Tilanteet</button>
+    <button data-n="onnistuminen" aria-pressed="false">Onnistuminen</button>
+    <button data-n="muutos" aria-pressed="false">Pudotuspelit vs. runko</button>
+  </div>
+  <p class="note" id="ohje"></p>
+
   <section class="leaders" id="leaders" aria-label="Kärkipelaajat"></section>
 
   <div class="controls">
     <div class="chips" id="chips" role="group" aria-label="Joukkue"></div>
     <label class="field">Hae <input type="search" id="q" placeholder="Pelaajan nimi"></label>
-    <label class="field">KLY vähintään <input type="range" id="minkly" min="0" max="60" step="5" value="0"><output id="minklyv">0</output></label>
+    <label class="field"><span id="minlab">KLY vähintään</span> <input type="range" id="minkly" min="0" max="60" step="5" value="0"><output id="minklyv">0</output></label>
     <label class="toggle"><input type="checkbox" id="bases"> Kärkilyönnit pesittäin</label>
   </div>
 
@@ -149,7 +159,7 @@ tr.small td.pc b{opacity:.45}
         <thead><tr id="head"></tr></thead>
         <tbody id="body"></tbody>
       </table>
-      <div class="foot"><span id="count"></span><span>Himmennetty KL% = alle 10 yritystä.</span><span>Lähde: pesistulokset.fi</span></div>
+      <div class="foot"><span id="count"></span><span>Himmennetty rivi = alle 10 yritystä.</span><span>Lähde: pesistulokset.fi</span></div>
     </div>
     <aside class="card" id="card" aria-live="polite"></aside>
   </div>
@@ -159,7 +169,7 @@ tr.small td.pc b{opacity:.45}
 <script>
 const DATA = __DATA__;
 const F = DATA.kentat;
-const SUM = ["O","K","L","T","KL","KLY","KL0","KLY0","KL1","KLY1","KL2","KLY2","KL3","KLY3","LV"];
+const SUM = ["O","K","L","T","KL","KLY","KL0","KLY0","KL1","KLY1","KL2","KLY2","KL3","KLY3","LV","LY","TY"];
 const pct = (a,b)=> b ? 100*a/b : null;
 const fmtP = v => v==null ? "–" : v.toFixed(1).replace(".",",");
 const PESA = ["kotipesältä","1. pesältä","2. pesältä","3. pesältä"];
@@ -178,32 +188,48 @@ function rows(v){
 function enrich(p){
   p.YHT=p.K+p.L+p.T; p.KLp=pct(p.KL,p.KLY);
   for(let n=0;n<4;n++) p["KLp"+n]=pct(p["KL"+n],p["KLY"+n]);
+  p.Lp=pct(p.L,p.LY||0); p.Tp=pct(p.T,p.TY||0);
   return p;
 }
 
-const COLS = [
-  {k:"rk",t:"#",c:"rk l",nosort:true},
-  {k:"nimi",t:"Pelaaja",c:"nm l"},
-  {k:"jk",t:"Joukkue",c:"jk l"},
-  {k:"O",t:"O"},
-  {k:"KLtxt",t:"K+L",sortKey:"KandL"},
-  {k:"T",t:"T"},
-  {k:"YHT",t:"YHT",c:"yht"},
-  {k:"KL",t:"KL"},
-  {k:"KLY",t:"KLY"},
-  {k:"KLp",t:"KL%",c:"pc"},
-  {k:"KLp0",t:"KL%0",c:"pb"},{k:"KLp1",t:"KL%1",c:"pb"},{k:"KLp2",t:"KL%2",c:"pb"},{k:"KLp3",t:"KL%3",c:"pb"},
-];
-const st = {v:"runko", jk:null, q:"", min:0, sort:"YHT", dir:-1, sel:null};
-try{ const s=JSON.parse(localStorage.getItem("ydin-pelaajat")||"{}"); Object.assign(st,{v:s.v||st.v,sort:s.sort||st.sort,dir:s.dir||st.dir}); }catch(e){}
-const save=()=>{try{localStorage.setItem("ydin-pelaajat",JSON.stringify({v:st.v,sort:st.sort,dir:st.dir}))}catch(e){}};
+/* Näkymät (vanhan YDINin välilehtien vastineet stats-tool-datalla):
+   cols: [avain, otsikko, solun html, luokka, title]; min: yrityskenttä liukusäätimelle; pk: lukuarvo bar-palkkiin */
+const bar = (v, a, b) => `<span class="bar"><b>${fmtP(v)}</b><i><b style="width:${v??0}%"></b></i></span>`;
+const pc_ = (v, a, b, t) => `<span title="${a}/${b}">${fmtP(v)}</span>`;
+const BASE = [["O","O",p=>p.O],["KandL","K+L",p=>`${p.K}+${p.L}`],["T","T",p=>p.T],["YHT","YHT",p=>p.YHT,"yht"]];
+const VIEWS = {
+  tilastot: {def:0, nimi:"Kausitilastot", min:"KLY", sort:"YHT", ohje:"Lyöntitilastot pesistulokset.fi-muodossa.",
+    cols:[...BASE,["KL","KL",p=>p.KL],["KLY","KLY",p=>p.KLY],["KLp","KL%",p=>bar(p.KLp),"pc"],
+      ["KLp0","KL%0",p=>pc_(p.KLp0,p.KL0,p.KLY0),"pb"],["KLp1","KL%1",p=>pc_(p.KLp1,p.KL1,p.KLY1),"pb"],["KLp2","KL%2",p=>pc_(p.KLp2,p.KL2,p.KLY2),"pb"],["KLp3","KL%3",p=>pc_(p.KLp3,p.KL3,p.KLY3),"pb"]]},
+  kotiuttajat: {def:10, nimi:"Kotiuttajat", min:"KLY3", sort:"KLp3", ohje:"Kärkilyönnit 3. pesältä eli kotiutukset: onnistuuko lyöjä tuomaan kolmospesän etenijän kotiin.",
+    cols:[["O","O",p=>p.O],["KL3","KL3",p=>p.KL3],["KLY3","KLY3",p=>p.KLY3],["KLp3","KL%3",p=>bar(p.KLp3),"pc"],["L","L",p=>p.L],["YHT","YHT",p=>p.YHT,"yht"],["KLp","KL% kaikki",p=>fmtP(p.KLp)]]},
+  kentalle: {def:10, nimi:"Kentällemenijät", min:"KLY0", sort:"KLp0", ohje:"Kärkilyönnit kotipesältä: pääseekö lyöjä itse kentälle, kun pesillä ei ole etenijöitä edellä.",
+    cols:[["O","O",p=>p.O],["KL0","KL0",p=>p.KL0],["KLY0","KLY0",p=>p.KLY0],["KLp0","KL%0",p=>bar(p.KLp0),"pc"],["T","T",p=>p.T],["Tp","T%",p=>pc_(p.Tp,p.T,p.TY)],["YHT","YHT",p=>p.YHT,"yht"]]},
+  tilanteet: {def:10, nimi:"Tilanteet", min:"KLY1", sort:"KLp1", ohje:"Kärkilyönnit 1. ja 2. pesältä eli 1- ja 2-tilanteiden purku.",
+    cols:[["O","O",p=>p.O],["KL1","KL1",p=>p.KL1],["KLY1","KLY1",p=>p.KLY1],["KLp1","KL%1",p=>bar(p.KLp1),"pc"],["KL2","KL2",p=>p.KL2],["KLY2","KLY2",p=>p.KLY2],["KLp2","KL%2",p=>bar(p.KLp2),"pc"]]},
+  onnistuminen: {def:10, nimi:"Onnistuminen", min:"LY", sort:"Lp", ohje:"L% = lyödyt / lyöntiyritykset (etenijä kotiin lyönnillä). T% = tuodut / juoksuyritykset (pelaaja itse kotiin).",
+    cols:[["O","O",p=>p.O],["L","L",p=>p.L],["LY","L yrit.",p=>p.LY],["Lp","L%",p=>bar(p.Lp),"pc"],["T","T",p=>p.T],["TY","T yrit.",p=>p.TY],["Tp","T%",p=>bar(p.Tp),"pc"],["YHT","YHT",p=>p.YHT,"yht"]]},
+  muutos: {def:20, nimi:"Pudotuspelit vs. runkosarja", min:"KLYpo", sort:"dKL", ohje:"Pudotuspelien (ylempi jatkosarja) luvut verrattuna saman pelaajan runkosarjaan. Muutos = pudotuspelit − runkosarja.",
+    cols:[["Opo","O pudotus",p=>p.Opo],["KLpr","KL% runko",p=>fmtP(p.KLpr)],["KLppo","KL% pudotus",p=>pc_(p.KLppo,p.KLpo,p.KLYpo)],["dKL","Muutos",p=>muutos(p.dKL),"yht"],
+      ["YHTr","YHT/O runko",p=>fmtP(p.YHTr)],["YHTpo","YHT/O pudotus",p=>fmtP(p.YHTpo)],["dYHT","Muutos",p=>muutos(p.dYHT)]]},
+};
+function muutos(v){ if(v==null) return "–"; const c = v>0.05?"var(--win)":v<-0.05?"var(--loss)":"var(--muted)"; return `<span style="color:${c}">${v>0?"+":""}${fmtP(v)}</span>`; }
+function muutosRivit(){
+  const R = new Map(rows("runko").map(enrich).map(p=>[p.id,p])), P = (DATA.vaiheet.jatko_ylempi?rows("jatko_ylempi"):[]).map(enrich);
+  return P.filter(p=>R.has(p.id)).map(p=>{ const r=R.get(p.id);
+    return {...r, Opo:p.O, KLpo:p.KL, KLYpo:p.KLY, KLppo:p.KLp, KLpr:r.KLp, dKL: p.KLp!=null&&r.KLp!=null ? p.KLp-r.KLp : null,
+      YHTr: r.O? r.YHT/r.O : null, YHTpo: p.O? p.YHT/p.O : null, dYHT: r.O&&p.O ? p.YHT/p.O - r.YHT/r.O : null}; });
+}
+const st = {v:"runko", nk:"tilastot", jk:null, q:"", min:0, sort:"YHT", dir:-1, sel:null};
+try{ const s=JSON.parse(localStorage.getItem("ydin-pelaajat")||"{}"); Object.assign(st,{v:s.v||st.v,sort:s.sort||st.sort,dir:s.dir||st.dir,nk:VIEWS[s.nk]?s.nk:"tilastot"}); }catch(e){}
+const save=()=>{try{localStorage.setItem("ydin-pelaajat",JSON.stringify({v:st.v,sort:st.sort,dir:st.dir,nk:st.nk}))}catch(e){}};
 
 const $ = id=>document.getElementById(id);
 $("kausi").textContent = DATA.kausi;
 $("stamp").textContent = "Päivitetty " + new Date(DATA.paivitetty).toLocaleString("fi-FI",{day:"numeric",month:"numeric",year:"numeric",hour:"2-digit",minute:"2-digit"});
 
 let ALL=[];
-function load(){ ALL = rows(st.v).map(enrich); if(!ALL.find(p=>p.id===st.sel)) st.sel=null; buildChips(); render(); }
+function load(){ ALL = st.nk==="muutos" ? muutosRivit() : rows(st.v).map(enrich); if(!ALL.find(p=>p.id===st.sel)) st.sel=null; buildChips(); render(); }
 
 function buildChips(){
   const teams=[...new Set(ALL.map(p=>p.jk))].sort((a,b)=>a.localeCompare(b,"fi"));
@@ -226,25 +252,30 @@ function leaders(list){
 }
 
 function render(){
+  const V = VIEWS[st.nk], cols = V.cols;
+  if(!cols.some(c=>c[0]===st.sort) && !["nimi","jk"].includes(st.sort)){ st.sort=V.sort; st.dir=-1; }
+  document.querySelectorAll("#nakymat button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.n===st.nk));
+  $("tabs").hidden = st.nk==="muutos";
+  $("ohje").textContent = V.ohje;
+  $("bases").closest("label").hidden = st.nk!=="tilastot";
+  $("minlab").textContent = (V.min==="KLYpo" ? "KLY pudotus" : V.min==="LY" ? "L yrit." : V.min) + " vähintään";
   const base = st.jk ? ALL.filter(p=>p.jk===st.jk) : ALL;
   leaders(base);
   const q=st.q.trim().toLowerCase();
-  let list = base.filter(p=>p.KLY>=st.min && (!q || p.nimi.toLowerCase().includes(q)));
+  let list = base.filter(p=>(p[V.min]||0)>=st.min && (!q || p.nimi.toLowerCase().includes(q)));
   const key = st.sort==="KandL" ? (p=>p.K*1000+p.L) : (p=>p[st.sort]);
   list.sort((a,b)=>{const x=key(a),y=key(b);
     if(typeof x==="string") return st.dir*x.localeCompare(y,"fi");
-    return st.dir*((x??-1)-(y??-1)) || b.YHT-a.YHT;});
-  $("head").innerHTML = COLS.map(c=>{
-    const sk=c.sortKey||c.k, s = st.sort===sk ? (st.dir<0?"descending":"ascending") : null;
-    const cls=(c.c||"").split(" ").filter(x=>x==="l"||x==="pb").join(" ");
-    return `<th class="${cls}" ${s?`aria-sort="${s}"`:""}>${c.nosort?`<button tabindex="-1" style="cursor:default">${c.t}</button>`:`<button data-s="${sk}">${c.t}</button>`}</th>`;}).join("");
-  $("body").innerHTML = list.length ? list.map((p,i)=>`<tr data-id="${p.id}" tabindex="0" class="${p.KLY<10?"small":""} ${p.id===st.sel?"sel":""}">
+    return st.dir*((x??-999)-(y??-999)) || b.YHT-a.YHT;});
+  const th = (k,t,cls="") => { const s = st.sort===k ? (st.dir<0?"descending":"ascending") : null;
+    return `<th class="${cls}" ${s?`aria-sort="${s}"`:""}><button data-s="${k}">${t}</button></th>`; };
+  $("head").innerHTML = `<th class="l"><button tabindex="-1" style="cursor:default">#</button></th>` + th("nimi","Pelaaja","l") + th("jk","Joukkue","l") +
+    cols.map(c=>th(c[0], c[1], (c[3]||"").split(" ").filter(x=>x==="pb").join(" "))).join("");
+  const pieni = p => (p[V.min]||0) < 10;
+  $("body").innerHTML = list.length ? list.map((p,i)=>`<tr data-id="${p.id}" tabindex="0" class="${pieni(p)?"small":""} ${p.id===st.sel?"sel":""}">
     <td class="rk l">${i+1}</td><td class="nm l">${p.nimi}</td><td class="jk l">${p.jk}</td>
-    <td>${p.O}</td><td>${p.K}+${p.L}</td><td>${p.T}</td><td class="yht">${p.YHT}</td>
-    <td>${p.KL}</td><td>${p.KLY}</td>
-    <td class="pc"><span class="bar"><b>${fmtP(p.KLp)}</b><i><b style="width:${p.KLp??0}%"></b></i></span></td>
-    ${[0,1,2,3].map(n=>`<td class="pb" title="${p["KL"+n]}/${p["KLY"+n]}">${fmtP(p["KLp"+n])}</td>`).join("")}
-  </tr>`).join("") : `<tr><td colspan="${COLS.length}" class="empty">Ei pelaajia näillä rajauksilla.</td></tr>`;
+    ${cols.map(c=>`<td class="${c[3]||""}">${c[2](p)}</td>`).join("")}
+  </tr>`).join("") : `<tr><td colspan="${cols.length+3}" class="empty">Ei pelaajia näillä rajauksilla.</td></tr>`;
   $("count").textContent = `${list.length} pelaajaa`;
   if(st.sel==null && list[0]) st.sel=list[0].id;
   card(ALL.find(p=>p.id===st.sel));
@@ -329,6 +360,7 @@ function card(p){
 
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;st.v=b.dataset.v;
   document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));save();load();});
+$("nakymat").addEventListener("click",e=>{const b=e.target.closest("button[data-n]");if(!b)return;st.nk=b.dataset.n;st.sort=VIEWS[st.nk].sort;st.dir=-1;st.sel=null;st.min=VIEWS[st.nk].def;$("minkly").value=st.min;$("minklyv").textContent=st.min;save();load();});
 $("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;st.jk=b.dataset.t==="Kaikki"?null:b.dataset.t;st.sel=null;buildChips();render();});
 $("q").addEventListener("input",e=>{st.q=e.target.value;render();});
 $("minkly").addEventListener("input",e=>{st.min=+e.target.value;$("minklyv").textContent=st.min;render();});
@@ -340,9 +372,10 @@ $("body").addEventListener("click",e=>{const tr=e.target.closest("tr[data-id]");
 $("body").addEventListener("keydown",e=>{if(e.key==="Enter"){const tr=e.target.closest("tr[data-id]");if(tr)pick(tr.dataset.id);}});
 $("leaders").addEventListener("click",e=>{const b=e.target.closest(".leader");if(b)pick(b.dataset.id);});
 
-try{ const q=new URLSearchParams(location.search).get("p"); if(q){ const id=+q; st.sel=id;
+try{ const q=new URLSearchParams(location.search).get("p"); if(q){ const id=+q; st.sel=id; st.nk="tilastot";
   if(!rows(st.v).some(r=>r.id===id)) st.v="kaikki"; } }catch(e){}
 document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===st.v));
+st.min=VIEWS[st.nk].def; $("minkly").value=st.min; $("minklyv").textContent=st.min;
 load();
 if(st.sel){ const el = window.innerWidth<1100 ? $("card") : document.querySelector(`tr[data-id="${st.sel}"]`); if(el) el.scrollIntoView({block: window.innerWidth<1100 ? "start" : "center"}); }
 </script>

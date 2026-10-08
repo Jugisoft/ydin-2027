@@ -1,0 +1,187 @@
+<!--TYYLI-->
+<style>
+/* Vire (vanhan YDINin Kuntopuntari + Suuntaus): joukkueiden ja pelaajien viimeiset N ottelua verrattuna koko jaksoon */
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:4px;width:fit-content;max-width:100%}
+.tabs button{font:600 .95rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:9px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.controls .lab{font:600 .72rem var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:16px}
+.tc{gap:10px}
+.tc .h{display:flex;align-items:center;gap:10px}
+.tc .h img,.tc .h .ph{width:38px;height:38px;object-fit:contain;flex:none}
+.tc .h .ph{border-radius:10px;background:var(--surface-2);display:grid;place-items:center;font:700 .8rem var(--font-display)}
+.tc .h b{font:700 1.3rem var(--font-display);line-height:1;display:block}
+.tc .h small{color:var(--muted);font-size:.8rem}
+.tc .h a{text-decoration:none}
+.tc .h a:hover b{color:var(--accent)}
+.status{margin-left:auto;font:700 .72rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.s5{background:color-mix(in srgb,var(--sand) 35%,transparent);color:var(--fg)}
+.s4{background:color-mix(in srgb,var(--win) 18%,transparent);color:var(--win)}
+.s3{background:var(--surface-2);color:var(--muted)}
+.s2{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.s1{background:color-mix(in srgb,var(--loss) 16%,transparent);color:var(--loss)}
+.games{display:flex;gap:4px;flex-wrap:wrap}
+.g{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:38px;height:40px;border-radius:7px;color:#fff;text-decoration:none;line-height:1.05}
+.g b{font:700 .8rem var(--font-display)}
+.g small{font:600 .62rem var(--font-display);opacity:.9}
+.g.p3{background:var(--win)} .g.p2{background:color-mix(in srgb,var(--win) 65%,#fff)} .g.p1{background:var(--warn)} .g.p0{background:var(--loss)}
+.g.po{outline:2px solid var(--sand);outline-offset:-2px}
+.m{display:grid;grid-template-columns:minmax(0,1fr) 62px 62px 62px;gap:6px;align-items:center;font-variant-numeric:tabular-nums;font-size:.88rem;padding:5px 0;border-bottom:1px solid var(--line)}
+.m:last-child{border-bottom:0}
+.m.hd{font:600 .66rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:0}
+.m span{text-align:right}
+.m span:first-child{text-align:left;color:var(--muted)}
+.m .d.up{color:var(--win)} .m .d.dn{color:var(--loss)} .m .d{font-weight:600}
+.trend{display:flex;align-items:center;gap:8px;font-size:.84rem;color:var(--muted)}
+.trend b{font:700 1.2rem var(--font-display)}
+.spark{width:100%;height:46px;display:block}
+.spark .z{stroke:var(--line)}
+.spark path{fill:none;stroke:var(--accent);stroke-width:1.8}
+.spark .w{fill:var(--accent)}
+.pgrid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:980px){.pgrid2{grid-template-columns:minmax(0,1fr)}}
+.pr{display:grid;grid-template-columns:34px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;font-variant-numeric:tabular-nums}
+.pr:last-child{border-bottom:0}
+a.pr:hover{background:var(--surface-2)}
+.pr .av{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:top;background:var(--surface-2);display:grid;place-items:center;font:700 .76rem var(--font-display);color:var(--accent)}
+.pr .n{min-width:0}
+.pr .n b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr .n small{color:var(--muted);font-size:.78rem}
+.pr .v{text-align:right;font-size:.82rem;color:var(--muted);white-space:nowrap}
+.pr .v b{display:block;font:700 1.05rem var(--font-display);color:var(--fg)}
+.pr .dd{font:700 1.15rem var(--font-display);min-width:58px;text-align:right}
+.pr .dd.up{color:var(--win)} .pr .dd.dn{color:var(--loss)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+</style>
+<!--SISALTO-->
+<div class="top">
+  <div><h1>Vire</h1><p>Miesten Superpesis <span id="kausi"></span> · viimeiset ottelut verrattuna koko jaksoon</p></div>
+  <span class="pill"><i></i><span id="kuvaus"></span></span>
+</div>
+
+<div class="controls">
+  <span class="lab">Ikkuna</span>
+  <div class="tabs" role="group" aria-label="Ikkuna" id="ikkuna">
+    <button data-n="3">3 ottelua</button><button data-n="5">5</button><button data-n="8">8</button>
+  </div>
+  <span class="lab">Jakso</span>
+  <div class="tabs" role="group" aria-label="Jakso" id="jakso">
+    <button data-j="kaikki">Koko kausi</button><button data-j="runko">Runkosarja</button>
+  </div>
+  <span class="lab">Järjestys</span>
+  <div class="tabs" role="group" aria-label="Järjestys" id="jarj">
+    <button data-s="vire">Vire</button><button data-s="suunta">Suunta</button><button data-s="sija">Sarjasija</button>
+  </div>
+</div>
+
+<div class="legend" id="legend"></div>
+<section class="tgrid" id="teams" aria-label="Joukkueiden vire"></section>
+
+<div class="pgrid2">
+  <section class="card"><div class="head"><h3>Nousussa</h3><span class="hint" id="hintUp"></span></div><div id="up"></div></section>
+  <section class="card"><div class="head"><h3>Laskussa</h3><span class="hint" id="hintDn"></span></div><div id="dn"></div></section>
+</div>
+<p class="note">Vire = voittoprosentti viimeisissä otteluissa (Liekeissä ≥ 80 %, Hyvässä vireessä ≥ 60 %, Tasainen ≥ 40 %, Haparoiva ≥ 20 %, muuten Kriisi). Suunta = juoksuero per ottelu ikkunassa miinus koko jakson juoksuero per ottelu. Kotiutus% ja torjunta% 3. pesältä. Juoksut ilman kotiutuskilpailua. Pelaajat: väh. 10 ottelua kaudella ja 10 kärkilyöntiyritystä ikkunassa. Lähde: pesistulokset.fi</p>
+
+<!--SKRIPTI-->
+<script>
+const D = __DATA__;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fi = (v,d=1) => v==null||!isFinite(v) ? "–" : v.toFixed(d).replace(".", ",");
+const pct = (a,b) => b ? 100*a/b : null;
+const LINK = new Set((window.YDIN_HAKU||[]).map(h=>h[0]));
+$("kausi").textContent = D.kausi;
+// [pvm, vaihe, vs, koti, voitto, pisteet, tulos, juoksut, päästetyt, KL3, KLY3, KL3_v, KLY3_v, KL, KLY, ottelu]
+const ot = r => ({pvm:r[0], vaihe:r[1], vs:r[2], koti:r[3], v:r[4], p:r[5], t:r[6], j:r[7], pj:r[8], k3:r[9], ky3:r[10], k3v:r[11], ky3v:r[12], kl:r[13], kly:r[14], id:r[15]});
+const st = {n:5, j:"kaikki", s:"vire"};
+try{ const s=JSON.parse(localStorage.getItem("ydin-vire")||"{}"); Object.assign(st, s); }catch(e){}
+const save = () => { try{ localStorage.setItem("ydin-vire", JSON.stringify(st)); }catch(e){} };
+
+function summa(L){
+  const s = {O:L.length, V:0, j:0, pj:0, k3:0, ky3:0, k3v:0, ky3v:0, kl:0, kly:0};
+  for(const o of L){ s.V+=o.v; for(const k of ["j","pj","k3","ky3","k3v","ky3v","kl","kly"]) s[k]+=o[k]; }
+  s.vp = pct(s.V,s.O); s.ero = s.O ? (s.j-s.pj)/s.O : 0; s.jo = s.O? s.j/s.O : null; s.pjo = s.O? s.pj/s.O : null;
+  s.kot = pct(s.k3,s.ky3); s.torj = s.ky3v ? 100*(s.ky3v-s.k3v)/s.ky3v : null; s.klp = pct(s.kl,s.kly);
+  return s;
+}
+const STATUS = vp => vp>=80?[5,"Liekeissä"]:vp>=60?[4,"Hyvässä vireessä"]:vp>=40?[3,"Tasainen"]:vp>=20?[2,"Haparoiva"]:[1,"Kriisi"];
+function delta(a,b,d=1,hyva=1){ if(a==null||b==null) return `<span class="d">–</span>`; const x=a-b; const c = Math.abs(x)<(d===1?0.5:0.05) ? "" : (x*hyva>0?"up":"dn");
+  return `<span class="d ${c}">${x>0?"+":""}${fi(x,d)}</span>`; }
+
+function joukkueet(){
+  const T = Object.entries(D.joukkueet).map(([t,L])=>{
+    const kaikki = L.map(ot).filter(o=>st.j==="kaikki" || o.vaihe===1);
+    if(kaikki.length < st.n) return null;
+    const ik = kaikki.slice(-st.n), K = summa(kaikki), I = summa(ik);
+    return {t, kaikki, ik, K, I, suunta: I.ero - K.ero, sija: D.sijat[t] || 99};
+  }).filter(Boolean);
+  T.sort((a,b)=> st.s==="vire" ? (b.I.vp-a.I.vp) || (b.I.ero-a.I.ero) : st.s==="suunta" ? b.suunta-a.suunta : a.sija-b.sija);
+  $("teams").innerHTML = T.map(x=>{
+    const [sl, sn] = STATUS(x.I.vp), lg = (D.logot||{})[x.t];
+    const games = x.ik.map(o=>{ const cls = o.vaihe===1 ? "p"+o.p : (o.v?"p3":"p0");
+      return `<a class="g ${cls} ${o.vaihe!==1?"po":""}" href="ottelut.html?o=${o.id}" title="${o.pvm} ${o.koti?"":"@ "}${esc(o.vs)} ${o.t}${o.vaihe===1?` · ${o.p} p`:" · pudotuspeli/karsinta"}"><b>${o.vaihe===1?o.p+" p":o.v?"V":"H"}</b><small>${esc(o.vs)}</small></a>`; }).join("");
+    // juoksuero-käyrä koko jaksolta, ikkuna korostettuna
+    const E = x.kaikki.map(o=>o.j-o.pj), W=300, H=46, mx=Math.max(4,...E.map(Math.abs));
+    const X=i=>4+i*(W-8)/Math.max(1,E.length-1), Y=v=>H/2 - v/mx*(H/2-4);
+    const path = "M"+E.map((v,i)=>`${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" L");
+    const alku = E.length - st.n;
+    const spark = `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Juoksuero otteluittain"><rect x="${X(alku)-3}" y="0" width="${W-X(alku)+3}" height="${H}" fill="var(--accent-soft)"/><line class="z" x1="0" x2="${W}" y1="${H/2}" y2="${H/2}"/><path d="${path}"/></svg>`;
+    const su = x.suunta, ar = su>1?"▲":su>0.3?"↗":su>-0.3?"→":su>-1?"↘":"▼";
+    return `<article class="card tc">
+      <div class="h">${lg?`<img src="${lg}" alt="">`:`<span class="ph">${esc(x.t.slice(0,3))}</span>`}
+        <a href="joukkueet.html?t=${encodeURIComponent(x.t)}"><b>${esc(x.t)}</b><small>${x.sija<99?`${x.sija}. runkosarjassa · `:""}${x.I.V}–${x.I.O-x.I.V} viim. ${st.n}</small></a>
+        <span class="status s${sl}">${sn}</span></div>
+      <div class="games">${games}</div>
+      ${spark}
+      <div class="trend"><b style="color:${su>0.3?"var(--win)":su<-0.3?"var(--loss)":"var(--muted)"}">${ar}</b> Suunta ${su>0?"+":""}${fi(su,2)} juoksua / ottelu</div>
+      <div>
+        <div class="m hd"><span></span><span>Viim. ${st.n}</span><span>Jakso</span><span>Ero</span></div>
+        <div class="m"><span>Voitto%</span><span>${fi(x.I.vp,0)}</span><span>${fi(x.K.vp,0)}</span>${delta(x.I.vp,x.K.vp,0)}</div>
+        <div class="m"><span>Juoksut / O</span><span>${fi(x.I.jo,2)}</span><span>${fi(x.K.jo,2)}</span>${delta(x.I.jo,x.K.jo,2)}</div>
+        <div class="m"><span>Päästetyt / O</span><span>${fi(x.I.pjo,2)}</span><span>${fi(x.K.pjo,2)}</span>${delta(x.I.pjo,x.K.pjo,2,-1)}</div>
+        <div class="m"><span>Kotiutus%</span><span>${fi(x.I.kot)}</span><span>${fi(x.K.kot)}</span>${delta(x.I.kot,x.K.kot)}</div>
+        <div class="m"><span>Torjunta%</span><span>${fi(x.I.torj)}</span><span>${fi(x.K.torj)}</span>${delta(x.I.torj,x.K.torj)}</div>
+        <div class="m"><span>KL%</span><span>${fi(x.I.klp)}</span><span>${fi(x.K.klp)}</span>${delta(x.I.klp,x.K.klp)}</div>
+      </div></article>`;
+  }).join("") || `<div class="empty"><b>Ei joukkueita</b>Liian vähän otteluita valitulla jaksolla.</div>`;
+}
+
+function pelaajat(){
+  const rows = [];
+  for(const [pid, P] of Object.entries(D.pelaajat)){
+    const L = D.joukkueet[P.jk] || [];
+    const o = P.o.filter(([i])=> st.j==="kaikki" || (L[i] && L[i][1]===1));
+    if(o.length < 10) continue;
+    const ik = o.slice(-st.n);
+    const sm = A => A.reduce((s,[,y,kl,kly])=>({y:s.y+y, kl:s.kl+kl, kly:s.kly+kly}),{y:0,kl:0,kly:0});
+    const K = sm(o), I = sm(ik);
+    if(I.kly < 10) continue;
+    const kp = pct(K.kl,K.kly), ip = pct(I.kl,I.kly);
+    rows.push({id:+pid, jk:P.jk, n:ik.length, kp, ip, d: ip-kp, yk:K.y/o.length, yi:I.y/ik.length, I});
+  }
+  const kuva = r => { const u=(D.kuvat||{})[String(r.id)], nm=(D.nimet||{})[String(r.id)]||"?"; const ini=esc(nm.split(" ").map(x=>x[0]).slice(0,2).join(""));
+    return u?`<img class="av" src="${u}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;av&quot;>${ini}</span>'">`:`<span class="av">${ini}</span>`; };
+  const rivi = r => { const tag = LINK.has(r.id) ? "a" : "div";
+    return `<${tag} class="pr" ${tag==="a"?`href="pelaajat.html?p=${r.id}"`:""}>${kuva(r)}<span class="n"><b>${esc(D.nimet[String(r.id)])}</b><small>${esc(r.jk)} · YHT/O ${fi(r.yi,1)} (kausi ${fi(r.yk,1)})</small></span>
+      <span class="v"><b>${fi(r.ip)}</b>kausi ${fi(r.kp)}</span><span class="dd ${r.d>0?"up":"dn"}">${r.d>0?"+":""}${fi(r.d)}</span></${tag}>`; };
+  const up = rows.slice().sort((a,b)=>b.d-a.d).slice(0,10), dn = rows.slice().sort((a,b)=>a.d-b.d).slice(0,10);
+  $("hintUp").textContent = $("hintDn").textContent = `KL% viim. ${st.n} ottelua vs. jakso`;
+  $("up").innerHTML = up.map(rivi).join(""); $("dn").innerHTML = dn.map(rivi).join("");
+}
+
+function render(){
+  document.querySelectorAll("#ikkuna button").forEach(b=>b.setAttribute("aria-pressed", +b.dataset.n===st.n));
+  document.querySelectorAll("#jakso button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.j===st.j));
+  document.querySelectorAll("#jarj button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===st.s));
+  $("kuvaus").textContent = `Viimeiset ${st.n} · ${st.j==="kaikki"?"koko kausi":"runkosarja"}`;
+  $("legend").innerHTML = `<span><i style="background:var(--win)"></i>3 p</span><span><i style="background:color-mix(in srgb,var(--win) 65%,#fff)"></i>2 p</span><span><i style="background:var(--warn)"></i>1 p</span><span><i style="background:var(--loss)"></i>0 p</span>${st.j==="kaikki"?`<span><i style="background:var(--surface);outline:2px solid var(--sand);outline-offset:-2px"></i>pudotuspeli / karsinta (V/H)</span>`:""}<span>Ruutu avaa ottelun · käyrä = juoksuero otteluittain, korostettu alue = ikkuna</span>`;
+  joukkueet(); pelaajat();
+}
+$("ikkuna").addEventListener("click",e=>{const b=e.target.closest("button[data-n]"); if(!b) return; st.n=+b.dataset.n; save(); render();});
+$("jakso").addEventListener("click",e=>{const b=e.target.closest("button[data-j]"); if(!b) return; st.j=b.dataset.j; save(); render();});
+$("jarj").addEventListener("click",e=>{const b=e.target.closest("button[data-s]"); if(!b) return; st.s=b.dataset.s; save(); render();});
+render();
+</script>

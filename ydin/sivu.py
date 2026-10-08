@@ -117,7 +117,7 @@ def pelaajat_data():
     for ph in ("runko", "jatko_ylempi", "jatko_alempi"):
         for t in lue(f"joukkueet_{KAUSI}_{ph}.json"):
             tm[t["id"]] = t["lyhenne"]
-    keys = ["O", "K", "L", "T", "KL", "KLY", "KL0", "KLY0", "KL1", "KLY1", "KL2", "KLY2", "KL3", "KLY3", "LV"]
+    keys = ["O", "K", "L", "T", "KL", "KLY", "KL0", "KLY0", "KL1", "KLY1", "KL2", "KLY2", "KL3", "KLY3", "LV", "LY", "TY"]
     vaiheet = {}
     for ph in ("runko", "jatko_ylempi", "jatko_alempi"):
         try:
@@ -277,6 +277,56 @@ def tulostaulut_data(haku_idt):
             "linkit": sorted(haku_idt & kaikki_id),
             "kuvat": {str(p): kuvat["pelaajat"][str(p)] for p in kaikki_id if str(p) in kuvat["pelaajat"]}, "logot": kuvat["logot"]}
 
+def vertailu_data():
+    """Vertailu-sivu: joukkueet (runkosarjataulukko + tunnusluvut, keskinäiset ottelut, historia) ja pelaajat (kuten Pelaajat-sivu)."""
+    k = koti_data(); pd = pelaajat_data(); tm = _tiimit()
+    tn = {}
+    for ph in ("runko", "jatko_ylempi", "jatko_alempi"):
+        try:
+            tn.update({t["lyhenne"]: t["nimi"] for t in lue(f"joukkueet_{KAUSI}_{ph}.json")})
+        except FileNotFoundError:
+            pass
+    jo = [{x: t[x] for x in ("lyh", "O", "V", "H", "P", "juoksut", "paastetyt", "kotiutus", "torjunta", "KL%", "KLpesat")} for t in k["taulukko"]]
+    ott = [[m["id"], m["pvm"][:10], m["vaihe"], tm.get(m["koti"], "?"), tm.get(m["vieras"], "?"), m["tulos"]]
+           for m in sorted(lue(f"ottelut_{KAUSI}.json"), key=lambda m: m["pvm"]) if m["vaihe"] in (1, 2, 3) and m["tulos"]]
+    return {"kausi": KAUSI, "joukkueet": jo, "tnimet": tn, "ottelut": ott, "jhist": k["jhist"], "logot": k["logot"],
+            "pelaajat": {x: pd[x] for x in ("kentat", "vaiheet", "historia", "hkentat", "kuvat")}}
+
+def vire_data():
+    """Vire-sivu: joukkueiden ja pelaajien ottelut aikajärjestyksessä (runkosarja, pudotuspelit, karsinnat).
+    Joukkue: [pvm, vaihe, vs, koti, voitto, sarjapisteet (vain runkosarja), tulos, juoksut, päästetyt, KL3, KLY3, KL3_v, KLY3_v, KL, KLY]
+    Pelaaja: {id: [[ottelun indeksi joukkueen listassa, YHT, KL, KLY], ...]} vain vähintään 10 ottelua pelanneet."""
+    tm = _tiimit()
+    ott = {m["id"]: m for m in lue(f"ottelut_{KAUSI}.json") if m["vaihe"] in (1, 2, 3) and m["tulos"]}
+    P, J = _otteluittain()
+    joukkueet = collections.defaultdict(list)
+    for r in sorted(J, key=lambda r: (ott.get(r["match_id"], {}).get("pvm", ""), r["match_id"])):
+        m = ott.get(r["match_id"])
+        if not m:
+            continue
+        a, b, lisa = tulos(m["tulos"]); koti = r["team_id"] == m["koti"]
+        oma, vast = (a, b) if koti else (b, a); voitto = int(oma > vast)
+        pw, pl = pisteet(a, b, lisa)
+        joukkueet[tm.get(r["team_id"], "?")].append([m["pvm"][:10], m["vaihe"], tm.get(r["opponent_team_id"], "?"), int(koti), voitto,
+            (pw if voitto else pl) if m["vaihe"] == 1 else None, f"{oma}–{vast}{lisa}", _i(r.get("runs")), _i(r.get("runs_opponent")),
+            _i(r.get("pe_total_b3")), _i(r.get("pe_tries_b3")), _i(r.get("pe_total_b3_opponent")), _i(r.get("pe_tries_b3_opponent")),
+            _i(r.get("pe_total")), _i(r.get("pe_tries_total")), r["match_id"]])
+    indeksi = {(t, x[15]): i for t, L in joukkueet.items() for i, x in enumerate(L)}
+    pel = collections.defaultdict(list); pjk = {}
+    for r in P:
+        t = tm.get(r["team_id"], "?"); i = indeksi.get((t, r["match_id"]))
+        if i is None:
+            continue
+        pel[r["player_id"]].append([i, _i(r.get("homeruns")) + _i(r.get("scorings")) + _i(r.get("runs")),
+                                    _i(r.get("batpe_total_succeeded")), _i(r.get("batpe_total_tries"))])
+        pjk[r["player_id"]] = t
+    nimet = _nimet(); kuvat = lue_kuvat()
+    pel = {pid: sorted(v) for pid, v in pel.items() if len(v) >= 10}
+    return {"kausi": KAUSI, "joukkueet": {t: [x[:15] + [x[15]] for x in L] for t, L in joukkueet.items()},
+            "pelaajat": {str(p): {"jk": pjk[p], "o": v} for p, v in pel.items()}, "nimet": {str(p): nimet.get(p, "?") for p in pel},
+            "kuvat": {str(p): kuvat["pelaajat"][str(p)] for p in pel if str(p) in kuvat["pelaajat"]}, "logot": kuvat["logot"],
+            "sijat": {t["lyh"]: i + 1 for i, t in enumerate(koti_data()["taulukko"])}}
+
 def lukkarit_data(haku_idt):
     """Lukkarit-sivu: aloittavan lukkarin ottelurivit kausilta 2023– (ks. ydin/lukkarit.py) + lukkareiden omat lyöntitilastot."""
     kaudet, kentat, nimet, pids = {}, None, {}, set()
@@ -314,13 +364,15 @@ IKONIT = {
     "ottelut": '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
     "joukkueet": '<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/>',
     "tulostaulut": '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',
+    "vire": '<path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/>',
+    "vertailu": '<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
     "lukkarit": '<circle cx="12" cy="6" r="3"/><path d="M12 9v6M8 21l4-6 4 6M6 12l6-2 6 2"/>',
     "sisalto": '<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/>',
 }
 # (avain, otsikko, tiedosto tai None = tulossa)
 VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("joukkueet", "Joukkueet", "joukkueet.html"),
-           ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"),
-           ("lukkarit", "Lukkarit", "lukkarit.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), None, ("sisalto", "Sisältö", None)]
+           ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"), ("vire", "Vire", "vire.html"),
+           ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), None, ("sisalto", "Sisältö", None)]
 
 def nav(nykyinen):
     osat = []
@@ -380,6 +432,8 @@ def main():
     print("pelaajat.html", rakenna("pelaajat.template.html", pd, "pelaajat.html", "YDIN 2027 Pelaajat", "pelaajat", **yht))
     print("ottelut.html", rakenna("ottelut.template.html", ottelut_data(), "ottelut.html", "YDIN 2027 Ottelut", "ottelut", **yht))
     print("tulostaulut.html", rakenna("tulostaulut.template.html", tulostaulut_data({h[0] for h in haku}), "tulostaulut.html", "YDIN 2027 Tulostaulut", "tulostaulut", **yht))
+    print("vire.html", rakenna("vire.template.html", vire_data(), "vire.html", "YDIN 2027 Vire", "vire", **yht))
+    print("vertailu.html", rakenna("vertailu.template.html", vertailu_data(), "vertailu.html", "YDIN 2027 Vertailu", "vertailu", **yht))
     print("lukkarit.html", rakenna("lukkarit.template.html", lukkarit_data({h[0] for h in haku}), "lukkarit.html", "YDIN 2027 Lukkarit", "lukkarit", **yht))
     print([(t["lyh"], t["P"]) for t in k["taulukko"]])
 

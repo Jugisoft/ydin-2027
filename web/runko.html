@@ -29,7 +29,8 @@
   --win:#4cc488;--loss:#ef7a72;--warn:#e3a94b;--good:#4cc488;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{min-height:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.45}
+html{overflow-x:clip}
+body{margin:0;overflow-x:clip;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.45}
 img{max-width:100%}
 [hidden]{display:none!important}
 a{color:inherit}
@@ -67,6 +68,7 @@ button{font:inherit;color:inherit}
 .pill{display:inline-flex;align-items:center;gap:6px;font:600 .8rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
 .pill i{width:8px;height:8px;border-radius:50%;background:var(--sand)}
 .band{background:var(--band);color:var(--band-fg);border-radius:var(--r);padding:16px;display:grid;grid-template-columns:minmax(220px,320px) minmax(0,1fr);gap:16px}
+.band > *{min-width:0}
 .eyebrow{font:600 .74rem var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--band-muted)}
 .cols{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:16px;align-items:start}
 .col{display:flex;flex-direction:column;gap:16px;min-width:0}
