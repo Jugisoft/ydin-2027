@@ -1,6 +1,6 @@
-"""Rajapintahaku. Linjaus (Jugi 3.10.2026): käytetään vain julkisesti tarjottua ottelu- ja
-lyöntivuorotason tilastodataa (stats-tool) ja otteluluetteloa – EI lyöntikohtaista tapahtumadataa.
-Koko kausi = muutama pyyntö. Kohtelias: viive ja uudelleenyritys."""
+"""Rajapintahaku. Linjaus (Jugi 3.10.2026, tarkennus 16.10.2026): tilastot stats-toolista ja otteluluettelosta
+(koko kausi = muutama pyyntö). Ottelutapahtumat haetaan vain kerran per päättynyt ottelu (ks. docs/linjaukset.md).
+Kohtelias: viive ja uudelleenyritys."""
 import time
 import requests
 
@@ -39,3 +39,7 @@ def pelaajat_otteluittain(season_series, phase):
 def joukkueet_otteluittain(season_series, phase):
     """Yksi rivi per joukkue per ottelu, mukana vastustajan luvut (_opponent)."""
     return _get(f"{API_V1}/stats-tool/teams?organizer=1&level=1&seasonSeries={season_series}&limit=20000&phase={phase}")
+
+def tapahtumat(ottelu_id):
+    """Ottelun tapahtumat (lyönnit kohtineen). Haetaan vain kerran per päättynyt ottelu, ks. ydin/tapahtumat.py."""
+    return _get(f"{API}/online/{int(ottelu_id)}/events?")

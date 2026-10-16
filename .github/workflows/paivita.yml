@@ -1,16 +1,16 @@
 name: Päivitä data
 on:
   schedule:
-    - cron: "5 19 * * *"   # 22.05 Suomen kesäaikaa (UTC+3)
-    - cron: "5 20 * * *"   # 22.05 Suomen talviaikaa (UTC+2)
+    - cron: "30 18 * * *"  # 21.30 Suomen kesäaikaa (UTC+3), Jugi 16.10.2026
+    - cron: "30 19 * * *"  # 21.30 Suomen talviaikaa (UTC+2); kesällä toinen ajo klo 22.30 hakee vain myöhään päättyneet
   push:
     branches: [main]
     paths: ["web/**", "ydin/**", "data/seuranta/**", ".github/workflows/**"]
   workflow_dispatch:
     inputs:
       kausi:
-        description: "Kausi"
-        default: "2026"
+        description: "Kausi (tyhjä = uusin)"
+        default: ""
 permissions:
   contents: write
   pages: write
@@ -29,14 +29,18 @@ jobs:
         with: { python-version: "3.12", cache: pip }
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
-      - run: python -m ydin.paivita --kausi ${{ github.event.inputs.kausi || '2026' }}
+      - run: python -m ydin.paivita ${{ github.event.inputs.kausi && format('--kausi {0}', github.event.inputs.kausi) || '' }}
+      - name: Ottelutapahtumat (1 haku / uusi päättynyt ottelu) ja lyöntikartat
+        run: |
+          python -m ydin.tapahtumat ${{ github.event.inputs.kausi && format('--kausi {0}', github.event.inputs.kausi) || '' }}
+          python -m ydin.lyonnit ${{ github.event.inputs.kausi && format('--kausi {0}', github.event.inputs.kausi) || '' }}
       - run: python -m ydin.historia
       - run: python -m ydin.lukkarit
       - name: Tallenna data
         run: |
           git config user.name "ydin-bot"
           git config user.email "ydin-bot@users.noreply.github.com"
-          git add data/out
+          git add data/out data/tapahtumat
           git diff --cached --quiet || git commit -m "Data päivitetty $(date -u +%Y-%m-%dT%H:%MZ)"
           git push
       - name: Rakenna sivusto

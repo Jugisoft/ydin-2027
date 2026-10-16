@@ -1,0 +1,1265 @@
+{
+"kausi": 2026,
+"tilanteet": [
+"0",
+"1",
+"2",
+"3",
+"1–2",
+"1–3",
+"2–3",
+"1–2–3"
+],
+"tulokset": [
+"kunnari",
+"juoksu",
+"laiton",
+"koppi",
+"palo",
+"haava",
+"eteni",
+"ei_edennyt",
+"muu"
+],
+"pelaajat": [
+{
+"id": 9645,
+"nimi": "Antton Peltomäki",
+"joukkue": "AA",
+"n": 328
+},
+{
+"id": 9467,
+"nimi": "Atte Kuosmanen",
+"joukkue": "AA",
+"n": 235
+},
+{
+"id": 14187,
+"nimi": "Eeli Hänninen",
+"joukkue": "AA",
+"n": 28
+},
+{
+"id": 11144,
+"nimi": "Elmeri Koivusalmi",
+"joukkue": "AA",
+"n": 529
+},
+{
+"id": 11720,
+"nimi": "Jali Hyttinen",
+"joukkue": "AA",
+"n": 143
+},
+{
+"id": 9761,
+"nimi": "Jere Peltomäki",
+"joukkue": "AA",
+"n": 190
+},
+{
+"id": 10177,
+"nimi": "Jiri Joukainen",
+"joukkue": "AA",
+"n": 254
+},
+{
+"id": 9825,
+"nimi": "Joona Peltokangas",
+"joukkue": "AA",
+"n": 293
+},
+{
+"id": 10436,
+"nimi": "Kimi Lassila",
+"joukkue": "AA",
+"n": 57
+},
+{
+"id": 7878,
+"nimi": "Matias Litmanen",
+"joukkue": "AA",
+"n": 532
+},
+{
+"id": 14185,
+"nimi": "Miika Etula",
+"joukkue": "AA",
+"n": 14
+},
+{
+"id": 7794,
+"nimi": "Mikael Penninkangas",
+"joukkue": "AA",
+"n": 359
+},
+{
+"id": 7789,
+"nimi": "Nestori Yli-Sissala",
+"joukkue": "AA",
+"n": 513
+},
+{
+"id": 18193,
+"nimi": "Niilo Isokangas",
+"joukkue": "AA",
+"n": 23
+},
+{
+"id": 9201,
+"nimi": "Niko Tuikka",
+"joukkue": "AA",
+"n": 421
+},
+{
+"id": 6875,
+"nimi": "Petteri Kortelainen",
+"joukkue": "AA",
+"n": 428
+},
+{
+"id": 9254,
+"nimi": "Seeti Surakka",
+"joukkue": "AA",
+"n": 214
+},
+{
+"id": 12903,
+"nimi": "Tiitu Uusitalo",
+"joukkue": "AA",
+"n": 6
+},
+{
+"id": 5814,
+"nimi": "Toni Marjamäki",
+"joukkue": "AA",
+"n": 498
+},
+{
+"id": 9387,
+"nimi": "Aappo Savikoski",
+"joukkue": "IPV",
+"n": 486
+},
+{
+"id": 8274,
+"nimi": "Ari Lankinen",
+"joukkue": "IPV",
+"n": 339
+},
+{
+"id": 12049,
+"nimi": "Artturi Niskala",
+"joukkue": "IPV",
+"n": 68
+},
+{
+"id": 9377,
+"nimi": "Justus Niemeläinen",
+"joukkue": "IPV",
+"n": 404
+},
+{
+"id": 10468,
+"nimi": "Kasperi Vehkaoja",
+"joukkue": "IPV",
+"n": 415
+},
+{
+"id": 7259,
+"nimi": "Konsta Hyötyläinen",
+"joukkue": "IPV",
+"n": 57
+},
+{
+"id": 9468,
+"nimi": "Leo Gardemeister",
+"joukkue": "IPV",
+"n": 386
+},
+{
+"id": 8384,
+"nimi": "Matias Kauppinen",
+"joukkue": "IPV",
+"n": 429
+},
+{
+"id": 10334,
+"nimi": "Pietu Vesterinen",
+"joukkue": "IPV",
+"n": 117
+},
+{
+"id": 10355,
+"nimi": "Roope Seppänen",
+"joukkue": "IPV",
+"n": 225
+},
+{
+"id": 11713,
+"nimi": "Santeri Pasi",
+"joukkue": "IPV",
+"n": 455
+},
+{
+"id": 12238,
+"nimi": "Toomas Häkkinen",
+"joukkue": "IPV",
+"n": 4
+},
+{
+"id": 9083,
+"nimi": "Valtteri Havukainen",
+"joukkue": "IPV",
+"n": 408
+},
+{
+"id": 7533,
+"nimi": "Ville-Veikko Olli",
+"joukkue": "IPV",
+"n": 470
+},
+{
+"id": 19000,
+"nimi": "Akseli Mäkinen",
+"joukkue": "JoMa",
+"n": 22
+},
+{
+"id": 11172,
+"nimi": "Elmeri Lonkainen",
+"joukkue": "JoMa",
+"n": 412
+},
+{
+"id": 5507,
+"nimi": "Iiro Kuosa",
+"joukkue": "JoMa",
+"n": 154
+},
+{
+"id": 8286,
+"nimi": "Joni Lehikoinen",
+"joukkue": "JoMa",
+"n": 491
+},
+{
+"id": 20452,
+"nimi": "Joosua Rättö",
+"joukkue": "JoMa",
+"n": 500
+},
+{
+"id": 4607,
+"nimi": "Juho Toivola",
+"joukkue": "JoMa",
+"n": 601
+},
+{
+"id": 9568,
+"nimi": "Kasperi Hämäläinen",
+"joukkue": "JoMa",
+"n": 395
+},
+{
+"id": 8416,
+"nimi": "Konsta Kettunen",
+"joukkue": "JoMa",
+"n": 443
+},
+{
+"id": 7723,
+"nimi": "Konsta Piironen",
+"joukkue": "JoMa",
+"n": 546
+},
+{
+"id": 11974,
+"nimi": "Niko Korhonen",
+"joukkue": "JoMa",
+"n": 654
+},
+{
+"id": 16423,
+"nimi": "Onni Hirvonen",
+"joukkue": "JoMa",
+"n": 31
+},
+{
+"id": 9532,
+"nimi": "Samuel Tirkkonen",
+"joukkue": "JoMa",
+"n": 468
+},
+{
+"id": 11421,
+"nimi": "Ukko Schroderus",
+"joukkue": "JoMa",
+"n": 500
+},
+{
+"id": 9393,
+"nimi": "Veeti Lankinen",
+"joukkue": "JoMa",
+"n": 179
+},
+{
+"id": 7013,
+"nimi": "Ville Kotro",
+"joukkue": "JoMa",
+"n": 63
+},
+{
+"id": 10262,
+"nimi": "Akseli Pitkänen",
+"joukkue": "KPL",
+"n": 390
+},
+{
+"id": 10346,
+"nimi": "Eemeli Laine",
+"joukkue": "KPL",
+"n": 547
+},
+{
+"id": 9939,
+"nimi": "Elias Pitkänen",
+"joukkue": "KPL",
+"n": 661
+},
+{
+"id": 8440,
+"nimi": "Elmeri Lieto",
+"joukkue": "KPL",
+"n": 619
+},
+{
+"id": 10912,
+"nimi": "Jasperi Luoma",
+"joukkue": "KPL",
+"n": 404
+},
+{
+"id": 2900,
+"nimi": "Jesse Eskelinen",
+"joukkue": "KPL",
+"n": 435
+},
+{
+"id": 8119,
+"nimi": "Patrik Vartama",
+"joukkue": "KPL",
+"n": 496
+},
+{
+"id": 6733,
+"nimi": "Patrik Wahlsten",
+"joukkue": "KPL",
+"n": 477
+},
+{
+"id": 10788,
+"nimi": "Perttu Kenttäaho",
+"joukkue": "KPL",
+"n": 424
+},
+{
+"id": 6140,
+"nimi": "Teemu Nikkanen",
+"joukkue": "KPL",
+"n": 606
+},
+{
+"id": 5713,
+"nimi": "Tommi Mäentausta",
+"joukkue": "KPL",
+"n": 441
+},
+{
+"id": 11716,
+"nimi": "Toni Tossavainen",
+"joukkue": "KPL",
+"n": 32
+},
+{
+"id": 8112,
+"nimi": "Valtteri Luoma",
+"joukkue": "KPL",
+"n": 175
+},
+{
+"id": 4017,
+"nimi": "Ville Pesu",
+"joukkue": "KPL",
+"n": 197
+},
+{
+"id": 13781,
+"nimi": "Aaro Ojanperä",
+"joukkue": "KeKi",
+"n": 299
+},
+{
+"id": 9143,
+"nimi": "Aatu Saastamoinen",
+"joukkue": "KeKi",
+"n": 337
+},
+{
+"id": 283,
+"nimi": "Arttu Ruuska",
+"joukkue": "KeKi",
+"n": 398
+},
+{
+"id": 15365,
+"nimi": "Ilkka Vimpari",
+"joukkue": "KeKi",
+"n": 81
+},
+{
+"id": 13244,
+"nimi": "Joona Haapanen",
+"joukkue": "KeKi",
+"n": 126
+},
+{
+"id": 9948,
+"nimi": "Lauri Vuollo",
+"joukkue": "KeKi",
+"n": 30
+},
+{
+"id": 7576,
+"nimi": "Markus Keski-Petäjä",
+"joukkue": "KeKi",
+"n": 422
+},
+{
+"id": 12047,
+"nimi": "Olli Heikkala",
+"joukkue": "KeKi",
+"n": 347
+},
+{
+"id": 5602,
+"nimi": "Ossi Meriläinen",
+"joukkue": "KeKi",
+"n": 419
+},
+{
+"id": 13236,
+"nimi": "Saku Saloranta",
+"joukkue": "KeKi",
+"n": 26
+},
+{
+"id": 9460,
+"nimi": "Teemu Hollanti",
+"joukkue": "KeKi",
+"n": 404
+},
+{
+"id": 10013,
+"nimi": "Tino Alaspää",
+"joukkue": "KeKi",
+"n": 376
+},
+{
+"id": 4542,
+"nimi": "Tuomas Jussila",
+"joukkue": "KeKi",
+"n": 519
+},
+{
+"id": 9081,
+"nimi": "Tuukka Etula",
+"joukkue": "KeKi",
+"n": 285
+},
+{
+"id": 8317,
+"nimi": "Tuukka Sarkkinen",
+"joukkue": "KeKi",
+"n": 501
+},
+{
+"id": 7267,
+"nimi": "Ville Väliaho",
+"joukkue": "KeKi",
+"n": 55
+},
+{
+"id": 7909,
+"nimi": "Aku Kettunen",
+"joukkue": "KiPa",
+"n": 475
+},
+{
+"id": 15697,
+"nimi": "Anssi Halttunen",
+"joukkue": "KiPa",
+"n": 85
+},
+{
+"id": 7929,
+"nimi": "Anttoni Jakobsson",
+"joukkue": "KiPa",
+"n": 346
+},
+{
+"id": 13282,
+"nimi": "Eeli Partanen",
+"joukkue": "KiPa",
+"n": 28
+},
+{
+"id": 13283,
+"nimi": "Elmo Partanen",
+"joukkue": "KiPa",
+"n": 73
+},
+{
+"id": 13611,
+"nimi": "Emppu Partanen",
+"joukkue": "KiPa",
+"n": 8
+},
+{
+"id": 3509,
+"nimi": "Janne Mäkelä",
+"joukkue": "KiPa",
+"n": 363
+},
+{
+"id": 10547,
+"nimi": "Jasperi Purmonen",
+"joukkue": "KiPa",
+"n": 27
+},
+{
+"id": 11603,
+"nimi": "Jiri Pippola",
+"joukkue": "KiPa",
+"n": 448
+},
+{
+"id": 11417,
+"nimi": "Jonne Matikainen",
+"joukkue": "KiPa",
+"n": 16
+},
+{
+"id": 7885,
+"nimi": "Juho Keinänen",
+"joukkue": "KiPa",
+"n": 374
+},
+{
+"id": 9472,
+"nimi": "Kasperi Kaksonen",
+"joukkue": "KiPa",
+"n": 240
+},
+{
+"id": 9528,
+"nimi": "Lassi Vasarainen",
+"joukkue": "KiPa",
+"n": 273
+},
+{
+"id": 11152,
+"nimi": "Niko Halttunen",
+"joukkue": "KiPa",
+"n": 14
+},
+{
+"id": 13284,
+"nimi": "Oiva Mämmi",
+"joukkue": "KiPa",
+"n": 9
+},
+{
+"id": 8518,
+"nimi": "Otto Kauppinen",
+"joukkue": "KiPa",
+"n": 445
+},
+{
+"id": 11550,
+"nimi": "Rasmus Surakka",
+"joukkue": "KiPa",
+"n": 220
+},
+{
+"id": 2254,
+"nimi": "Samu-Kalle Varonen",
+"joukkue": "KiPa",
+"n": 550
+},
+{
+"id": 16427,
+"nimi": "Sulo-Veikko Varonen",
+"joukkue": "KiPa",
+"n": 460
+},
+{
+"id": 10387,
+"nimi": "Topias Kaksonen",
+"joukkue": "KiPa",
+"n": 311
+},
+{
+"id": 8688,
+"nimi": "Aapeli Suvisalmi",
+"joukkue": "KoU",
+"n": 632
+},
+{
+"id": 14237,
+"nimi": "Aleksi Rauhala",
+"joukkue": "KoU",
+"n": 74
+},
+{
+"id": 15903,
+"nimi": "Eero Penttilä",
+"joukkue": "KoU",
+"n": 43
+},
+{
+"id": 11012,
+"nimi": "Eetu Heiniluoma",
+"joukkue": "KoU",
+"n": 188
+},
+{
+"id": 11330,
+"nimi": "Eetu Lehto",
+"joukkue": "KoU",
+"n": 479
+},
+{
+"id": 8322,
+"nimi": "Joona Anttila",
+"joukkue": "KoU",
+"n": 422
+},
+{
+"id": 8611,
+"nimi": "Joonas Riihimäki",
+"joukkue": "KoU",
+"n": 36
+},
+{
+"id": 10153,
+"nimi": "Justus Teppo",
+"joukkue": "KoU",
+"n": 327
+},
+{
+"id": 12527,
+"nimi": "Luukas Teppo",
+"joukkue": "KoU",
+"n": 242
+},
+{
+"id": 9997,
+"nimi": "Matias Rauhala",
+"joukkue": "KoU",
+"n": 535
+},
+{
+"id": 10919,
+"nimi": "Miki Likander",
+"joukkue": "KoU",
+"n": 431
+},
+{
+"id": 10533,
+"nimi": "Miska Mäkiviita",
+"joukkue": "KoU",
+"n": 470
+},
+{
+"id": 9064,
+"nimi": "Rasmus Teppo",
+"joukkue": "KoU",
+"n": 630
+},
+{
+"id": 11434,
+"nimi": "Santeri Salmela",
+"joukkue": "KoU",
+"n": 183
+},
+{
+"id": 10497,
+"nimi": "Tony Latvala",
+"joukkue": "KoU",
+"n": 373
+},
+{
+"id": 12398,
+"nimi": "Topi Kujala",
+"joukkue": "KoU",
+"n": 380
+},
+{
+"id": 9500,
+"nimi": "Aapo Komulainen",
+"joukkue": "Manse",
+"n": 364
+},
+{
+"id": 2941,
+"nimi": "Antti Korhonen",
+"joukkue": "Manse",
+"n": 626
+},
+{
+"id": 4911,
+"nimi": "Jukka-Pekka Vainionpää",
+"joukkue": "Manse",
+"n": 482
+},
+{
+"id": 6090,
+"nimi": "Juuso Myllyniemi",
+"joukkue": "Manse",
+"n": 446
+},
+{
+"id": 12158,
+"nimi": "Kaapo Mäkelä",
+"joukkue": "Manse",
+"n": 98
+},
+{
+"id": 11014,
+"nimi": "Matias Paananen",
+"joukkue": "Manse",
+"n": 445
+},
+{
+"id": 9527,
+"nimi": "Perttu Olli",
+"joukkue": "Manse",
+"n": 402
+},
+{
+"id": 8574,
+"nimi": "Perttu Ruuska",
+"joukkue": "Manse",
+"n": 606
+},
+{
+"id": 12526,
+"nimi": "Roni Rintala",
+"joukkue": "Manse",
+"n": 8
+},
+{
+"id": 8878,
+"nimi": "Severi Tikkakoski",
+"joukkue": "Manse",
+"n": 545
+},
+{
+"id": 6640,
+"nimi": "Simo Vainikainen",
+"joukkue": "Manse",
+"n": 592
+},
+{
+"id": 11350,
+"nimi": "Tino Heikkilä",
+"joukkue": "Manse",
+"n": 452
+},
+{
+"id": 11358,
+"nimi": "Toma Heikkilä",
+"joukkue": "Manse",
+"n": 322
+},
+{
+"id": 9542,
+"nimi": "Tomi Lehtonen",
+"joukkue": "Manse",
+"n": 464
+},
+{
+"id": 7918,
+"nimi": "Valtteri Hämäläinen",
+"joukkue": "Manse",
+"n": 179
+},
+{
+"id": 10560,
+"nimi": "Aatu Vuorinen",
+"joukkue": "PattU",
+"n": 294
+},
+{
+"id": 2861,
+"nimi": "Antti Karjaluoto",
+"joukkue": "PattU",
+"n": 552
+},
+{
+"id": 1444,
+"nimi": "Antti Kiiskinen",
+"joukkue": "PattU",
+"n": 418
+},
+{
+"id": 10350,
+"nimi": "Eemeli Mikkilä",
+"joukkue": "PattU",
+"n": 431
+},
+{
+"id": 7735,
+"nimi": "Jaakko Kemppainen",
+"joukkue": "PattU",
+"n": 54
+},
+{
+"id": 9904,
+"nimi": "Konsta Launonen",
+"joukkue": "PattU",
+"n": 368
+},
+{
+"id": 13852,
+"nimi": "Marcus Nissilä",
+"joukkue": "PattU",
+"n": 21
+},
+{
+"id": 8952,
+"nimi": "Martti Viitasalo",
+"joukkue": "PattU",
+"n": 447
+},
+{
+"id": 9986,
+"nimi": "Mikael Mäkelä",
+"joukkue": "PattU",
+"n": 435
+},
+{
+"id": 16348,
+"nimi": "Miska Laitila",
+"joukkue": "PattU",
+"n": 28
+},
+{
+"id": 7382,
+"nimi": "Onni Määttä",
+"joukkue": "PattU",
+"n": 389
+},
+{
+"id": 14100,
+"nimi": "Oskari Kauppinen",
+"joukkue": "PattU",
+"n": 15
+},
+{
+"id": 6778,
+"nimi": "Timo Hanhisalo",
+"joukkue": "PattU",
+"n": 6
+},
+{
+"id": 10289,
+"nimi": "Topi Still",
+"joukkue": "PattU",
+"n": 437
+},
+{
+"id": 11622,
+"nimi": "Veeti Venäläinen",
+"joukkue": "PattU",
+"n": 145
+},
+{
+"id": 10193,
+"nimi": "Vertti Kontinaho",
+"joukkue": "PattU",
+"n": 287
+},
+{
+"id": 10522,
+"nimi": "Vili Still",
+"joukkue": "PattU",
+"n": 435
+},
+{
+"id": 10359,
+"nimi": "Ville Nurkkala",
+"joukkue": "PattU",
+"n": 233
+},
+{
+"id": 10558,
+"nimi": "Eemil Salminen",
+"joukkue": "PuMu",
+"n": 49
+},
+{
+"id": 3393,
+"nimi": "Joona Mäkelä",
+"joukkue": "PuMu",
+"n": 37
+},
+{
+"id": 2708,
+"nimi": "Juha Puhtimäki",
+"joukkue": "PuMu",
+"n": 54
+},
+{
+"id": 2739,
+"nimi": "Juho Hacklin",
+"joukkue": "PuMu",
+"n": 41
+},
+{
+"id": 9391,
+"nimi": "Kaapo Kalmari",
+"joukkue": "PuMu",
+"n": 32
+},
+{
+"id": 8270,
+"nimi": "Kalle-Tapio Huusko",
+"joukkue": "PuMu",
+"n": 49
+},
+{
+"id": 8771,
+"nimi": "Leevi Lehto",
+"joukkue": "PuMu",
+"n": 13
+},
+{
+"id": 13187,
+"nimi": "Leon Haapsaari",
+"joukkue": "PuMu",
+"n": 19
+},
+{
+"id": 11335,
+"nimi": "Markus Hakala",
+"joukkue": "PuMu",
+"n": 37
+},
+{
+"id": 9343,
+"nimi": "Nooa Hoikka",
+"joukkue": "PuMu",
+"n": 34
+},
+{
+"id": 11351,
+"nimi": "Valtteri Savilahti",
+"joukkue": "PuMu",
+"n": 42
+},
+{
+"id": 9071,
+"nimi": "Ville Veittikoski",
+"joukkue": "PuMu",
+"n": 46
+},
+{
+"id": 11969,
+"nimi": "Aapo Hiltunen",
+"joukkue": "SoJy",
+"n": 572
+},
+{
+"id": 9666,
+"nimi": "Aleksanteri Huotari",
+"joukkue": "SoJy",
+"n": 610
+},
+{
+"id": 12289,
+"nimi": "Elias Kippola",
+"joukkue": "SoJy",
+"n": 20
+},
+{
+"id": 12933,
+"nimi": "Elmeri Iivonen",
+"joukkue": "SoJy",
+"n": 186
+},
+{
+"id": 9471,
+"nimi": "Elmeri Purmonen",
+"joukkue": "SoJy",
+"n": 539
+},
+{
+"id": 7806,
+"nimi": "Hannes Pekkinen",
+"joukkue": "SoJy",
+"n": 750
+},
+{
+"id": 9971,
+"nimi": "Iivari Vihanto",
+"joukkue": "SoJy",
+"n": 588
+},
+{
+"id": 6201,
+"nimi": "Jere Vikström",
+"joukkue": "SoJy",
+"n": 493
+},
+{
+"id": 5173,
+"nimi": "Jussi Korhonen",
+"joukkue": "SoJy",
+"n": 153
+},
+{
+"id": 9182,
+"nimi": "Kalle Kuosmanen",
+"joukkue": "SoJy",
+"n": 512
+},
+{
+"id": 13008,
+"nimi": "Pyry Kohonen",
+"joukkue": "SoJy",
+"n": 69
+},
+{
+"id": 10765,
+"nimi": "Reino Heikkinen",
+"joukkue": "SoJy",
+"n": 19
+},
+{
+"id": 1456,
+"nimi": "Roope Korhonen",
+"joukkue": "SoJy",
+"n": 408
+},
+{
+"id": 10559,
+"nimi": "Samuel Huotari",
+"joukkue": "SoJy",
+"n": 688
+},
+{
+"id": 10087,
+"nimi": "Veeti Kokko",
+"joukkue": "SoJy",
+"n": 311
+},
+{
+"id": 10950,
+"nimi": "Vertti Veittikoski",
+"joukkue": "SoJy",
+"n": 637
+},
+{
+"id": 12261,
+"nimi": "Vincent Kontturi",
+"joukkue": "SoJy",
+"n": 179
+},
+{
+"id": 10913,
+"nimi": "Aapo Kinnunen",
+"joukkue": "Tahko",
+"n": 329
+},
+{
+"id": 10434,
+"nimi": "Aaron Honkanen",
+"joukkue": "Tahko",
+"n": 18
+},
+{
+"id": 8612,
+"nimi": "Antti Kortteenperä",
+"joukkue": "Tahko",
+"n": 329
+},
+{
+"id": 8111,
+"nimi": "Eero Kuitunen",
+"joukkue": "Tahko",
+"n": 289
+},
+{
+"id": 4294,
+"nimi": "Juha Niemi",
+"joukkue": "Tahko",
+"n": 386
+},
+{
+"id": 9571,
+"nimi": "Luka Raesmaa",
+"joukkue": "Tahko",
+"n": 426
+},
+{
+"id": 11542,
+"nimi": "Miitri Pesonen",
+"joukkue": "Tahko",
+"n": 382
+},
+{
+"id": 12451,
+"nimi": "Oula Tanttu",
+"joukkue": "Tahko",
+"n": 28
+},
+{
+"id": 9724,
+"nimi": "Petteri Alanen",
+"joukkue": "Tahko",
+"n": 98
+},
+{
+"id": 12934,
+"nimi": "Samu Kyhyräinen",
+"joukkue": "Tahko",
+"n": 433
+},
+{
+"id": 7911,
+"nimi": "Santtu Patova",
+"joukkue": "Tahko",
+"n": 510
+},
+{
+"id": 7232,
+"nimi": "Teemu Nurmio",
+"joukkue": "Tahko",
+"n": 486
+},
+{
+"id": 10898,
+"nimi": "Teemu Rouhiainen",
+"joukkue": "Tahko",
+"n": 378
+},
+{
+"id": 7004,
+"nimi": "Valentin Ikonen",
+"joukkue": "Tahko",
+"n": 525
+},
+{
+"id": 10446,
+"nimi": "Veeti Kettunen",
+"joukkue": "Tahko",
+"n": 523
+},
+{
+"id": 12499,
+"nimi": "Akseli Huusko",
+"joukkue": "ViVe",
+"n": 28
+},
+{
+"id": 9940,
+"nimi": "Aleksi Lassila",
+"joukkue": "ViVe",
+"n": 618
+},
+{
+"id": 10369,
+"nimi": "Atte Kortehisto",
+"joukkue": "ViVe",
+"n": 486
+},
+{
+"id": 8573,
+"nimi": "Elmeri Anttila",
+"joukkue": "ViVe",
+"n": 670
+},
+{
+"id": 1315,
+"nimi": "Henri Puputti",
+"joukkue": "ViVe",
+"n": 643
+},
+{
+"id": 6311,
+"nimi": "Jere Saukko",
+"joukkue": "ViVe",
+"n": 426
+},
+{
+"id": 9754,
+"nimi": "Juho Heikkala",
+"joukkue": "ViVe",
+"n": 555
+},
+{
+"id": 10077,
+"nimi": "Lauri Vihriälä",
+"joukkue": "ViVe",
+"n": 481
+},
+{
+"id": 5653,
+"nimi": "Matias Rinta-aho",
+"joukkue": "ViVe",
+"n": 513
+},
+{
+"id": 6131,
+"nimi": "Mikko Kanala",
+"joukkue": "ViVe",
+"n": 431
+},
+{
+"id": 9082,
+"nimi": "Mikko Vihriälä",
+"joukkue": "ViVe",
+"n": 501
+},
+{
+"id": 5985,
+"nimi": "Severi Lassila",
+"joukkue": "ViVe",
+"n": 162
+},
+{
+"id": 18626,
+"nimi": "Topias Lönnmark",
+"joukkue": "ViVe",
+"n": 44
+},
+{
+"id": 10438,
+"nimi": "Veeti Kortehisto",
+"joukkue": "ViVe",
+"n": 382
+},
+{
+"id": 11676,
+"nimi": "Ville Soini",
+"joukkue": "ViVe",
+"n": 410
+}
+],
+"otteluita": 230,
+"lahde": "pesistulokset.fi ottelutapahtumat 2026",
+"kalibrointi": "x_m=(x-50)*0.525, y_m=(95-y)*1.06"
+}

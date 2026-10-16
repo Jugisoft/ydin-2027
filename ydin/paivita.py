@@ -13,7 +13,7 @@ def _kirjoita(nimi, data):
         json.dump(data, f, ensure_ascii=False, separators=(",", ":") if nimi.startswith("otteluittain") else None, indent=None if nimi.startswith("otteluittain") else 1, sort_keys=True)
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--kausi", type=int, default=2026); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--kausi", type=int, default=kaudet.uusin()); a = ap.parse_args()
     ss = kaudet.MSU[a.kausi]
     ott, maps = haku.ottelut(ss)
     tiimit = {t["id"]: {"nimi": t["value"].get("name"), "lyhenne": t["value"].get("shorthand")} for t in maps.get("team", [])}
