@@ -429,6 +429,14 @@ def rakenna(pohja, data, kohde, otsikko, valikko, haku, paivitetty):
         f.write(html)
     return len(html)
 
+def kirjoita_keskukselle(k):
+    """KPL Keskuksen joukkuesivun Yleiskuva lukee tämän (raw.githubusercontent.com): sama data kuin joukkueet.html."""
+    taulukko = [{x: t[x] for x in t if x not in ("vire", "pistekulku")} for t in k["taulukko"]]
+    d = {"kausi": k["kausi"], "paivitetty": k["paivitetty"], "taulukko": taulukko, "jhist": k["jhist"],
+         "pelaajat": k["pelaajat"], "kuvat": k["kuvat"], "logot": k["logot"]}
+    with open(os.path.join(OUT, "joukkueet_keskus.json"), "w", encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
+
 def main():
     k = koti_data()
     pd = pelaajat_data()
@@ -444,6 +452,7 @@ def main():
     except Exception:
         pv = k["paivitetty"]
     yht = dict(haku=haku, paivitetty=pv)
+    kirjoita_keskukselle(k)
     print("index.html", rakenna("koti.template.html", k, "index.html", "YDIN 2027 Koti", "koti", **yht))
     print("kausi-2026.html", rakenna("kausi2026.template.html", k, "kausi-2026.html", "YDIN 2027 Kausi 2026", "kausi", **yht))
     print("joukkueet.html", rakenna("joukkueet.template.html", k, "joukkueet.html", "YDIN 2027 Joukkueet", "joukkueet", **yht))
