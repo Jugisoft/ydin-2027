@@ -1,0 +1,2538 @@
+{
+ "kausi": 2027,
+ "pohja": 2026,
+ "seuranta_paivitetty": "25.10.2026 klo 20.50",
+ "parametrit": {
+  "kerroin_C": 1.02,
+  "korvaustaso": 0.278,
+  "sarja_juoksut": 5.72,
+  "lukkari_ka": 5.72,
+  "kokoonpano": 12,
+  "k_pelaaja": 8,
+  "k_lukkari": 15,
+  "painot": {
+   "2026": 1.0,
+   "2025": 0.6,
+   "2024": 0.35,
+   "2023": 0.2
+  }
+ },
+ "joukkueet": [
+  {
+   "joukkue": "ViVe",
+   "superpesis_edellinen": true,
+   "teh": 8.7,
+   "pa": 4.15,
+   "ero": 4.55,
+   "hyokkays_muutos": -0.28,
+   "lukkari_muutos": -0.0,
+   "muutos": -0.28,
+   "ennuste_teh": 8.42,
+   "ennuste_pa": 4.15,
+   "ennuste_ero": 4.26,
+   "lukkari_ed": "Ville Soini",
+   "lukkari": "Ville Soini",
+   "lukkari_ennuste": 4.66,
+   "kokoonpano": [
+    {
+     "id": "1315",
+     "nimi": "Henri Puputti",
+     "ennuste": 1.21,
+     "otos": 59.3,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8952",
+     "nimi": "Martti Viitasalo",
+     "ennuste": 0.87,
+     "otos": 68.5,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8573",
+     "nimi": "Elmeri Anttila",
+     "ennuste": 0.87,
+     "otos": 66.3,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "6131",
+     "nimi": "Mikko Kanala",
+     "ennuste": 0.83,
+     "otos": 51.5,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9940",
+     "nimi": "Aleksi Lassila",
+     "ennuste": 0.75,
+     "otos": 66.7,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "5653",
+     "nimi": "Matias Rinta-aho",
+     "ennuste": 0.71,
+     "otos": 53.5,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12047",
+     "nimi": "Olli Heikkala",
+     "ennuste": 0.62,
+     "otos": 57.2,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10369",
+     "nimi": "Atte Kortehisto",
+     "ennuste": 0.6,
+     "otos": 55.4,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9754",
+     "nimi": "Juho Heikkala",
+     "ennuste": 0.49,
+     "otos": 64.9,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10438",
+     "nimi": "Veeti Kortehisto",
+     "ennuste": 0.47,
+     "otos": 42.2,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11676",
+     "nimi": "Ville Soini",
+     "ennuste": 0.39,
+     "otos": 42.0,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10446",
+     "nimi": "Veeti Kettunen",
+     "ennuste": 0.34,
+     "otos": 68.0,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "8952",
+     "nimi": "Martti Viitasalo",
+     "ennuste": 0.87,
+     "otos": 68.5,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12047",
+     "nimi": "Olli Heikkala",
+     "ennuste": 0.62,
+     "otos": 57.2,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10446",
+     "nimi": "Veeti Kettunen",
+     "ennuste": 0.34,
+     "otos": 68.0,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "9082",
+     "nimi": "Mikko Vihriälä",
+     "ennuste": 0.76,
+     "otos": 62.9,
+     "joukkue": "ViVe",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "18626",
+     "nimi": "Topias Lönnmark",
+     "ennuste": 0.71,
+     "otos": 3.0,
+     "joukkue": "ViVe",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "6311",
+     "nimi": "Jere Saukko",
+     "ennuste": 0.55,
+     "otos": 52.5,
+     "joukkue": "ViVe",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "10077",
+     "nimi": "Lauri Vihriälä",
+     "ennuste": 0.47,
+     "otos": 64.2,
+     "joukkue": "ViVe",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [],
+   "sopimuksia": 14,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "KiPa",
+   "superpesis_edellinen": true,
+   "teh": 5.97,
+   "pa": 4.88,
+   "ero": 1.09,
+   "hyokkays_muutos": 0.61,
+   "lukkari_muutos": 0.08,
+   "muutos": 0.69,
+   "ennuste_teh": 6.58,
+   "ennuste_pa": 4.8,
+   "ennuste_ero": 1.78,
+   "lukkari_ed": "Rasmus Surakka",
+   "lukkari": "Rasmus Surakka",
+   "lukkari_ennuste": 5.4,
+   "kokoonpano": [
+    {
+     "id": "11603",
+     "nimi": "Jiri Pippola",
+     "ennuste": 1.0,
+     "otos": 67.9,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "3509",
+     "nimi": "Janne Mäkelä",
+     "ennuste": 0.96,
+     "otos": 57.5,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "2254",
+     "nimi": "Samu-Kalle Varonen",
+     "ennuste": 0.77,
+     "otos": 66.5,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7806",
+     "nimi": "Hannes Pekkinen",
+     "ennuste": 0.69,
+     "otos": 68.7,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9471",
+     "nimi": "Elmeri Purmonen",
+     "ennuste": 0.67,
+     "otos": 68.9,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8416",
+     "nimi": "Konsta Kettunen",
+     "ennuste": 0.57,
+     "otos": 61.2,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8518",
+     "nimi": "Otto Kauppinen",
+     "ennuste": 0.56,
+     "otos": 66.2,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7885",
+     "nimi": "Juho Keinänen",
+     "ennuste": 0.55,
+     "otos": 61.7,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9528",
+     "nimi": "Lassi Vasarainen",
+     "ennuste": 0.47,
+     "otos": 57.4,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7929",
+     "nimi": "Anttoni Jakobsson",
+     "ennuste": 0.39,
+     "otos": 66.1,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "16427",
+     "nimi": "Sulo-Veikko Varonen",
+     "ennuste": 0.37,
+     "otos": 52.6,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "15697",
+     "nimi": "Anssi Halttunen",
+     "ennuste": 0.28,
+     "otos": 9.0,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "7806",
+     "nimi": "Hannes Pekkinen",
+     "ennuste": 0.69,
+     "otos": 68.7,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9471",
+     "nimi": "Elmeri Purmonen",
+     "ennuste": 0.67,
+     "otos": 68.9,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8416",
+     "nimi": "Konsta Kettunen",
+     "ennuste": 0.57,
+     "otos": 61.2,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "7909",
+     "nimi": "Aku Kettunen",
+     "ennuste": 0.47,
+     "otos": 60.5,
+     "joukkue": "KiPa",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "9472",
+     "nimi": "Kasperi Kaksonen",
+     "ennuste": 0.44,
+     "otos": 49.8,
+     "joukkue": "KiPa",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "11152",
+     "nimi": "Niko Halttunen",
+     "ennuste": 0.36,
+     "otos": 7.0,
+     "joukkue": "KiPa",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "11417",
+     "nimi": "Jonne Matikainen",
+     "ennuste": 0.33,
+     "otos": 12.4,
+     "joukkue": "KiPa",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "13611",
+     "nimi": "Emppu Partanen",
+     "ennuste": 0.25,
+     "otos": 1.0,
+     "joukkue": "KiPa",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "10547",
+     "nimi": "Jasperi Purmonen",
+     "ennuste": 0.16,
+     "otos": 6.0,
+     "joukkue": "KiPa",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [],
+   "sopimuksia": 17,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "KPL",
+   "superpesis_edellinen": true,
+   "teh": 5.85,
+   "pa": 4.09,
+   "ero": 1.76,
+   "hyokkays_muutos": -0.04,
+   "lukkari_muutos": 0.04,
+   "muutos": -0.01,
+   "ennuste_teh": 5.8,
+   "ennuste_pa": 4.05,
+   "ennuste_ero": 1.75,
+   "lukkari_ed": "Elias Pitkänen",
+   "lukkari": "Elias Pitkänen",
+   "lukkari_ennuste": 4.2,
+   "kokoonpano": [
+    {
+     "id": "6733",
+     "nimi": "Patrik Wahlsten",
+     "ennuste": 1.26,
+     "otos": 66.9,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9939",
+     "nimi": "Elias Pitkänen",
+     "ennuste": 0.83,
+     "otos": 60.0,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "6140",
+     "nimi": "Teemu Nikkanen",
+     "ennuste": 0.83,
+     "otos": 65.1,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10346",
+     "nimi": "Eemeli Laine",
+     "ennuste": 0.7,
+     "otos": 61.1,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8440",
+     "nimi": "Elmeri Lieto",
+     "ennuste": 0.63,
+     "otos": 65.5,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8119",
+     "nimi": "Patrik Vartama",
+     "ennuste": 0.57,
+     "otos": 60.0,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "5713",
+     "nimi": "Tommi Mäentausta",
+     "ennuste": 0.4,
+     "otos": 63.4,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10912",
+     "nimi": "Jasperi Luoma",
+     "ennuste": 0.38,
+     "otos": 66.0,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "2900",
+     "nimi": "Jesse Eskelinen",
+     "ennuste": 0.38,
+     "otos": 57.1,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11716",
+     "nimi": "Toni Tossavainen",
+     "ennuste": 0.37,
+     "otos": 5.0,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10262",
+     "nimi": "Akseli Pitkänen",
+     "ennuste": 0.36,
+     "otos": 41.8,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10788",
+     "nimi": "Perttu Kenttäaho",
+     "ennuste": 0.31,
+     "otos": 48.6,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "11720",
+     "nimi": "Jali Hyttinen",
+     "ennuste": 0.29,
+     "otos": 12.2,
+     "joukkue": "AA",
+     "kokoonpanossa": false
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "4017",
+     "nimi": "Ville Pesu",
+     "ennuste": 0.36,
+     "otos": 40.9,
+     "joukkue": "KPL",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "8112",
+     "nimi": "Valtteri Luoma",
+     "ennuste": 0.14,
+     "otos": 64.1,
+     "joukkue": "KPL",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [
+    "Aleksi Haatainen",
+    "Jami Järvinen",
+    "Viljami Lammila",
+    "Anttoni Luoma",
+    "Ville Marttila",
+    "Joonas Mäkelä",
+    "Reino Saarinen",
+    "Otto Viinamäki"
+   ],
+   "sopimuksia": 21,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "Manse",
+   "superpesis_edellinen": true,
+   "teh": 7.18,
+   "pa": 5.18,
+   "ero": 2.0,
+   "hyokkays_muutos": -0.29,
+   "lukkari_muutos": -0.0,
+   "muutos": -0.29,
+   "ennuste_teh": 6.89,
+   "ennuste_pa": 5.18,
+   "ennuste_ero": 1.71,
+   "lukkari_ed": "Aapo Komulainen",
+   "lukkari": "Aapo Komulainen",
+   "lukkari_ennuste": 5.1,
+   "kokoonpano": [
+    {
+     "id": "8574",
+     "nimi": "Perttu Ruuska",
+     "ennuste": 1.29,
+     "otos": 68.9,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "4911",
+     "nimi": "Jukka-Pekka Vainionpää",
+     "ennuste": 1.13,
+     "otos": 66.5,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "2941",
+     "nimi": "Antti Korhonen",
+     "ennuste": 0.87,
+     "otos": 68.9,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8878",
+     "nimi": "Severi Tikkakoski",
+     "ennuste": 0.76,
+     "otos": 67.4,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "6640",
+     "nimi": "Simo Vainikainen",
+     "ennuste": 0.7,
+     "otos": 62.6,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9527",
+     "nimi": "Perttu Olli",
+     "ennuste": 0.58,
+     "otos": 63.3,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11350",
+     "nimi": "Tino Heikkilä",
+     "ennuste": 0.49,
+     "otos": 39.7,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9542",
+     "nimi": "Tomi Lehtonen",
+     "ennuste": 0.39,
+     "otos": 66.9,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9500",
+     "nimi": "Aapo Komulainen",
+     "ennuste": 0.36,
+     "otos": 68.7,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11014",
+     "nimi": "Matias Paananen",
+     "ennuste": 0.28,
+     "otos": 40.4,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11358",
+     "nimi": "Toma Heikkilä",
+     "ennuste": 0.26,
+     "otos": 26.2,
+     "joukkue": "KoU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12526",
+     "nimi": "Roni Rintala",
+     "ennuste": 0.25,
+     "otos": 1.0,
+     "joukkue": "Manse",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "11358",
+     "nimi": "Toma Heikkilä",
+     "ennuste": 0.26,
+     "otos": 26.2,
+     "joukkue": "KoU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12400",
+     "nimi": "Niklas Mantila",
+     "ennuste": 0.2,
+     "otos": 3.0,
+     "joukkue": null,
+     "kokoonpanossa": false
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "6090",
+     "nimi": "Juuso Myllyniemi",
+     "ennuste": 0.55,
+     "otos": 59.3,
+     "joukkue": "Manse",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "7918",
+     "nimi": "Valtteri Hämäläinen",
+     "ennuste": 0.16,
+     "otos": 47.2,
+     "joukkue": "Manse",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [],
+   "sopimuksia": 14,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "SoJy",
+   "superpesis_edellinen": true,
+   "teh": 6.73,
+   "pa": 4.21,
+   "ero": 2.52,
+   "hyokkays_muutos": -1.22,
+   "lukkari_muutos": -0.14,
+   "muutos": -1.36,
+   "ennuste_teh": 5.51,
+   "ennuste_pa": 4.35,
+   "ennuste_ero": 1.15,
+   "lukkari_ed": "Elmeri Iivonen",
+   "lukkari": "Elmeri Iivonen",
+   "lukkari_ennuste": 6.21,
+   "kokoonpano": [
+    {
+     "id": "11969",
+     "nimi": "Aapo Hiltunen",
+     "ennuste": 0.88,
+     "otos": 63.8,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9666",
+     "nimi": "Aleksanteri Huotari",
+     "ennuste": 0.68,
+     "otos": 68.5,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10950",
+     "nimi": "Vertti Veittikoski",
+     "ennuste": 0.6,
+     "otos": 55.4,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9971",
+     "nimi": "Iivari Vihanto",
+     "ennuste": 0.59,
+     "otos": 65.7,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10559",
+     "nimi": "Samuel Huotari",
+     "ennuste": 0.56,
+     "otos": 62.9,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11974",
+     "nimi": "Niko Korhonen",
+     "ennuste": 0.54,
+     "otos": 66.1,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "6201",
+     "nimi": "Jere Vikström",
+     "ennuste": 0.53,
+     "otos": 57.6,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9182",
+     "nimi": "Kalle Kuosmanen",
+     "ennuste": 0.53,
+     "otos": 54.9,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10765",
+     "nimi": "Reino Heikkinen",
+     "ennuste": 0.42,
+     "otos": 5.0,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10468",
+     "nimi": "Kasperi Vehkaoja",
+     "ennuste": 0.39,
+     "otos": 38.4,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11542",
+     "nimi": "Miitri Pesonen",
+     "ennuste": 0.39,
+     "otos": 62.9,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12261",
+     "nimi": "Vincent Kontturi",
+     "ennuste": 0.35,
+     "otos": 17.4,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "10950",
+     "nimi": "Vertti Veittikoski",
+     "ennuste": 0.6,
+     "otos": 55.4,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11974",
+     "nimi": "Niko Korhonen",
+     "ennuste": 0.54,
+     "otos": 66.1,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10468",
+     "nimi": "Kasperi Vehkaoja",
+     "ennuste": 0.39,
+     "otos": 38.4,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11542",
+     "nimi": "Miitri Pesonen",
+     "ennuste": 0.39,
+     "otos": 62.9,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8274",
+     "nimi": "Ari Lankinen",
+     "ennuste": 0.24,
+     "otos": 51.6,
+     "joukkue": "IPV",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "12049",
+     "nimi": "Artturi Niskala",
+     "ennuste": 0.1,
+     "otos": 13.6,
+     "joukkue": "IPV",
+     "kokoonpanossa": false
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "1456",
+     "nimi": "Roope Korhonen",
+     "ennuste": 1.32,
+     "otos": 53.9,
+     "joukkue": "SoJy",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "7806",
+     "nimi": "Hannes Pekkinen",
+     "ennuste": 0.69,
+     "otos": 68.7,
+     "joukkue": "SoJy",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "9471",
+     "nimi": "Elmeri Purmonen",
+     "ennuste": 0.67,
+     "otos": 68.9,
+     "joukkue": "SoJy",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "10087",
+     "nimi": "Veeti Kokko",
+     "ennuste": 0.47,
+     "otos": 56.9,
+     "joukkue": "SoJy",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "12289",
+     "nimi": "Elias Kippola",
+     "ennuste": 0.22,
+     "otos": 2.2,
+     "joukkue": "SoJy",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [
+    "Atte Pelkonen"
+   ],
+   "sopimuksia": 18,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "Tahko",
+   "superpesis_edellinen": true,
+   "teh": 5.67,
+   "pa": 4.55,
+   "ero": 1.12,
+   "hyokkays_muutos": 0.02,
+   "lukkari_muutos": -0.77,
+   "muutos": -0.76,
+   "ennuste_teh": 5.69,
+   "ennuste_pa": 5.32,
+   "ennuste_ero": 0.37,
+   "lukkari_ed": "Petteri Alanen",
+   "lukkari": "Aaron Honkanen",
+   "lukkari_ennuste": 5.93,
+   "kokoonpano": [
+    {
+     "id": "7533",
+     "nimi": "Ville-Veikko Olli",
+     "ennuste": 0.88,
+     "otos": 67.3,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7232",
+     "nimi": "Teemu Nurmio",
+     "ennuste": 0.68,
+     "otos": 66.1,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7004",
+     "nimi": "Valentin Ikonen",
+     "ennuste": 0.65,
+     "otos": 65.8,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7911",
+     "nimi": "Santtu Patova",
+     "ennuste": 0.63,
+     "otos": 66.5,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10913",
+     "nimi": "Aapo Kinnunen",
+     "ennuste": 0.43,
+     "otos": 42.6,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10898",
+     "nimi": "Teemu Rouhiainen",
+     "ennuste": 0.41,
+     "otos": 54.9,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9571",
+     "nimi": "Luka Raesmaa",
+     "ennuste": 0.39,
+     "otos": 65.8,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9143",
+     "nimi": "Aatu Saastamoinen",
+     "ennuste": 0.34,
+     "otos": 60.1,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12934",
+     "nimi": "Samu Kyhyräinen",
+     "ennuste": 0.34,
+     "otos": 60.8,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10434",
+     "nimi": "Aaron Honkanen",
+     "ennuste": 0.32,
+     "otos": 5.2,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10177",
+     "nimi": "Jiri Joukainen",
+     "ennuste": 0.29,
+     "otos": 27.8,
+     "joukkue": "AA",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8612",
+     "nimi": "Antti Kortteenperä",
+     "ennuste": 0.27,
+     "otos": 62.1,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "7533",
+     "nimi": "Ville-Veikko Olli",
+     "ennuste": 0.88,
+     "otos": 67.3,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9143",
+     "nimi": "Aatu Saastamoinen",
+     "ennuste": 0.34,
+     "otos": 60.1,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10177",
+     "nimi": "Jiri Joukainen",
+     "ennuste": 0.29,
+     "otos": 27.8,
+     "joukkue": "AA",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11330",
+     "nimi": "Eetu Lehto",
+     "ennuste": 0.23,
+     "otos": 32.0,
+     "joukkue": "KoU",
+     "kokoonpanossa": false
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "4294",
+     "nimi": "Juha Niemi",
+     "ennuste": 0.7,
+     "otos": 67.8,
+     "joukkue": "Tahko",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "11542",
+     "nimi": "Miitri Pesonen",
+     "ennuste": 0.39,
+     "otos": 62.9,
+     "joukkue": "Tahko",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "8111",
+     "nimi": "Eero Kuitunen",
+     "ennuste": 0.34,
+     "otos": 53.5,
+     "joukkue": "Tahko",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "10446",
+     "nimi": "Veeti Kettunen",
+     "ennuste": 0.34,
+     "otos": 68.0,
+     "joukkue": "Tahko",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "9724",
+     "nimi": "Petteri Alanen",
+     "ennuste": 0.15,
+     "otos": 61.2,
+     "joukkue": "Tahko",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [
+    "Paavo Lehto"
+   ],
+   "sopimuksia": 15,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "JoMa",
+   "superpesis_edellinen": true,
+   "teh": 4.97,
+   "pa": 4.39,
+   "ero": 0.58,
+   "hyokkays_muutos": -0.34,
+   "lukkari_muutos": 0.02,
+   "muutos": -0.32,
+   "ennuste_teh": 4.63,
+   "ennuste_pa": 4.37,
+   "ennuste_ero": 0.26,
+   "lukkari_ed": "Ukko Schroderus",
+   "lukkari": "Ukko Schroderus",
+   "lukkari_ennuste": 4.98,
+   "kokoonpano": [
+    {
+     "id": "4607",
+     "nimi": "Juho Toivola",
+     "ennuste": 1.08,
+     "otos": 67.9,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "20452",
+     "nimi": "Joosua Rättö",
+     "ennuste": 0.84,
+     "otos": 61.3,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9568",
+     "nimi": "Kasperi Hämäläinen",
+     "ennuste": 0.57,
+     "otos": 62.4,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7723",
+     "nimi": "Konsta Piironen",
+     "ennuste": 0.55,
+     "otos": 64.9,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10077",
+     "nimi": "Lauri Vihriälä",
+     "ennuste": 0.47,
+     "otos": 64.2,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9532",
+     "nimi": "Samuel Tirkkonen",
+     "ennuste": 0.44,
+     "otos": 61.7,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11421",
+     "nimi": "Ukko Schroderus",
+     "ennuste": 0.33,
+     "otos": 43.4,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11179",
+     "nimi": "Mikael Virkkala",
+     "ennuste": 0.29,
+     "otos": 2.8,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8286",
+     "nimi": "Joni Lehikoinen",
+     "ennuste": 0.29,
+     "otos": 67.7,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "16423",
+     "nimi": "Onni Hirvonen",
+     "ennuste": 0.28,
+     "otos": 7.4,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "19000",
+     "nimi": "Akseli Mäkinen",
+     "ennuste": 0.27,
+     "otos": 2.0,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11172",
+     "nimi": "Elmeri Lonkainen",
+     "ennuste": 0.25,
+     "otos": 40.3,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "10077",
+     "nimi": "Lauri Vihriälä",
+     "ennuste": 0.47,
+     "otos": 64.2,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11179",
+     "nimi": "Mikael Virkkala",
+     "ennuste": 0.29,
+     "otos": 2.8,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "16423",
+     "nimi": "Onni Hirvonen",
+     "ennuste": 0.28,
+     "otos": 7.4,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "8416",
+     "nimi": "Konsta Kettunen",
+     "ennuste": 0.57,
+     "otos": 61.2,
+     "joukkue": "JoMa",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "11974",
+     "nimi": "Niko Korhonen",
+     "ennuste": 0.54,
+     "otos": 66.1,
+     "joukkue": "JoMa",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "9393",
+     "nimi": "Veeti Lankinen",
+     "ennuste": 0.27,
+     "otos": 31.9,
+     "joukkue": "JoMa",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "7013",
+     "nimi": "Ville Kotro",
+     "ennuste": 0.1,
+     "otos": 62.7,
+     "joukkue": "JoMa",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [
+    "Aatu Mehtätalo",
+    "Aapo Mononen",
+    "Tiitus Hirvonen",
+    "Kalle Antikainen"
+   ],
+   "sopimuksia": 18,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "PattU",
+   "superpesis_edellinen": true,
+   "teh": 5.3,
+   "pa": 5.67,
+   "ero": -0.36,
+   "hyokkays_muutos": -0.66,
+   "lukkari_muutos": -0.0,
+   "muutos": -0.66,
+   "ennuste_teh": 4.65,
+   "ennuste_pa": 5.67,
+   "ennuste_ero": -1.02,
+   "lukkari_ed": "Topi Still",
+   "lukkari": "Topi Still",
+   "lukkari_ennuste": 6.41,
+   "kokoonpano": [
+    {
+     "id": "9986",
+     "nimi": "Mikael Mäkelä",
+     "ennuste": 0.76,
+     "otos": 54.0,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10350",
+     "nimi": "Eemeli Mikkilä",
+     "ennuste": 0.66,
+     "otos": 51.8,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10193",
+     "nimi": "Vertti Kontinaho",
+     "ennuste": 0.61,
+     "otos": 22.4,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "2861",
+     "nimi": "Antti Karjaluoto",
+     "ennuste": 0.51,
+     "otos": 67.6,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9904",
+     "nimi": "Konsta Launonen",
+     "ennuste": 0.47,
+     "otos": 45.1,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11144",
+     "nimi": "Elmeri Koivusalmi",
+     "ennuste": 0.44,
+     "otos": 68.5,
+     "joukkue": "AA",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10289",
+     "nimi": "Topi Still",
+     "ennuste": 0.36,
+     "otos": 68.1,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "1444",
+     "nimi": "Antti Kiiskinen",
+     "ennuste": 0.32,
+     "otos": 61.6,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10522",
+     "nimi": "Vili Still",
+     "ennuste": 0.31,
+     "otos": 56.9,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9071",
+     "nimi": "Ville Veittikoski",
+     "ennuste": 0.29,
+     "otos": 24.8,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12380",
+     "nimi": "Niilo  Isoherranen",
+     "ennuste": 0.21,
+     "otos": 2.4,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "16348",
+     "nimi": "Miska Laitila",
+     "ennuste": 0.2,
+     "otos": 5.6,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "11144",
+     "nimi": "Elmeri Koivusalmi",
+     "ennuste": 0.44,
+     "otos": 68.5,
+     "joukkue": "AA",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9071",
+     "nimi": "Ville Veittikoski",
+     "ennuste": 0.29,
+     "otos": 24.8,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12380",
+     "nimi": "Niilo  Isoherranen",
+     "ennuste": 0.21,
+     "otos": 2.4,
+     "joukkue": null,
+     "kokoonpanossa": true
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "8952",
+     "nimi": "Martti Viitasalo",
+     "ennuste": 0.87,
+     "otos": 68.5,
+     "joukkue": "PattU",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "7382",
+     "nimi": "Onni Määttä",
+     "ennuste": 0.43,
+     "otos": 55.4,
+     "joukkue": "PattU",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "16423",
+     "nimi": "Onni Hirvonen",
+     "ennuste": 0.28,
+     "otos": 7.4,
+     "joukkue": "PattU",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "14100",
+     "nimi": "Oskari  Kauppinen",
+     "ennuste": 0.22,
+     "otos": 2.0,
+     "joukkue": "PattU",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "6778",
+     "nimi": "Timo Hanhisalo",
+     "ennuste": 0.2,
+     "otos": 3.0,
+     "joukkue": "PattU",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "7735",
+     "nimi": "Jaakko Kemppainen",
+     "ennuste": 0.13,
+     "otos": 26.0,
+     "joukkue": "PattU",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [
+    "Artturi Ahtimaa"
+   ],
+   "sopimuksia": 17,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "IPV",
+   "superpesis_edellinen": true,
+   "teh": 4.61,
+   "pa": 5.82,
+   "ero": -1.21,
+   "hyokkays_muutos": -0.11,
+   "lukkari_muutos": -0.0,
+   "muutos": -0.11,
+   "ennuste_teh": 4.49,
+   "ennuste_pa": 5.82,
+   "ennuste_ero": -1.33,
+   "lukkari_ed": "Pietu Vesterinen",
+   "lukkari": "Pietu Vesterinen",
+   "lukkari_ennuste": 6.15,
+   "kokoonpano": [
+    {
+     "id": "1414",
+     "nimi": "Juuso Keski-Koukkari",
+     "ennuste": 0.66,
+     "otos": 13.5,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9387",
+     "nimi": "Aappo Savikoski",
+     "ennuste": 0.52,
+     "otos": 62.3,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7878",
+     "nimi": "Matias Litmanen",
+     "ennuste": 0.48,
+     "otos": 56.4,
+     "joukkue": "AA",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9472",
+     "nimi": "Kasperi Kaksonen",
+     "ennuste": 0.44,
+     "otos": 49.8,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9377",
+     "nimi": "Justus Niemeläinen",
+     "ennuste": 0.42,
+     "otos": 62.2,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8384",
+     "nimi": "Matias Kauppinen",
+     "ennuste": 0.4,
+     "otos": 67.8,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10175",
+     "nimi": "Elias Lahti",
+     "ennuste": 0.37,
+     "otos": 28.6,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9468",
+     "nimi": "Leo Gardemeister",
+     "ennuste": 0.33,
+     "otos": 50.6,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9083",
+     "nimi": "Valtteri Havukainen",
+     "ennuste": 0.32,
+     "otos": 52.6,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11713",
+     "nimi": "Santeri Pasi",
+     "ennuste": 0.31,
+     "otos": 49.1,
+     "joukkue": "IPV",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10092",
+     "nimi": "Roope Räsänen",
+     "ennuste": 0.28,
+     "otos": 1.8,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9393",
+     "nimi": "Veeti Lankinen",
+     "ennuste": 0.27,
+     "otos": 31.9,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "1414",
+     "nimi": "Juuso Keski-Koukkari",
+     "ennuste": 0.66,
+     "otos": 13.5,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7878",
+     "nimi": "Matias Litmanen",
+     "ennuste": 0.48,
+     "otos": 56.4,
+     "joukkue": "AA",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9472",
+     "nimi": "Kasperi Kaksonen",
+     "ennuste": 0.44,
+     "otos": 49.8,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10175",
+     "nimi": "Elias Lahti",
+     "ennuste": 0.37,
+     "otos": 28.6,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10092",
+     "nimi": "Roope Räsänen",
+     "ennuste": 0.28,
+     "otos": 1.8,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9393",
+     "nimi": "Veeti Lankinen",
+     "ennuste": 0.27,
+     "otos": 31.9,
+     "joukkue": "JoMa",
+     "kokoonpanossa": true
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "7533",
+     "nimi": "Ville-Veikko Olli",
+     "ennuste": 0.88,
+     "otos": 67.3,
+     "joukkue": "IPV",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "10950",
+     "nimi": "Vertti Veittikoski",
+     "ennuste": 0.6,
+     "otos": 55.4,
+     "joukkue": "IPV",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "10468",
+     "nimi": "Kasperi Vehkaoja",
+     "ennuste": 0.39,
+     "otos": 38.4,
+     "joukkue": "IPV",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "7259",
+     "nimi": "Konsta Hyötyläinen",
+     "ennuste": 0.25,
+     "otos": 28.1,
+     "joukkue": "IPV",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "12238",
+     "nimi": "Toomas Häkkinen",
+     "ennuste": 0.25,
+     "otos": 1.0,
+     "joukkue": "IPV",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "8274",
+     "nimi": "Ari Lankinen",
+     "ennuste": 0.24,
+     "otos": 51.6,
+     "joukkue": "IPV",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "12049",
+     "nimi": "Artturi Niskala",
+     "ennuste": 0.1,
+     "otos": 13.6,
+     "joukkue": "IPV",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [
+    "Rasmus Seppänen"
+   ],
+   "sopimuksia": 15,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "PuMu",
+   "superpesis_edellinen": false,
+   "teh": null,
+   "pa": null,
+   "ero": null,
+   "hyokkays_muutos": null,
+   "lukkari_muutos": null,
+   "muutos": null,
+   "ennuste_teh": 3.58,
+   "ennuste_pa": 5.1,
+   "ennuste_ero": -1.52,
+   "lukkari_ed": null,
+   "lukkari": "Petteri Alanen",
+   "lukkari_ennuste": 5.1,
+   "kokoonpano": [
+    {
+     "id": "9082",
+     "nimi": "Mikko Vihriälä",
+     "ennuste": 0.76,
+     "otos": 62.9,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8270",
+     "nimi": "Kalle-Tapio Huusko",
+     "ennuste": 0.5,
+     "otos": 33.7,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10087",
+     "nimi": "Veeti Kokko",
+     "ennuste": 0.47,
+     "otos": 56.9,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7909",
+     "nimi": "Aku Kettunen",
+     "ennuste": 0.47,
+     "otos": 60.5,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8771",
+     "nimi": "Leevi Lehto",
+     "ennuste": 0.23,
+     "otos": 8.7,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9724",
+     "nimi": "Petteri Alanen",
+     "ennuste": 0.15,
+     "otos": 61.2,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8112",
+     "nimi": "Valtteri Luoma",
+     "ennuste": 0.14,
+     "otos": 64.1,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "9082",
+     "nimi": "Mikko Vihriälä",
+     "ennuste": 0.76,
+     "otos": 62.9,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8270",
+     "nimi": "Kalle-Tapio Huusko",
+     "ennuste": 0.5,
+     "otos": 33.7,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10087",
+     "nimi": "Veeti Kokko",
+     "ennuste": 0.47,
+     "otos": 56.9,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7909",
+     "nimi": "Aku Kettunen",
+     "ennuste": 0.47,
+     "otos": 60.5,
+     "joukkue": "KiPa",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8771",
+     "nimi": "Leevi Lehto",
+     "ennuste": 0.23,
+     "otos": 8.7,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9724",
+     "nimi": "Petteri Alanen",
+     "ennuste": 0.15,
+     "otos": 61.2,
+     "joukkue": "Tahko",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8112",
+     "nimi": "Valtteri Luoma",
+     "ennuste": 0.14,
+     "otos": 64.1,
+     "joukkue": "KPL",
+     "kokoonpanossa": true
+    }
+   ],
+   "lahteneet": [],
+   "ilman_dataa": [
+    "Nooa Hoikka",
+    "Leon Haapsaari",
+    "Markus Hakala",
+    "Antto Häkkilä",
+    "Joose Järvinen",
+    "Jussi Vihriälä"
+   ],
+   "sopimuksia": 13,
+   "tyhjia_paikkoja": 5
+  },
+  {
+   "joukkue": "KeKi",
+   "superpesis_edellinen": true,
+   "teh": 5.55,
+   "pa": 6.85,
+   "ero": -1.3,
+   "hyokkays_muutos": -0.42,
+   "lukkari_muutos": -0.31,
+   "muutos": -0.72,
+   "ennuste_teh": 5.13,
+   "ennuste_pa": 7.16,
+   "ennuste_ero": -2.03,
+   "lukkari_ed": "Ville Väliaho",
+   "lukkari": "Ville Väliaho",
+   "lukkari_ennuste": 6.5,
+   "kokoonpano": [
+    {
+     "id": "5602",
+     "nimi": "Ossi Meriläinen",
+     "ennuste": 0.83,
+     "otos": 68.9,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8317",
+     "nimi": "Tuukka Sarkkinen",
+     "ennuste": 0.78,
+     "otos": 68.2,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "4542",
+     "nimi": "Tuomas Jussila",
+     "ennuste": 0.66,
+     "otos": 68.7,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7576",
+     "nimi": "Markus Keski-Petäjä",
+     "ennuste": 0.6,
+     "otos": 62.9,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9460",
+     "nimi": "Teemu Hollanti",
+     "ennuste": 0.49,
+     "otos": 61.1,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "13781",
+     "nimi": "Aaro Ojanperä",
+     "ennuste": 0.44,
+     "otos": 31.1,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7382",
+     "nimi": "Onni Määttä",
+     "ennuste": 0.43,
+     "otos": 55.4,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "10013",
+     "nimi": "Tino Alaspää",
+     "ennuste": 0.39,
+     "otos": 59.0,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9081",
+     "nimi": "Tuukka Etula",
+     "ennuste": 0.31,
+     "otos": 60.2,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "13237",
+     "nimi": "Paavo Hakala",
+     "ennuste": 0.24,
+     "otos": 1.3,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "13236",
+     "nimi": "Saku Saloranta",
+     "ennuste": 0.22,
+     "otos": 13.6,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9948",
+     "nimi": "Lauri Vuollo",
+     "ennuste": 0.18,
+     "otos": 11.6,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "7382",
+     "nimi": "Onni Määttä",
+     "ennuste": 0.43,
+     "otos": 55.4,
+     "joukkue": "PattU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "13237",
+     "nimi": "Paavo Hakala",
+     "ennuste": 0.24,
+     "otos": 1.3,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7235",
+     "nimi": "Miika Keski-Petäjä",
+     "ennuste": 0.17,
+     "otos": 31.4,
+     "joukkue": null,
+     "kokoonpanossa": false
+    }
+   ],
+   "lahteneet": [
+    {
+     "id": "12047",
+     "nimi": "Olli Heikkala",
+     "ennuste": 0.62,
+     "otos": 57.2,
+     "joukkue": "KeKi",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "9143",
+     "nimi": "Aatu Saastamoinen",
+     "ennuste": 0.34,
+     "otos": 60.1,
+     "joukkue": "KeKi",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "283",
+     "nimi": "Arttu Ruuska",
+     "ennuste": 0.29,
+     "otos": 67.0,
+     "joukkue": "KeKi",
+     "kokoonpanossa": false
+    },
+    {
+     "id": "4723",
+     "nimi": "Janne Kivipelto",
+     "ennuste": 0.23,
+     "otos": 1.6,
+     "joukkue": "KeKi",
+     "kokoonpanossa": false
+    }
+   ],
+   "ilman_dataa": [
+    "Eliel Koskela",
+    "Niilas Luukkonen"
+   ],
+   "sopimuksia": 18,
+   "tyhjia_paikkoja": 0
+  },
+  {
+   "joukkue": "Ura",
+   "superpesis_edellinen": false,
+   "teh": null,
+   "pa": null,
+   "ero": null,
+   "hyokkays_muutos": null,
+   "lukkari_muutos": null,
+   "muutos": null,
+   "ennuste_teh": 2.61,
+   "ennuste_pa": 5.72,
+   "ennuste_ero": -3.11,
+   "lukkari_ed": null,
+   "lukkari": null,
+   "lukkari_ennuste": 5.72,
+   "kokoonpano": [
+    {
+     "id": "6311",
+     "nimi": "Jere Saukko",
+     "ennuste": 0.55,
+     "otos": 52.5,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9937",
+     "nimi": "Jere Heikkinen",
+     "ennuste": 0.37,
+     "otos": 23.0,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "283",
+     "nimi": "Arttu Ruuska",
+     "ennuste": 0.29,
+     "otos": 67.0,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "246",
+     "nimi": "Ville Takala",
+     "ennuste": 0.28,
+     "otos": 5.4,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "14247",
+     "nimi": "Johannes Kiri",
+     "ennuste": 0.28,
+     "otos": 21.1,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12289",
+     "nimi": "Elias Kippola",
+     "ennuste": 0.22,
+     "otos": 2.2,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11012",
+     "nimi": "Eetu Heiniluoma",
+     "ennuste": 0.21,
+     "otos": 12.0,
+     "joukkue": "KoU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11396",
+     "nimi": "Niklas Vähä",
+     "ennuste": 0.2,
+     "otos": 3.0,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9838",
+     "nimi": "Elmeri Bäckman",
+     "ennuste": 0.17,
+     "otos": 8.8,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7832",
+     "nimi": "Eetu Suni",
+     "ennuste": 0.14,
+     "otos": 11.6,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8767",
+     "nimi": "Oskari Lukkari",
+     "ennuste": 0.14,
+     "otos": 27.5,
+     "joukkue": null,
+     "kokoonpanossa": true
+    }
+   ],
+   "tulleet": [
+    {
+     "id": "6311",
+     "nimi": "Jere Saukko",
+     "ennuste": 0.55,
+     "otos": 52.5,
+     "joukkue": "ViVe",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9937",
+     "nimi": "Jere Heikkinen",
+     "ennuste": 0.37,
+     "otos": 23.0,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "283",
+     "nimi": "Arttu Ruuska",
+     "ennuste": 0.29,
+     "otos": 67.0,
+     "joukkue": "KeKi",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "246",
+     "nimi": "Ville Takala",
+     "ennuste": 0.28,
+     "otos": 5.4,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "14247",
+     "nimi": "Johannes Kiri",
+     "ennuste": 0.28,
+     "otos": 21.1,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "12289",
+     "nimi": "Elias Kippola",
+     "ennuste": 0.22,
+     "otos": 2.2,
+     "joukkue": "SoJy",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11012",
+     "nimi": "Eetu Heiniluoma",
+     "ennuste": 0.21,
+     "otos": 12.0,
+     "joukkue": "KoU",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "11396",
+     "nimi": "Niklas Vähä",
+     "ennuste": 0.2,
+     "otos": 3.0,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "9838",
+     "nimi": "Elmeri Bäckman",
+     "ennuste": 0.17,
+     "otos": 8.8,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "7832",
+     "nimi": "Eetu Suni",
+     "ennuste": 0.14,
+     "otos": 11.6,
+     "joukkue": null,
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8767",
+     "nimi": "Oskari Lukkari",
+     "ennuste": 0.14,
+     "otos": 27.5,
+     "joukkue": null,
+     "kokoonpanossa": true
+    }
+   ],
+   "lahteneet": [],
+   "ilman_dataa": [
+    "Eetu Isohanni",
+    "Joe Vartiamäki",
+    "Miika Hangasmaa",
+    "Lasse Hanni",
+    "Jussi Partanen",
+    "Leevi Vuollet"
+   ],
+   "sopimuksia": 17,
+   "tyhjia_paikkoja": 1
+  }
+ ],
+ "jalkitesti": {
+  "kaudet": [
+   2024,
+   2025,
+   2026
+  ],
+  "n": 35,
+  "muutos_korrelaatio": 0.02,
+  "edellinen": {
+   "korrelaatio": 0.86,
+   "virhe": 1.11
+  },
+  "edellinen_plus_muutos": {
+   "korrelaatio": 0.8,
+   "virhe": 1.2
+  },
+  "rivit": [
+   {
+    "kausi": 2024,
+    "joukkue": "Manse",
+    "edellinen": 2.86,
+    "toteuma": 4.2,
+    "ennustettu_muutos": 0.86,
+    "toteutunut_muutos": 1.34
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "KPL",
+    "edellinen": 2.04,
+    "toteuma": 3.33,
+    "ennustettu_muutos": -0.0,
+    "toteutunut_muutos": 1.3
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "SoJy",
+    "edellinen": 4.36,
+    "toteuma": 3.2,
+    "ennustettu_muutos": -0.53,
+    "toteutunut_muutos": -1.16
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "ViVe",
+    "edellinen": 7.07,
+    "toteuma": 2.9,
+    "ennustettu_muutos": 0.0,
+    "toteutunut_muutos": -4.17
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "KeKi",
+    "edellinen": 1.04,
+    "toteuma": 1.67,
+    "ennustettu_muutos": 0.04,
+    "toteutunut_muutos": 0.63
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "Tahko",
+    "edellinen": -0.61,
+    "toteuma": -0.48,
+    "ennustettu_muutos": -0.13,
+    "toteutunut_muutos": 0.12
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "JoMa",
+    "edellinen": 1.36,
+    "toteuma": 1.4,
+    "ennustettu_muutos": -0.99,
+    "toteutunut_muutos": 0.04
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "KiPa",
+    "edellinen": -1.07,
+    "toteuma": -0.6,
+    "ennustettu_muutos": 0.35,
+    "toteutunut_muutos": 0.47
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "PattU",
+    "edellinen": -2.0,
+    "toteuma": -2.28,
+    "ennustettu_muutos": 0.05,
+    "toteutunut_muutos": -0.28
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "JymyJussit",
+    "edellinen": -2.14,
+    "toteuma": -2.72,
+    "ennustettu_muutos": -0.12,
+    "toteutunut_muutos": -0.58
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "IPV",
+    "edellinen": -3.07,
+    "toteuma": -2.17,
+    "ennustettu_muutos": -0.09,
+    "toteutunut_muutos": 0.9
+   },
+   {
+    "kausi": 2024,
+    "joukkue": "AA",
+    "edellinen": -5.54,
+    "toteuma": -2.52,
+    "ennustettu_muutos": 1.65,
+    "toteutunut_muutos": 3.02
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "KPL",
+    "edellinen": 3.33,
+    "toteuma": 4.39,
+    "ennustettu_muutos": -0.36,
+    "toteutunut_muutos": 1.06
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "SoJy",
+    "edellinen": 3.2,
+    "toteuma": 3.52,
+    "ennustettu_muutos": -2.91,
+    "toteutunut_muutos": 0.32
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "ViVe",
+    "edellinen": 2.9,
+    "toteuma": 2.39,
+    "ennustettu_muutos": -0.73,
+    "toteutunut_muutos": -0.51
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "JoMa",
+    "edellinen": 1.4,
+    "toteuma": 1.06,
+    "ennustettu_muutos": -0.45,
+    "toteutunut_muutos": -0.34
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "Manse",
+    "edellinen": 4.2,
+    "toteuma": 1.85,
+    "ennustettu_muutos": 0.81,
+    "toteutunut_muutos": -2.35
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "KeKi",
+    "edellinen": 1.67,
+    "toteuma": 0.39,
+    "ennustettu_muutos": -1.09,
+    "toteutunut_muutos": -1.27
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "KiPa",
+    "edellinen": -0.6,
+    "toteuma": 1.06,
+    "ennustettu_muutos": 0.35,
+    "toteutunut_muutos": 1.66
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "Tahko",
+    "edellinen": -0.48,
+    "toteuma": -0.36,
+    "ennustettu_muutos": 0.59,
+    "toteutunut_muutos": 0.12
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "PattU",
+    "edellinen": -2.28,
+    "toteuma": -2.12,
+    "ennustettu_muutos": -0.6,
+    "toteutunut_muutos": 0.15
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "AA",
+    "edellinen": -2.52,
+    "toteuma": -2.91,
+    "ennustettu_muutos": 0.4,
+    "toteutunut_muutos": -0.39
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "IPV",
+    "edellinen": -2.17,
+    "toteuma": -2.52,
+    "ennustettu_muutos": 0.05,
+    "toteutunut_muutos": -0.34
+   },
+   {
+    "kausi": 2025,
+    "joukkue": "HP",
+    "edellinen": -6.48,
+    "toteuma": -6.76,
+    "ennustettu_muutos": 0.89,
+    "toteutunut_muutos": -0.27
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "ViVe",
+    "edellinen": 2.39,
+    "toteuma": 4.55,
+    "ennustettu_muutos": -1.09,
+    "toteutunut_muutos": 2.15
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "SoJy",
+    "edellinen": 3.52,
+    "toteuma": 2.52,
+    "ennustettu_muutos": -1.52,
+    "toteutunut_muutos": -1.0
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "KPL",
+    "edellinen": 4.39,
+    "toteuma": 1.76,
+    "ennustettu_muutos": -0.08,
+    "toteutunut_muutos": -2.64
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "Manse",
+    "edellinen": 1.85,
+    "toteuma": 2.0,
+    "ennustettu_muutos": -0.01,
+    "toteutunut_muutos": 0.15
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "Tahko",
+    "edellinen": -0.36,
+    "toteuma": 1.12,
+    "ennustettu_muutos": -0.03,
+    "toteutunut_muutos": 1.48
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "KiPa",
+    "edellinen": 1.06,
+    "toteuma": 1.09,
+    "ennustettu_muutos": 0.17,
+    "toteutunut_muutos": 0.03
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "JoMa",
+    "edellinen": 1.06,
+    "toteuma": 0.58,
+    "ennustettu_muutos": -0.59,
+    "toteutunut_muutos": -0.48
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "PattU",
+    "edellinen": -2.12,
+    "toteuma": -0.36,
+    "ennustettu_muutos": 0.17,
+    "toteutunut_muutos": 1.76
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "KeKi",
+    "edellinen": 0.39,
+    "toteuma": -1.3,
+    "ennustettu_muutos": -0.58,
+    "toteutunut_muutos": -1.7
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "IPV",
+    "edellinen": -2.52,
+    "toteuma": -1.21,
+    "ennustettu_muutos": 0.0,
+    "toteutunut_muutos": 1.3
+   },
+   {
+    "kausi": 2026,
+    "joukkue": "AA",
+    "edellinen": -2.91,
+    "toteuma": -6.09,
+    "ennustettu_muutos": 1.7,
+    "toteutunut_muutos": -3.18
+   }
+  ]
+ }
+}

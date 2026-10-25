@@ -1,0 +1,188 @@
+<!--TYYLI-->
+<style>
+/* Siirtovaikutus: kokoonpanomuutos juoksuerona per ottelu + jälkitesti + laskentaselostus (ydin/siirtovaikutus.py) */
+.varoitus{display:flex;gap:12px;align-items:flex-start;border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));background:color-mix(in srgb,var(--warn) 10%,var(--surface));border-radius:var(--r);padding:14px 16px}
+.varoitus .ik{flex:none;width:28px;height:28px;border-radius:50%;background:var(--warn);color:#fff;display:grid;place-items:center;font:700 1rem var(--font-display)}
+.varoitus b{font-weight:700}
+.varoitus p{margin:2px 0 0;font-size:.92rem;line-height:1.5}
+.kpi3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.kpi3 .k{background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.kpi3 .k small{display:block;font:600 .68rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.kpi3 .k b{font:700 1.7rem var(--font-display);line-height:1.1}
+.kpi3 .k span{font-size:.8rem;color:var(--muted)}
+.tw{overflow-x:auto}
+table.sv{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.9rem}
+table.sv th{font:600 .68rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:bottom}
+table.sv th:first-child,table.sv td:first-child{text-align:left}
+table.sv td{padding:8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.sv tr.rivi{cursor:pointer}
+table.sv tr.rivi:hover td{background:var(--surface-2)}
+table.sv tr.auki td{background:var(--surface-2)}
+.jk{display:flex;align-items:center;gap:8px;font-weight:600}
+.jk img,.jk .ph{width:24px;height:24px;object-fit:contain;flex:none}
+.jk .ph{border-radius:6px;background:var(--surface-2);display:grid;place-items:center;font:700 .62rem var(--font-display)}
+.up{color:var(--win)} .dn{color:var(--loss)}
+.bar{display:inline-flex;align-items:center;gap:6px;justify-content:flex-end;min-width:150px}
+.bar svg{width:84px;height:12px;display:block}
+.bar svg .z{stroke:var(--line)}
+.bar svg .p{fill:var(--win)} .bar svg .n{fill:var(--loss)}
+.tag{display:inline-block;font:600 .66rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:2px 8px;background:var(--surface-2);color:var(--muted)}
+.tag.uusi{background:var(--sand-soft);color:var(--fg)}
+.lisa td{padding:0 8px 14px;white-space:normal;text-align:left;background:var(--surface-2)}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px;padding-top:6px}
+.lgrid h4{margin:0 0 6px;font:700 .78rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pl{display:flex;justify-content:space-between;gap:8px;font-size:.86rem;padding:3px 0;border-bottom:1px dashed var(--line)}
+.pl:last-child{border-bottom:0}
+.pl small{color:var(--muted)}
+.pl b{font-variant-numeric:tabular-nums}
+.pl.ulos{opacity:.6}
+.pl a{color:inherit;text-decoration:none} .pl a:hover{color:var(--accent)}
+.hint2{font-size:.82rem;color:var(--muted)}
+.hajonta{width:100%;max-width:560px;display:block}
+.hajonta text{font:500 11px var(--font-body);fill:var(--muted)}
+.hajonta .ax{stroke:var(--line)}
+.hajonta .ref{stroke:var(--muted);stroke-dasharray:4 4}
+.hajonta circle{fill:var(--accent);fill-opacity:.75}
+.metodi ol{margin:0;padding-left:1.2rem;display:flex;flex-direction:column;gap:10px;line-height:1.55;font-size:.93rem}
+.metodi b{font-weight:700}
+.metodi code{font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:5px}
+@media (max-width:640px){table.sv .o{display:none} .bar{min-width:0} .bar svg{width:54px}}
+.kpi3 .k span{display:block}
+.cols2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.cols2{grid-template-columns:minmax(0,1fr)}}
+</style>
+<!--SISALTO-->
+<div class="top">
+  <div><h1>Siirtovaikutus <span id="kausi"></span></h1><p>Kokoonpanomuutos juoksuerona per ottelu · runkosarja · pohjana kaudet <span id="pohjat"></span></p></div>
+  <span class="pill"><i></i>Seuranta <span id="seur"></span></span>
+</div>
+
+<div class="varoitus" id="varoitus"></div>
+
+<section class="card">
+  <div class="head"><h3>Joukkueet</h3><span class="hint">Klikkaa riviä: tulleet, lähteneet ja laskennan kokoonpano</span></div>
+  <div class="tw"><table class="sv" id="taulu">
+    <thead><tr>
+      <th>Joukkue</th>
+      <th class="o" title="(juoksut − päästetyt) / ottelu, runkosarja">Juoksuero<br><span id="th_ed"></span></th>
+      <th class="o" title="Uuden kokoonpanon 12 suurinta pelaajaennustetta − sama edellisen kauden pelaajista">Hyökkäys</th>
+      <th class="o" title="Edellisen kauden lukkarien ennuste − uuden lukkarin ennuste (päästetyt per ottelu)">Lukkari</th>
+      <th>Muutos yht.</th>
+      <th title="Edellinen juoksuero + muutos; nousijoilla suhteessa sarjan keskitasoon">Ennuste<br><span id="th_uusi"></span></th>
+      <th class="o" style="text-align:left">Lukkari</th>
+      <th class="o" title="Sopimuspelaajat, joilla ei ole Superpesis-runkosarjaotteluita">Ilman dataa</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <p class="hint2">Luvut ovat juoksua per ottelu. Vihreä = joukkueen juoksuero paranee, punainen = heikkenee. Tyhjä muutos = joukkue ei pelannut Superpesistä edellisellä kaudella.</p>
+</section>
+
+<div class="cols2">
+  <section class="card" id="jalki">
+    <div class="head"><h3>Jälkitesti</h3><span class="hint" id="jalkihint"></span></div>
+    <div class="kpi3" id="jalkikpi"></div>
+    <svg class="hajonta" id="hajonta" viewBox="0 0 560 330" role="img" aria-label="Ennustettu vs toteutunut muutos"></svg>
+    <p class="hint2">Jokainen piste on yksi joukkue yhdellä kaudella. Vaaka-akseli: mallin ennustama juoksueron muutos edelliseen kauteen. Pystyakseli: toteutunut muutos. Jos malli toimisi, pisteet asettuisivat katkoviivalle.</p>
+  </section>
+  <section class="card metodi">
+    <div class="head"><h3>Miten luvut on laskettu</h3></div>
+    <ol id="metodi"></ol>
+  </section>
+</div>
+<p class="note">Lähde: pesistulokset.fi (runkosarjan pelaajatilastot, lukkarin aloittamat ottelut, joukkuetaulukot) ja Jarvis-seurannan sopimustiedot. Laskenta: <code>ydin/siirtovaikutus.py</code>, päivittyy iltaajossa ja aina kun seuranta päivittyy.</p>
+
+<!--SKRIPTI-->
+<script>
+const D = __DATA__;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fi = (v,d=2) => v==null||!isFinite(v) ? "–" : v.toFixed(d).replace(".", ",").replace("-", "−");
+const fs = (v,d=2) => v==null||!isFinite(v) ? "–" : (v>0?"+":"") + fi(v,d);
+const cls = v => v==null||Math.abs(v)<0.05 ? "" : (v>0?"up":"dn");
+const LOGOT = D.logot || {};
+const LINK = new Set((window.YDIN_HAKU||[]).map(h=>String(h[0])));
+const S = D.sv, P = S.parametrit, J = S.jalkitesti;
+$("kausi").textContent = S.kausi;
+{ const k = Object.keys(P.painot).sort(); $("pohjat").textContent = k[0] + "–" + k[k.length-1]; }
+$("seur").textContent = S.seuranta_paivitetty || "–";
+$("th_ed").textContent = S.pohja; $("th_uusi").textContent = S.kausi;
+const logo = t => LOGOT[t] ? `<img src="${esc(LOGOT[t])}" alt="" loading="lazy">` : `<span class="ph">${esc(t.slice(0,3))}</span>`;
+
+// Luotettavuus
+if (J) {
+  const toimii = J.muutos_korrelaatio != null && J.muutos_korrelaatio >= 0.3 && J.edellinen_plus_muutos.virhe < J.edellinen.virhe;
+  $("varoitus").innerHTML = `<span class="ik">!</span><div><b>${toimii ? "Kokoonpanomuutos on ennustanut juoksueron muutosta kohtalaisesti." : "Kokoonpanomuutos ei ole ennustanut juoksueron muutosta."}</b>
+  <p>Jälkitesti kausilta ${J.kaudet.join(", ")} (${J.n} joukkuekautta): ennustetun ja toteutuneen muutoksen korrelaatio <b>${fi(J.muutos_korrelaatio)}</b>.
+  Edellisen kauden juoksuero yksin osui paremmin (korrelaatio ${fi(J.edellinen.korrelaatio)}, virhe ${fi(J.edellinen.virhe)} juoksua/ottelu) kuin sama lisättynä muutoksella (${fi(J.edellinen_plus_muutos.korrelaatio)}, virhe ${fi(J.edellinen_plus_muutos.virhe)}).
+  ${toimii ? "" : "Lue taulukkoa kuvauksena siitä, minkä tasoisia pelaajia on tullut ja lähtenyt – ei ennusteena kauden tuloksesta."}</p></div>`;
+} else $("varoitus").hidden = true;
+
+// Joukkuetaulukko
+const pal = (v, max=1.5) => {
+  if (v==null) return "";
+  const w = Math.min(1, Math.abs(v)/max)*40, x = v>=0 ? 42 : 42-w;
+  return `<svg viewBox="0 0 84 12" aria-hidden="true"><line class="z" x1="42" x2="42" y1="0" y2="12"/><rect class="${v>=0?"p":"n"}" x="${x}" y="2" width="${Math.max(1,w)}" height="8" rx="2"/></svg>`;
+};
+const plRivi = (p, lisatieto) => `<div class="pl ${p.kokoonpanossa===false?"ulos":""}"><span>${LINK.has(String(p.id)) ? `<a href="pelaajat.html?p=${p.id}">${esc(p.nimi)}</a>` : esc(p.nimi)} <small>${esc(lisatieto||"")}</small></span><b>${fi(p.ennuste)}</b></div>`;
+function lisa(r){
+  const tul = r.tulleet.map(p => plRivi(p, `${p.joukkue||`ei SP ${S.pohja}`}${p.kokoonpanossa?"":" · ei 12 parhaan joukossa"}`)).join("") || `<p class="hint2">Ei tulleita pelaajia, joilla on Superpesis-dataa.</p>`;
+  const lah = r.lahteneet.map(p => plRivi(p, `${fi(p.otos,1)} p.ott.`)).join("") || `<p class="hint2">–</p>`;
+  const kok = r.kokoonpano.map(p => plRivi(p, p.joukkue===r.joukkue ? "" : `uusi · ${p.joukkue||`ei SP ${S.pohja}`}`)).join("");
+  const tyh = r.tyhjia_paikkoja ? `<p class="hint2">${r.tyhjia_paikkoja} paikkaa täytetty korvaustasolla (${fi(P.korvaustaso)}).</p>` : "";
+  const ilm = r.ilman_dataa.length ? `<p class="hint2"><b>Ilman Superpesis-dataa (${r.ilman_dataa.length}):</b> ${r.ilman_dataa.map(esc).join(", ")} – arvo korvaustaso, jos mahtuu kokoonpanoon.</p>` : "";
+  return `<tr class="lisa"><td colspan="8"><div class="lgrid">
+    <div><h4>Tulleet · ennuste juoksua/ottelu</h4>${tul}</div>
+    <div><h4>Lähteneet</h4>${lah}</div>
+    <div><h4>Laskennan kokoonpano (12)</h4>${kok}${tyh}</div></div>${ilm}
+    <p class="hint2">${r.hyokkays_muutos!=null?`Hyökkäyksen muutos ${fs(r.hyokkays_muutos)} · lukkarin muutos ${fs(r.lukkari_muutos)} · `:""}Lukkari ${r.lukkari_ed?esc(r.lukkari_ed)+" → ":""}${esc(r.lukkari||"ei Superpesis-lukkaria")} (ennuste ${fi(r.lukkari_ennuste)} päästettyä/ottelu)${r.ennuste_teh!=null?` · ennuste: tehdyt ${fi(r.ennuste_teh)}, päästetyt ${fi(r.ennuste_pa)}`:""}</p></td></tr>`;
+}
+let auki = null;
+function taulu(){
+  $("taulu").querySelector("tbody").innerHTML = S.joukkueet.map(r => `
+    <tr class="rivi ${auki===r.joukkue?"auki":""}" data-t="${esc(r.joukkue)}">
+      <td><span class="jk">${logo(r.joukkue)}${esc(r.joukkue)}${r.superpesis_edellinen?"":` <span class="tag uusi">nousija</span>`}</span></td>
+      <td class="o">${fs(r.ero)}</td>
+      <td class="o ${cls(r.hyokkays_muutos)}">${fs(r.hyokkays_muutos)}</td>
+      <td class="o ${cls(r.lukkari_muutos)}">${fs(r.lukkari_muutos)}</td>
+      <td><span class="bar"><b class="${cls(r.muutos)}">${fs(r.muutos)}</b>${pal(r.muutos)}</span></td>
+      <td><b>${fs(r.ennuste_ero)}</b></td>
+      <td class="o" style="text-align:left">${esc(r.lukkari_ed && r.lukkari_ed!==r.lukkari ? `${r.lukkari_ed} → ` : "")}${esc(r.lukkari||"ei SP-lukkaria")}</td>
+      <td class="o">${r.ilman_dataa.length ? `${r.ilman_dataa.length} / ${r.sopimuksia}` : `0 / ${r.sopimuksia}`}</td>
+    </tr>${auki===r.joukkue ? lisa(r) : ""}`).join("");
+  $("taulu").querySelectorAll("tr.rivi").forEach(tr => tr.onclick = () => { auki = auki===tr.dataset.t ? null : tr.dataset.t; taulu(); });
+}
+taulu();
+
+// Jälkitesti
+if (J) {
+  $("jalkihint").textContent = `${J.n} joukkuekautta · ${J.kaudet.join(", ")}`;
+  $("jalkikpi").innerHTML = [
+    ["Muutoksen osuvuus", fi(J.muutos_korrelaatio), "korrelaatio ennustettu vs toteutunut"],
+    ["Edellinen kausi", fi(J.edellinen.korrelaatio), `virhe ${fi(J.edellinen.virhe)} juoksua/ottelu`],
+    ["Edellinen + muutos", fi(J.edellinen_plus_muutos.korrelaatio), `virhe ${fi(J.edellinen_plus_muutos.virhe)} juoksua/ottelu`],
+  ].map(([a,b,c]) => `<div class="k"><small>${a}</small><b>${b}</b><span>${c}</span></div>`).join("");
+  const W=560,H=330,m={l:44,r:14,t:12,b:36};
+  const xs=J.rivit.map(r=>r.ennustettu_muutos), ys=J.rivit.map(r=>r.toteutunut_muutos);
+  const lim=Math.ceil(Math.max(1,...xs.map(Math.abs),...ys.map(Math.abs)));
+  const sx=v=>m.l+(v+lim)/(2*lim)*(W-m.l-m.r), sy=v=>H-m.b-(v+lim)/(2*lim)*(H-m.t-m.b);
+  let g=`<line class="ax" x1="${sx(-lim)}" x2="${sx(lim)}" y1="${sy(0)}" y2="${sy(0)}"/><line class="ax" x1="${sx(0)}" x2="${sx(0)}" y1="${sy(-lim)}" y2="${sy(lim)}"/>`;
+  g+=`<line class="ref" x1="${sx(-lim)}" y1="${sy(-lim)}" x2="${sx(lim)}" y2="${sy(lim)}"/>`;
+  for(let v=-lim; v<=lim; v++){ g+=`<text x="${sx(v)}" y="${H-m.b+16}" text-anchor="middle">${fs(v,0)}</text><text x="${m.l-8}" y="${sy(v)+4}" text-anchor="end">${fs(v,0)}</text>`; }
+  g+=`<text x="${(m.l+W-m.r)/2}" y="${H-4}" text-anchor="middle">Ennustettu muutos (juoksua/ottelu)</text>`;
+  g+=`<text transform="translate(12 ${(m.t+H-m.b)/2}) rotate(-90)" text-anchor="middle">Toteutunut muutos</text>`;
+  g+=J.rivit.map(r=>`<circle cx="${sx(r.ennustettu_muutos)}" cy="${sy(r.toteutunut_muutos)}" r="5"><title>${esc(r.joukkue)} ${r.kausi}: ennuste ${fs(r.ennustettu_muutos)}, toteuma ${fs(r.toteutunut_muutos)}</title></circle>`).join("");
+  $("hajonta").innerHTML=g;
+} else $("jalki").hidden = true;
+
+// Laskentaselostus (parametrit datasta)
+const pain = Object.entries(P.painot).sort((a,b)=>b[0]-a[0]).map(([k,w])=>`${k}: ${fi(w,2)}`).join(", ");
+$("metodi").innerHTML = [
+  `<b>Pelaajan juoksuosuus.</b> Joukkueen jokainen juoksu kirjautuu sekä tuojalle (T) että lyöjälle (L, kunnarissa K). Pelaajan osuus juoksuista on siksi <code>YHT / 2</code>. Osa juoksuista syntyy ilman lyöjää (esim. vapaista), joten summa jää hieman alle joukkueiden juoksujen; ero korjataan kertoimella C = juoksut / Σ(YHT/2) = <b>${fi(P.kerroin_C,3)}</b> (kausi ${S.pohja}).`,
+  `<b>Pelaajan ennuste per ottelu.</b> Runkosarjan kausien painotettu keskiarvo (${pain}), jossa jokainen kausi painottuu myös otteluiden määrällä. Pieni otos kutistetaan kohti korvaustasoa: <code>(Σ w·C·YHT/2 + ${P.k_pelaaja}·korvaus) / (Σ w·O + ${P.k_pelaaja})</code>. Korvaustaso = 25. persentiili pelaajista, joilla vähintään 15 ottelua kaudella ${S.pohja}: <b>${fi(P.korvaustaso,3)}</b> juoksua/ottelu. Pelaaja ilman Superpesis-otteluita saa korvaustason.`,
+  `<b>Hyökkäys.</b> Kokoonpanon ${P.kokoonpano} suurimman pelaajaennusteen summa (ottelukokoonpano 9 + 3 jokeria). Puuttuvat paikat täytetään korvaustasolla. <b>Hyökkäyksen muutos</b> = sopimuspelaajien kokoonpano ${S.kausi} − sama laskenta kauden ${S.pohja} pelaajista. Koska molemmat lasketaan samalla tavalla, menetelmän tasovirhe kumoutuu.`,
+  `<b>Lukkari.</b> Lukkarin aloittamissa runkosarjaotteluissa päästetyt juoksut per ottelu, samoin kausipainoin, kutistettuna sarjan keskiarvoon (${fi(P.lukkari_ka)} päästettyä/ottelu) ${P.k_lukkari} ottelun painolla. Kauden ${S.kausi} lukkari = sopimuspelaaja, jolla on eniten lukkariotteluita (vähintään 3). <b>Lukkarin muutos</b> = kauden ${S.pohja} lukkarien ennuste (otteluilla painotettuna) − uuden lukkarin ennuste. Muu ulkopeli ei näy tilastoissa, eikä sen muutosta arvioida.`,
+  `<b>Muutos yhteensä</b> = hyökkäyksen muutos + lukkarin muutos. <b>Ennuste ${S.kausi}</b> = kauden ${S.pohja} juoksuero + muutos. Nousijoilla edellistä Superpesis-kautta ei ole: hyökkäys verrataan sarjan keskimääräiseen joukkueeseen (${fi(P.sarja_juoksut)} juoksua/ottelu), päästetyt = lukkarin ennuste tai sarjan keskiarvo.`,
+  `<b>Jälkitesti.</b> Samat laskut jokaiselle aiemmalle kaudelle, jolle on vähintään yhden kauden pohja, käyttäen ennustettavan kauden toteutuneita kokoonpanoja (pelanneet pelaajat). Todellisessa kauden alun ennusteessa kokoonpano on epävarmempi, joten tulos on todennäköisesti tätäkin heikompi. Virhe = keskimääräinen itseisvirhe sarjan tasoon nähden.`,
+  `<b>Rajoitukset.</b> Kausisummat riippuvat joukkuetovereista ja roolista: etenijä tarvitsee perässään lyöjiä, jokerin luvut riippuvat käyttötilanteista. Siksi pelaajan luvut eivät siirry sellaisinaan uuteen joukkueeseen. Roolia, pelinjohtajaa, ulkopeliä ja kotiutuskilpailuja ei mallinneta. Sopimustiedot ovat Jarvis-seurannasta (${esc(S.seuranta_paivitetty||"")}); julkaisemattomat sopimukset puuttuvat, mikä painaa kokoonpanoja alaspäin.`,
+].map(t=>`<li>${t}</li>`).join("");
+</script>

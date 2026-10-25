@@ -36,6 +36,7 @@ jobs:
           python -m ydin.lyonnit ${{ github.event.inputs.kausi && format('--kausi {0}', github.event.inputs.kausi) || '' }}
       - run: python -m ydin.historia
       - run: python -m ydin.lukkarit
+      - run: python -m ydin.siirtovaikutus
       - name: Tallenna data
         run: |
           git config user.name "ydin-bot"

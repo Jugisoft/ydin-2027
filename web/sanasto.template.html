@@ -157,6 +157,15 @@ const S = [
   ["Yhden ottelun ennätykset","Välilehti","Paras yksittäinen ottelu kaudella. Rivi avaa ottelun.","",""],
   ["Joukkueet","Välilehti","Runkosarjan KL%, kotiutus%, torjunta%, juoksut ja päästetyt per ottelu sekä kunnarit.","",""],
  ]],
+ ["siirtovaikutus","Siirtovaikutus","siirtovaikutus.html","Kokoonpanomuutoksen arvio juoksuerona per ottelu. Tarkka laskenta ja jälkitestin tulos ovat sivulla. Jälkitestin mukaan luku kuvaa tulleiden ja lähteneiden pelaajien tasoa, mutta ei ole ennustanut joukkueen juoksueron muutosta.",[
+  ["Juoksuosuus","Pelaajan osuus juoksuista","Jokainen juoksu kirjautuu tuojalle (T) ja lyöjälle (L tai K), joten pelaajan osuus on puolet YHT:stä. Kerroin C korjaa juoksut, joille ei ole lyöjää.","<code>C × YHT / 2</code>",UP],
+  ["Ennuste / ottelu","Pelaajan ennustettu juoksuosuus","Neljän kauden painotettu keskiarvo (uusin painavin), pieni otos kutistettu korvaustasoon.","<code>(Σ w·C·YHT/2 + 8·korvaus) / (Σ w·O + 8)</code>",UP],
+  ["Korvaustaso","Varapelaajan taso","25. persentiili pelaajista, joilla vähintään 15 ottelua. Käytetään pelaajille ilman Superpesis-dataa ja tyhjille paikoille.","",""],
+  ["Hyökkäyksen muutos","Juoksua / ottelu","Uuden kokoonpanon 12 suurimman ennusteen summa miinus sama laskenta edellisen kauden pelaajista.","",UP],
+  ["Lukkarin muutos","Juoksua / ottelu","Edellisen kauden lukkarien ennustetut päästetyt miinus uuden lukkarin ennustetut päästetyt. Positiivinen = vähemmän päästettyjä.","",UP],
+  ["Ennuste (juoksuero)","Juoksua / ottelu","Edellisen kauden juoksuero + muutos. Nousijoilla suhteessa sarjan keskitasoon.","",UP],
+  ["Jälkitesti","Luotettavuus","Samat laskut aiemmille kausille: osuiko ennustettu muutos toteutuneeseen. Korrelaatio 1 = täydellinen, 0 = ei yhteyttä.","",""],
+ ]],
  ["lahteet","Lähteet ja päivitys",null,"",[
   ["pesistulokset.fi","Tilastot","Kaikki tilastot ovat pesistulokset.fi:n julkisista ottelu- ja lyöntivuorotason tilastoista. Lyöntikohtaista tapahtumadataa ei käytetä.","",""],
   ["Päivitys","Joka ilta","Tilastot päivittyvät automaattisesti joka ilta klo 22.05.","",""],
