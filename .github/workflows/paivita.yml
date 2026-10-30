@@ -3,6 +3,7 @@ on:
   schedule:
     - cron: "30 18 * * *"  # 21.30 Suomen kesäaikaa (UTC+3), Jugi 16.10.2026
     - cron: "30 19 * * *"  # 21.30 Suomen talviaikaa (UTC+2); kesällä toinen ajo klo 22.30 hakee vain myöhään päättyneet
+    - cron: "20 16 * * *"  # 18.20 talviaikaa: Jarvisin siirtoseuranta (iltatehtävä 17.48) julkaistaan heti, 30.10.2026
   push:
     branches: [main]
     paths: ["web/**", "ydin/**", "data/seuranta/**", ".github/workflows/**"]
@@ -36,12 +37,18 @@ jobs:
           python -m ydin.lyonnit ${{ github.event.inputs.kausi && format('--kausi {0}', github.event.inputs.kausi) || '' }}
       - run: python -m ydin.historia
       - run: python -m ydin.lukkarit
+      - name: Siirtoseuranta KPL Keskuksen kautta (Jarvis, 30.10.2026)
+        continue-on-error: true
+        run: |
+          curl -fsS --max-time 30 https://xytpwmzcghixulnzdakv.supabase.co/functions/v1/ydin-seuranta -o /tmp/seuranta.json
+          python -c "import json; d=json.load(open('/tmp/seuranta.json', encoding='utf-8')); assert isinstance(d.get('siirrot'), list) and d['siirrot'], 'siirrot puuttuu'"
+          if cmp -s /tmp/seuranta.json data/seuranta/seuranta.json; then echo "Seuranta ennallaan"; else cp /tmp/seuranta.json data/seuranta/seuranta.json; echo "Seuranta päivitetty Keskuksesta"; fi
       - run: python -m ydin.siirtovaikutus
       - name: Tallenna data
         run: |
           git config user.name "ydin-bot"
           git config user.email "ydin-bot@users.noreply.github.com"
-          git add data/out data/tapahtumat
+          git add data/out data/tapahtumat data/seuranta
           git diff --cached --quiet || git commit -m "Data päivitetty $(date -u +%Y-%m-%dT%H:%MZ)"
           git push
       - name: Rakenna sivusto
