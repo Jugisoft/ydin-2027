@@ -58,6 +58,31 @@ def _lue_json(nimi, oletus):
     p = os.path.join(OUT, nimi)
     return json.load(open(p, encoding="utf-8")) if os.path.exists(p) else oletus
 
+# Yhteenveto vertailuja varten (KPL Keskus, pelaajan "Minun pelini", 1.11.2026): lyöntien määrät pelaajittain
+# tilannekansio × monesko lyönti × tulos. Kansiot: kaikki, 0, 1, 2 (2 ja 1–2), T = takatilanne (3, 1–3, 2–3, 1–2–3).
+# Lyönti: 0 = kaikki, 1–3. Vaiheet: r = runkosarja, k = kaikki ottelut. Rivi = 9 lukua TUL-järjestyksessä.
+KANSIO = {0: "0", 1: "1", 2: "2", 4: "2", 3: "T", 5: "T", 6: "T", 7: "T"}
+KANSIOT = ["kaikki", "0", "1", "2", "T"]
+
+def kirjoita_yhteenveto(kohde, kausi, P, hak):
+    pel = {}
+    for pid, l in P.items():
+        if pid not in hak: continue
+        v = {}
+        for vk in ("r", "k"):
+            m = {k: [[0] * len(TUL) for _ in range(4)] for k in KANSIOT}
+            for x, y, t, palot, lyonti, tul, vaihe in l:
+                if vk == "r" and vaihe != 0: continue
+                for k in ("kaikki", KANSIO.get(t)):
+                    if k is None: continue
+                    for ly in {0, lyonti if lyonti in (1, 2, 3) else 0}:
+                        m[k][ly][tul] += 1
+            v[vk] = {k: rivit for k, rivit in m.items() if any(map(any, rivit))}
+        pel[str(pid)] = {"n": hak[pid]["nimi"], "j": hak[pid]["joukkue"], **v}
+    with open(os.path.join(kohde, "yhteenveto.json"), "w", encoding="utf-8") as fh:
+        json.dump({"kausi": kausi, "tulokset": TUL, "kansiot": KANSIOT, "selite": "pelaaja → vaihe (r runko, k kaikki) → kansio → [lyönti 0–3] → määrät tuloksittain",
+                   "pelaajat": pel}, fh, ensure_ascii=False, separators=(",", ":"))
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--kausi", type=int); a = ap.parse_args()
     kausi = a.kausi or kaudet.uusin()
@@ -84,6 +109,7 @@ def main():
         with open(os.path.join(kohde, f"p{pid}.json"), "w", encoding="utf-8") as fh:
             json.dump({"id": pid, "nimi": nimet[pid], "joukkue": jl, "kentat": ["x", "y", "tilanne", "palot", "lyonti", "tulos", "vaihe"], "l": l}, fh, ensure_ascii=False, separators=(",", ":"))
     hakemisto.sort(key=lambda r: (r["joukkue"] or "", r["nimi"]))
+    kirjoita_yhteenveto(kohde, kausi, P, {r["id"]: r for r in hakemisto})
     meta = {"kausi": kausi, "tilanteet": TIL, "tulokset": TUL, "pelaajat": hakemisto, "otteluita": len(os.listdir(kansio)),
             "lahde": f"pesistulokset.fi ottelutapahtumat {kausi}", "kalibrointi": "x_m=(x-50)*0.525, y_m=(95-y)*1.06"}
     with open(os.path.join(kohde, "hakemisto.json"), "w", encoding="utf-8") as fh: json.dump(meta, fh, ensure_ascii=False, indent=0)
