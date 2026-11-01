@@ -61,6 +61,7 @@ def _lue_json(nimi, oletus):
 # Yhteenveto vertailuja varten (KPL Keskus, pelaajan "Minun pelini", 1.11.2026): lyöntien määrät pelaajittain
 # tilannekansio × monesko lyönti × tulos. Kansiot: kaikki, 0, 1, 2 (2 ja 1–2), T = takatilanne (3, 1–3, 2–3, 1–2–3).
 # Lyönti: 0 = kaikki, 1–3. Vaiheet: r = runkosarja, k = kaikki ottelut. Rivi = 9 lukua TUL-järjestyksessä.
+# rp / kp: sama palojen mukaan (0, 1, 2 paloa ennen lyöntiä).
 KANSIO = {0: "0", 1: "1", 2: "2", 4: "2", 3: "T", 5: "T", 6: "T", 7: "T"}
 KANSIOT = ["kaikki", "0", "1", "2", "T"]
 
@@ -78,9 +79,16 @@ def kirjoita_yhteenveto(kohde, kausi, P, hak):
                     for ly in {0, lyonti if lyonti in (1, 2, 3) else 0}:
                         m[k][ly][tul] += 1
             v[vk] = {k: rivit for k, rivit in m.items() if any(map(any, rivit))}
+            # palot ennen lyöntiä 0, 1, 2 (paineen alla) – sama kansiojako, kaikki lyönnit
+            mp = {k: [[0] * len(TUL) for _ in range(3)] for k in KANSIOT}
+            for x, y, t, palot, lyonti, tul, vaihe in l:
+                if vk == "r" and vaihe != 0: continue
+                for k in ("kaikki", KANSIO.get(t)):
+                    if k is not None: mp[k][min(palot, 2)][tul] += 1
+            v[vk + "p"] = {k: rivit for k, rivit in mp.items() if any(map(any, rivit))}
         pel[str(pid)] = {"n": hak[pid]["nimi"], "j": hak[pid]["joukkue"], **v}
     with open(os.path.join(kohde, "yhteenveto.json"), "w", encoding="utf-8") as fh:
-        json.dump({"kausi": kausi, "tulokset": TUL, "kansiot": KANSIOT, "selite": "pelaaja → vaihe (r runko, k kaikki) → kansio → [lyönti 0–3] → määrät tuloksittain",
+        json.dump({"kausi": kausi, "tulokset": TUL, "kansiot": KANSIOT, "selite": "pelaaja → vaihe (r runko, k kaikki) → kansio → [lyönti 0–3] → määrät tuloksittain; rp/kp → kansio → [palot 0–2] → määrät",
                    "pelaajat": pel}, fh, ensure_ascii=False, separators=(",", ":"))
 
 def main():
