@@ -28,3 +28,17 @@ def test_rikasta_ilman_tapahtumia_null(tmp_path, monkeypatch):
     r = [[1, "2026-05-01", 1, 7, "KPL", "IPV"] + [0] * (len(KENTAT) - len(TKENTAT) - 6)]
     assert rikasta(r, 2026, {"KPL": 2}) == 0
     assert len(r[0]) == len(KENTAT) and r[0][-1] is None
+
+def test_kulku_juoksut_vuoroittain_ja_tapa():
+    from ydin.kulku import juoksut, tapa
+    st = lambda **k: {"texts": [{"type": "stat", **k}]}
+    d = {"events": [
+        {"team": 1, "period": 0, "inning": 0, "events": [st(score=3), st(homerun=2)]},
+        {"team": 1, "period": 1, "inning": 3, "events": [st(wtscore=3)]},
+        {"team": 2, "period": 2, "inning": 0, "events": [st(score=3)]},
+        {"team": 2, "period": 3, "inning": 0, "events": [st(oscscore=2)]},
+    ]}
+    j = juoksut(d)
+    assert j[1]["v"] == [2, 0, 0, 0, 0, 0, 0, 1] and j[2]["sv"] == 1 and j[2]["klk"] == 2
+    assert tapa("1-2k (7-2, 3-4, 1-2k)") == ("kotiutus", "v")
+    assert tapa("1-0 (2-2, 8-1)") == ("1–0", "k") and tapa("2-1s (3-1, 0-3, 1-0)") == ("supervuoro", "k")

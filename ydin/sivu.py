@@ -401,6 +401,20 @@ def siirtovaikutus_data():
         sv = json.load(f)
     return {"sv": sv, "logot": lue_kuvat()["logot"]}
 
+def kulku_data():
+    """Ottelun kulku -sivu: ydin/kulku.py:n tulos + joukkuelyhenteet ja logot."""
+    try:
+        d = lue(f"kulku_{KAUSI}.json")
+    except FileNotFoundError:
+        return None
+    return {**d, "tiimit": {str(k): v for k, v in _tiimit().items()}, "logot": lue_kuvat()["logot"]}
+
+def kopioi_kulku():
+    import shutil
+    p = os.path.join(OUT, f"kulku_{KAUSI}.csv")
+    if os.path.exists(p):
+        shutil.copy(p, os.path.join(SITE, f"kulku_{KAUSI}.csv"))
+
 def lue_kuvat():
     try:
         return lue("kuvat.json")
@@ -415,6 +429,7 @@ IKONIT = {
     "joukkueet": '<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/>',
     "tulostaulut": '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',
     "vire": '<path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/>',
+    "kulku": '<path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/>',
     "vertailu": '<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
     "lukkarit": '<circle cx="12" cy="6" r="3"/><path d="M12 9v6M8 21l4-6 4 6M6 12l6-2 6 2"/>',
     "siirtovaikutus": '<path d="M4 7h13l-3-3M20 17H7l3 3"/>',
@@ -423,7 +438,7 @@ IKONIT = {
 }
 # (avain, otsikko, tiedosto tai None = tulossa)
 VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("joukkueet", "Joukkueet", "joukkueet.html"),
-           ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"), ("vire", "Vire", "vire.html"),
+           ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"), ("vire", "Vire", "vire.html"), ("kulku", "Ottelun kulku", "kulku.html"),
            ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), ("siirtovaikutus", "Siirtovaikutus", "siirtovaikutus.html"), None, ("sanasto", "Selitteet", "sanasto.html"), ("sisalto", "Sisältö", None)]
 
 def nav(nykyinen):
@@ -496,6 +511,10 @@ def main():
     print("pelaajat.html", rakenna("pelaajat.template.html", pd, "pelaajat.html", "YDIN 2027 Pelaajat", "pelaajat", **yht))
     print("ottelut.html", rakenna("ottelut.template.html", ottelut_data(), "ottelut.html", "YDIN 2027 Ottelut", "ottelut", **yht))
     print("tulostaulut.html", rakenna("tulostaulut.template.html", tulostaulut_data({h[0] for h in haku}), "tulostaulut.html", "YDIN 2027 Tulostaulut", "tulostaulut", **yht))
+    kl = kulku_data()
+    if kl:
+        kopioi_kulku()
+        print("kulku.html", rakenna("kulku.template.html", kl, "kulku.html", "YDIN 2027 Ottelun kulku", "kulku", **yht))
     print("vire.html", rakenna("vire.template.html", vire_data(), "vire.html", "YDIN 2027 Vire", "vire", **yht))
     print("vertailu.html", rakenna("vertailu.template.html", vertailu_data(), "vertailu.html", "YDIN 2027 Vertailu", "vertailu", **yht))
     print("lukkarit.html", rakenna("lukkarit.template.html", lukkarit_data({h[0] for h in haku}), "lukkarit.html", "YDIN 2027 Lukkarit", "lukkarit", **yht))

@@ -27,6 +27,7 @@ python -m pytest
 | `ydin/paivita.py` | Koko putki yhdellä komennolla |
 | `ydin/tapahtumat.py` | Uusien päättyneiden otteluiden tapahtumat → `data/tapahtumat/<kausi>/<id>.json.gz` |
 | `ydin/lyonnit.py` | Lyöntikartat → `data/out/lyonnit_<kausi>/` (KPL Keskus lukee) |
+| `ydin/kulku.py` | Ottelun kulku: juoksut vuoroittain, ratkeamistapa → `data/out/kulku_<kausi>.json/.csv` |
 | `.github/workflows/paivita.yml` | Ajastettu päivitys + julkaisu |
 | `docs/` | `mittarit.md`, `linjaukset.md` |
 | `arkisto/` | Vanha tapahtumapohjainen portti (ei käytössä) |

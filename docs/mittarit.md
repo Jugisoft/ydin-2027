@@ -61,6 +61,13 @@ tulokseksi "palo"; nyt "eteni" kuten pesistulokset.fi:n KL (516 lyöntiä siirty
 **Lukkari: vastustajan kärkietenijät** P0–P3_v, H0–H3_v = vastustajan lyöjien `batpe_outs_n` ja `batpe_caughts_n` ottelussa
 (stats-tool). Eteni + haava + paloi = 100 % kärkiyrityksistä lähtöpesittäin.
 
+## Ottelun kulku (6.11.2026, `ydin/kulku.py`)
+Juoksut joukkueittain vuoroittain (1. ja 2. jakso × vuorot 1–4), supervuoro ja kotiutuslyöntikilpailu ottelutapahtumista:
+juoksu = tilasto score / homerun / wtscore / walkscore (1 kpl), kotiutuslyöntikilpailussa oscscore (arvo).
+Tarkistus 2026: jaksojen ja supervuoron/kotiutuskilpailun juoksut täsmäävät stats-toolin runs_p0–runs_p3-kenttiin 458/458 joukkue-ottelua.
+Ratkeamistapa otteluluettelon tuloksesta: 2–0, 1–0 (jakso tasan), supervuoro (s), kotiutuslyöntikilpailu (k).
+Vienti: `data/out/kulku_<kausi>.json` ja `.csv` (sivustolla `kulku_<kausi>.csv`).
+
 ## Lyöntiprofiili (pelaajakortti, 6.11.2026)
 Lähde `data/out/lyonnit_<kausi>/p<id>.json` (kopioidaan sivustolle). Tilanne kärkietenijän mukaan: 0-tilanne, 1-tilanne, 2-tilanne (myös 1–2), takatilanne (kärki 3. pesällä).
 Onnistui = kunnari, juoksu tai kärkietenijä eteni (sama kuin KPL Keskuksen Minun pelini). Matriisi palot (0/1/2) × lyönti (1./2./3.), sarjan vertailuluvut `lyontipohja` (sivu.py). Laittomat-% ja onnistumisen hetki lyönneittäin. Kartalla kenttään osuneet lyönnit (laittomat pois), koppi ja haava samassa ryhmässä.
