@@ -5,7 +5,10 @@ Koordinaatit: pesistulokset antaa lyönnin kohdan prosentteina kenttäkuvasta (x
 Kalibrointi kauden 2026 67 800 lyönnistä: sivurajat x≈10/90 (42 m), takaraja y≈4,5, kotipesä y≈95
 → x_m = (x − 50) · 0,525, y_m = (95 − y) · 1,06. (0,0) = kohta puuttuu → pois.
 Tulos (prioriteetti): kunnari, juoksu, laiton, koppi, palo, haava, eteni (kärkilyönti onnistui), ei_edennyt, muu.
-Tilanne = kenttäpesien etenijät lyöntihetkellä. Palot = vuoroparin palot ennen lyöntiä. Vaihe 0 = runkosarja, 1 = muut."""
+Tilanne = kenttäpesien etenijät lyöntihetkellä. Palot = vuoroparin palot ennen lyöntiä. Vaihe 0 = runkosarja, 1 = muut.
+Takapalo (6.11.2026) = 1, kun lyönnillä kärkietenijä eteni (pointhits), mutta joku muu kuin kärkietenijä paloi samalla lyönnillä.
+Kärkietenijä tunnistetaan alitapahtumasta, jossa on pointhits/pointhitf-tilasto; tämä täsmää pesistulokset.fi:n
+KL0–KL3/KLY0–KLY3-, palo- ja koppilukuihin ottelu- ja pelaajakohtaisesti (ks. tests, docs/mittarit.md)."""
 import argparse, collections, json, os
 from . import kaudet
 from .tapahtumat import JUURI, lue
@@ -26,19 +29,33 @@ def osat(g):
     st = [k for t in tx if isinstance(t, dict) and t.get("type") == "stat" for k in t if k != "type"]
     return ty, te, st
 
-def tulos(ty, te, st):
+def tulos(ty, te, st, tp=0):
+    """tp = takapalo: kärki eteni mutta takaetenijä paloi -> eteni (ennen 6.11.2026 tulkittiin palo; pesistulokset.fi laskee KL:ksi)."""
     if "homerun" in st: return "kunnari"
     if any(k in st for k in RUN): return "juoksu"
     if "hit-out" in ty: return "laiton"
     if "hit-caught" in ty: return "koppi"
+    if tp: return "eteni"
     if any(x.startswith("palo") for x in te): return "palo"
     if any(x.startswith("haav") for x in te): return "haava"
     if "pointhits" in st: return "eteni"
     if "pointhitf" in st: return "ei_edennyt"
     return "muu"
 
+def takapalo(g):
+    """1, jos kärkilyönti onnistui ja joku muu kuin kärkietenijä paloi samalla lyönnillä."""
+    karki, paloivat, onnistui = set(), set(), False
+    for e in g.get("events") or []:
+        tx = e.get("texts") or []
+        pl = next((t.get("id") for t in tx if isinstance(t, dict) and t.get("type") == "player"), None)
+        st = {k for t in tx if isinstance(t, dict) and t.get("type") == "stat" for k in t if k != "type"}
+        if "pointhits" in st or "pointhitf" in st: karki.add(pl)
+        if "pointhits" in st: onnistui = True
+        if "out" in st and pl is not None: paloivat.add(pl)
+    return int(onnistui and bool(paloivat - karki))
+
 def ottelun_lyonnit(d, vaihe):
-    """[(lyöjä, joukkue, [x, y, tilanne, palot, lyönti, tulos, vaihe])] – vain jaksot 1–2."""
+    """[(lyöjä, joukkue, [x, y, tilanne, palot, lyönti, tulos, vaihe, takapalo])] – vain jaksot 1–2."""
     palot, out = collections.Counter(), []
     for g in d.get("events") or []:
         if g.get("period") not in (0, 1) or g.get("team") is None or g.get("inning") is None: continue
@@ -49,8 +66,9 @@ def ottelun_lyonnit(d, vaihe):
             x, y = float(h["x"]), float(h["y"])
             if not (x == 0 and y == 0):
                 r = ((g.get("events") or [{}])[0].get("runnersAtBases")) or []
+                tp = takapalo(g)
                 out.append((h["batter_player_id"], g["team"], [round((x - 50) * 0.525, 1), round((95 - y) * 1.06, 1),
-                    TIL.index(tila(r)), min(palot[k], 2), g.get("hitNumber") or 0, TUL.index(tulos(ty, te, st)), vaihe]))
+                    TIL.index(tila(r)), min(palot[k], 2), g.get("hitNumber") or 0, TUL.index(tulos(ty, te, st, tp)), vaihe, tp]))
         palot[k] += sum(1 for s in st if s == "out")
     return out
 
@@ -72,7 +90,7 @@ def kirjoita_yhteenveto(kohde, kausi, P, hak):
         v = {}
         for vk in ("r", "k"):
             m = {k: [[0] * len(TUL) for _ in range(4)] for k in KANSIOT}
-            for x, y, t, palot, lyonti, tul, vaihe in l:
+            for x, y, t, palot, lyonti, tul, vaihe, *_ in l:
                 if vk == "r" and vaihe != 0: continue
                 for k in ("kaikki", KANSIO.get(t)):
                     if k is None: continue
@@ -81,7 +99,7 @@ def kirjoita_yhteenveto(kohde, kausi, P, hak):
             v[vk] = {k: rivit for k, rivit in m.items() if any(map(any, rivit))}
             # palot ennen lyöntiä 0, 1, 2 (paineen alla) – sama kansiojako, kaikki lyönnit
             mp = {k: [[0] * len(TUL) for _ in range(3)] for k in KANSIOT}
-            for x, y, t, palot, lyonti, tul, vaihe in l:
+            for x, y, t, palot, lyonti, tul, vaihe, *_ in l:
                 if vk == "r" and vaihe != 0: continue
                 for k in ("kaikki", KANSIO.get(t)):
                     if k is not None: mp[k][min(palot, 2)][tul] += 1
@@ -115,7 +133,7 @@ def main():
         jl = lyh.get(J[pid].most_common(1)[0][0])
         hakemisto.append({"id": pid, "nimi": nimet[pid], "joukkue": jl, "n": len(l)})
         with open(os.path.join(kohde, f"p{pid}.json"), "w", encoding="utf-8") as fh:
-            json.dump({"id": pid, "nimi": nimet[pid], "joukkue": jl, "kentat": ["x", "y", "tilanne", "palot", "lyonti", "tulos", "vaihe"], "l": l}, fh, ensure_ascii=False, separators=(",", ":"))
+            json.dump({"id": pid, "nimi": nimet[pid], "joukkue": jl, "kentat": ["x", "y", "tilanne", "palot", "lyonti", "tulos", "vaihe", "takapalo"], "l": l}, fh, ensure_ascii=False, separators=(",", ":"))
     hakemisto.sort(key=lambda r: (r["joukkue"] or "", r["nimi"]))
     kirjoita_yhteenveto(kohde, kausi, P, {r["id"]: r for r in hakemisto})
     meta = {"kausi": kausi, "tilanteet": TIL, "tulokset": TUL, "pelaajat": hakemisto, "otteluita": len(os.listdir(kansio)),

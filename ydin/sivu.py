@@ -160,16 +160,16 @@ KANSIO = {0: 0, 1: 1, 2: 2, 4: 2, 3: 3, 5: 3, 6: 3, 7: 3}
 ONNISTUI, LAITON = {0, 1, 6}, 2
 
 def lyontipohja(kausi=KAUSI):
-    """Sarjan vertailuluvut: [vaihe 0/1][kansio 0–3][palot 0–2][lyönti 1–3 → 0–2] = [lyönnit, onnistuneet, laittomat]."""
+    """Sarjan vertailuluvut: [vaihe 0/1][kansio 0–3][palot 0–2][lyönti 1–3 → 0–2] = [lyönnit, onnistuneet, laittomat, takapalot]."""
     import glob
-    P = [[[[[0, 0, 0] for _ in range(3)] for _ in range(3)] for _ in range(4)] for _ in range(2)]
+    P = [[[[[0, 0, 0, 0] for _ in range(3)] for _ in range(3)] for _ in range(4)] for _ in range(2)]
     for f in glob.glob(os.path.join(OUT, f"lyonnit_{kausi}", "p*.json")):
         with open(f, encoding="utf-8") as h:
-            for x, y, t, palot, lyonti, tulos, vaihe in json.load(h)["l"]:
+            for x, y, t, palot, lyonti, tulos, vaihe, *muut in json.load(h)["l"]:
                 if not 1 <= lyonti <= 3 or t not in KANSIO:
                     continue
                 c = P[min(vaihe, 1)][KANSIO[t]][min(palot, 2)][lyonti - 1]
-                c[0] += 1; c[1] += tulos in ONNISTUI; c[2] += tulos == LAITON
+                c[0] += 1; c[1] += tulos in ONNISTUI; c[2] += tulos == LAITON; c[3] += bool(muut and muut[0])
     return P
 
 def kopioi_lyonnit(kausi=KAUSI):

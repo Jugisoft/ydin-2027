@@ -8,3 +8,4 @@
 | 3.10.2026 | Termit pesistulokset.fi-standardin mukaan. KL0–KL3 = kärkietenijän lähtöpesä. |
 | 3.10.2026 | Toimivaan YDIN 2026:een (Jugisoft/ydin) ei kosketa ennen kuin YDIN 2027 on todistetusti valmis. |
 | 6.11.2026 | Tallessa olevista ottelutapahtumista lasketaan myös lukkarin vapaat ja kärpäset sekä pelaajakortin lyöntiprofiili. Ei uusia hakuja: sama yksi haku per päättynyt ottelu. Merkatut lyönnit ja lyöntityypit (Pesäpalloliiton E-pesis) eivät ole julkisessa datassa. |
+| 6.11.2026 | Uusi tapahtumadatasta laskettu luku julkaistaan vasta, kun se täsmää pesistulokset.fi:n virallisiin lukuihin (ks. mittarit.md, validointi). Etenijäkohtaiset tilastot odottavat, koska ne eivät täsmää. |

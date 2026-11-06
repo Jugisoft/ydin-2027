@@ -20,8 +20,12 @@ KENTAT = ["ottelu", "pvm", "vaihe", "lukkari", "jk", "vs", "koti", "voitto", "ja
           "juoksut_v", "j1_v", "j2_v", "juoksut",
           "KL_v", "KLY_v", "KL0_v", "KLY0_v", "KL1_v", "KLY1_v", "KL2_v", "KLY2_v", "KL3_v", "KLY3_v",
           "kolmos_v", "K_v",
-          "vapaat", "vapaat1", "vapaat23", "vapaatK", "karpaset_l", "karpaset"]
-TKENTAT = KENTAT[-6:]   # tapahtumadatasta; null jos ottelun tapahtumia ei ole
+          "vapaat", "vapaat1", "vapaat23", "vapaatK", "karpaset_l", "karpaset",
+          "P0_v", "P1_v", "P2_v", "P3_v", "H0_v", "H1_v", "H2_v", "H3_v"]
+TKENTAT = KENTAT[-14:-8]   # tapahtumadatasta; null jos ottelun tapahtumia ei ole
+# Vastustajan kärkietenijän palot (P) ja haavat (H) lähtöpesän mukaan: stats-toolin pelaajarivit (batpe_outs_n,
+# batpe_caughts_n) summattuna vastustajan lyöjiltä (6.11.2026). Null, jos kauden ottelurivejä ei ole tallessa.
+VKENTAT = KENTAT[-8:]
 TAPAHTUMAT = os.path.join(os.path.dirname(__file__), "..", "data", "tapahtumat")
 KOHDE = {"ykköspesälle": 1, "kakkospesälle": 23, "kolmospesälle": 23, "kotipesään": "K"}
 
@@ -88,12 +92,29 @@ def rikasta(rivit, kausi, lyh_id):
     for f in glob.glob(os.path.join(kansio, "*.json.gz")):
         with gzip.open(f, "rt", encoding="utf-8") as h:
             luvut[int(os.path.basename(f).split(".")[0])] = tapahtumaluvut(json.load(h))
-    n = len(KENTAT) - len(TKENTAT)
+    n = len(KENTAT) - len(TKENTAT) - len(VKENTAT)
+    vir = viralliset(kausi)
     for r in rivit:
         del r[n:]
         t = luvut.get(r[0], {}).get(lyh_id.get(r[4]))
         r.extend(t if t is not None else [None] * len(TKENTAT))
-    return sum(1 for r in rivit if r[-1] is not None)
+        v = vir.get((r[0], lyh_id.get(r[5])))   # vastustajan lyöjät
+        r.extend(v if v is not None else [None] * len(VKENTAT))
+    return sum(1 for r in rivit if r[n] is not None)
+
+def viralliset(kausi):
+    """{(ottelu, lyövä team_id): [palot0–3, haavat0–3]} stats-toolin ottelukohtaisista pelaajariveistä."""
+    out = {}
+    for ph in ("runko", "jatko_ylempi", "jatko_alempi"):
+        p = os.path.join(OUT, f"otteluittain_{kausi}_{ph}.json")
+        if not os.path.exists(p):
+            continue
+        with open(p, encoding="utf-8") as f:
+            for r in json.load(f)["pelaajat"]:
+                a = out.setdefault((r["match_id"], r["team_id"]), [0] * 8)
+                for n in range(4):
+                    a[n] += _i(r.get(f"batpe_outs_{n}")); a[4 + n] += _i(r.get(f"batpe_caughts_{n}"))
+    return out
 
 def _lyh_id(kausi):
     m = {}

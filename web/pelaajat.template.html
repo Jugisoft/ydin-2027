@@ -376,17 +376,21 @@ const LP_ONN = new Set([0,1,6]);
 // Lopputulosryhmät kartalle: väri + muoto (ei pelkkä väri). Laittomat eivät osu kenttään, joten ne eivät ole kartalla.
 const LP_RYHMAT = [
   {k:"onn", t:"Onnistui", tt:"kärki eteni, juoksu tai kunnari", c:"var(--win)", m:"o", tul:[0,1,6]},
+  {k:"tp", t:"Onnistui, takapalo", tt:"kärki eteni, toinen etenijä paloi", c:"var(--win)", m:"tp", tul:[]},
   {k:"ei", t:"Ei etenemistä", tt:"", c:"var(--muted)", m:"r", tul:[7,8]},
   {k:"koppi", t:"Koppi tai haava", tt:"", c:"var(--accent)", m:"d", tul:[3,5]},
   {k:"palo", t:"Palo", tt:"", c:"var(--loss)", m:"s", tul:[4]},
 ];
 const LP_TUL = {}; LP_RYHMAT.forEach(g=>g.tul.forEach(t=>LP_TUL[t]=g));
+const LP_TP = LP_RYHMAT.find(g=>g.k==="tp");
+const lpRyhma = r => r[7] && LP_ONN.has(r[5]) ? LP_TP : LP_TUL[r[5]];
 const LP_TNIMI = ["kunnari","juoksu","laiton","koppi","palo","haava","kärki eteni","ei edennyt","muu"];
 const lpTila = {k:"k"}; const lpVälimuisti = new Map();
 function lpHae(id){ if(!lpVälimuisti.has(id)) lpVälimuisti.set(id, fetch(`lyonnit_${DATA.kausi}/p${id}.json`).then(r=>r.ok?r.json():null).catch(()=>null)); return lpVälimuisti.get(id); }
 const lpVaihe = () => st.v==="runko" ? [0] : st.v==="kaikki" ? [0,1] : [1];
 function lpMerkki(m, x, y, r, c, otsikko){ x=+x; y=+y; const f=v=>v.toFixed(2);
   const t = otsikko ? `<title>${otsikko}</title>` : "";
+  if(m==="tp") return `<circle class="m" cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}" style="stroke:var(--loss);stroke-width:${r*.55}">${t}</circle>`;
   if(m==="o") return `<circle class="m" cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}">${t}</circle>`;
   if(m==="r") return `<circle class="m" cx="${f(x)}" cy="${f(y)}" r="${r*.85}" fill="none" stroke="${c}" stroke-width="${r*.45}" style="stroke:${c}">${t}</circle>`;
   if(m==="s") return `<rect class="m" x="${f(x-r*.85)}" y="${f(y-r*.85)}" width="${r*1.7}" height="${r*1.7}" fill="${c}">${t}</rect>`;
@@ -404,7 +408,7 @@ async function lyontiprofiili(p){
   const kansiot = lpTila.k==="k" ? [0,1,2,3] : [lpTila.k];
   const R = L.filter(r=>kansiot.includes(LP_KANSIO[r[2]]));
   // sarja: pohja[vaihe][kansio][palot][lyönti] = [n, onn, laiton]
-  const pohja = (pa, ly) => { const s=[0,0,0]; for(const v of V) for(const k of kansiot) for(const a of (pa==null?[0,1,2]:[pa])) for(const l of (ly==null?[0,1,2]:[ly])){ const c=DATA.lyontipohja[v][k][a][l]; s[0]+=c[0]; s[1]+=c[1]; s[2]+=c[2]; } return s; };
+  const pohja = (pa, ly) => { const s=[0,0,0,0]; for(const v of V) for(const k of kansiot) for(const a of (pa==null?[0,1,2]:[pa])) for(const l of (ly==null?[0,1,2]:[ly])){ const c=DATA.lyontipohja[v][k][a][l]; s[0]+=c[0]; s[1]+=c[1]; s[2]+=c[2]; s[3]+=c[3]||0; } return s; };
   const oma = (pa, ly) => { const s=[0,0,0]; for(const r of R) if((pa==null||Math.min(r[3],2)===pa) && (ly==null||r[4]-1===ly)){ s[0]++; s[1]+=LP_ONN.has(r[5]); s[2]+=r[5]===2; } return s; };
   const solu = (pa, ly) => {
     const o = oma(pa, ly), sa = pohja(pa, ly), op = pct(o[1],o[0]), sp = pct(sa[1],sa[0]);
@@ -423,18 +427,20 @@ async function lyontiprofiili(p){
   // Laittomat ja etenemisen ajoitus lyönneittäin
   const lait = [0,1,2,null].map(ly=>{ const o=oma(null,ly), s=pohja(null,ly); return `<div><b>${fmtP(pct(o[2],o[0]))} %</b><small>sarja ${fmtP(pct(s[2],s[0]))} %</small></div>`; }).join("");
   const onnYht = oma(null,null)[1], sOnn = pohja(null,null)[1];
+  const tpOma = ly => { let n=0,t=0; for(const r of R) if(ly==null||r[4]-1===ly){ if(LP_ONN.has(r[5])){ n++; t+=r[7]?1:0; } } return [t,n]; };
+  const takapalo = [0,1,2,null].map(ly=>{ const [t,n]=tpOma(ly), s=pohja(null,ly); return `<div title="${t} / ${n} onnistunutta"><b>${fmtP(pct(t,n))} %</b><small>sarja ${fmtP(pct(s[3],s[1]))} %</small></div>`; }).join("");
   const ajoitus = [0,1,2].map(ly=>`<div><b>${fmtP(pct(oma(null,ly)[1], onnYht))} %</b><small>sarja ${fmtP(pct(pohja(null,ly)[1], sOnn))} %</small></div>`).join("") + `<div><b>${onnYht}</b><small>onnistunutta</small></div>`;
   // Kartta: kenttä 42 m × 96 m, kotipesä alhaalla (x −21…21, y 0…96 kotirajasta)
   const K = R.filter(r=>r[5]!==2 && !(r[0]===0&&r[1]===0));
   const X = x => (Math.max(-23,Math.min(23,x))+23).toFixed(1), Y = y => (100-Math.max(-2,Math.min(98,y))).toFixed(1);
-  const merkit = LP_RYHMAT.slice().reverse().flatMap(g=>K.filter(r=>LP_TUL[r[5]]===g).map(r=>lpMerkki(g.m, X(r[0]), Y(r[1]), 1.15, g.c,
-    `${LP_TNIMI[r[5]]} · ${r[4]}. lyönti · ${Math.min(r[3],2)} paloa · ${Math.round(r[1])} m`))).join("");
+  const merkit = LP_RYHMAT.slice().reverse().flatMap(g=>K.filter(r=>lpRyhma(r)===g).map(r=>lpMerkki(g.m, X(r[0]), Y(r[1]), 1.15, g.c,
+    `${LP_TNIMI[r[5]]}${r[7]?" (takapalo)":""} · ${r[4]}. lyönti · ${Math.min(r[3],2)} paloa · ${Math.round(r[1])} m`))).join("");
   const kartta = `<svg viewBox="0 0 46 104" role="img" aria-label="Lyöntien osumakohdat kentällä lopputuloksen mukaan">
     <path class="kent" d="M2 4H44V96L27 102H19L2 96Z"/>
     <line class="apu" x1="2" x2="44" y1="${Y(20)}" y2="${Y(20)}"/><line class="apu" x1="2" x2="44" y1="${Y(50)}" y2="${Y(50)}"/>
     <text class="apuT" x="43" y="${+Y(20)-1}" text-anchor="end">20 m</text><text class="apuT" x="43" y="${+Y(50)-1}" text-anchor="end">50 m</text>
     <path class="kent" d="M19.5 100 A3.5 3.5 0 0 1 26.5 100 Z"/>${merkit}</svg>`;
-  const sel = `<ul class="lp-sel">${LP_RYHMAT.map(g=>{ const n=K.filter(r=>LP_TUL[r[5]]===g).length;
+  const sel = `<ul class="lp-sel">${LP_RYHMAT.map(g=>{ const n=K.filter(r=>lpRyhma(r)===g).length;
     return `<li><svg viewBox="-2 -2 4 4">${lpMerkki(g.m,0,0,1.2,g.c,"")}</svg><span>${g.t}</span><b>${n} · ${fmtP(pct(n,K.length))} %</b></li>`; }).join("")}
     <li style="grid-template-columns:1fr;color:var(--muted);font-size:.72rem;margin-top:4px">${K.length} kenttään osunutta lyöntiä. Laittomat (${R.filter(r=>r[5]===2).length}) eivät näy kartalla. Vie osoitin merkin päälle.</li></ul>`;
   const vaiheT = st.v==="runko" ? "runkosarja" : st.v==="kaikki" ? "koko kausi" : "jatkosarja";
@@ -444,6 +450,7 @@ async function lyontiprofiili(p){
     ${mx}
     <div class="lp-rivi"><span>Laittomat</span>${lait}</div>
     <div class="lp-rivi"><span title="Monennellako lyönnillä onnistuneet lyönnit tulivat">Onnistumisen hetki</span>${ajoitus}</div>
+    <div class="lp-rivi"><span title="Onnistuneista lyönneistä ne, joilla kärkietenijä eteni mutta joku muu etenijä paloi">Takapalo</span>${takapalo}</div>
     <div class="lp-kartta">${kartta}${sel}</div>`;
   el.querySelectorAll("[data-lpk]").forEach(b=>b.onclick=()=>{ lpTila.k = b.dataset.lpk==="k" ? "k" : +b.dataset.lpk; lyontiprofiili(p); });
 }

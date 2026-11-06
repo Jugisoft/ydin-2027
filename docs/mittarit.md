@@ -38,13 +38,28 @@ Ottelutapahtumista (6.11.2026, `ydin/lukkarit.py`, tallessa olevista `data/tapah
 
 | Mittari | Laskenta |
 | --- | --- |
-| vapaat, vapaat1, vapaat23, vapaatK | tapahtumat "sai vapaataipaleen väärien syöttöjen johdosta" lukkarin joukkueen puolustusvuoroissa, kohdepesän mukaan (1. / 2.–3. / kotipesään = juoksu) |
+| vapaat, vapaat1, vapaat23, vapaatK | tapahtumat "sai vapaataipaleen väärien syöttöjen johdosta" lukkarin joukkueen puolustusvuoroissa, kohdepesän mukaan (1. pesälle = 0-tilanne / 2.–3. = 1- tai 2-tilanne / kotipesään = 3-tilanne, juoksu). Vertailu Pesäpalloliiton E-pesis-paketti 2026 runkosarja: sarja 3,19 vs. 3,17 / ottelu, 0-tilanne 2,97 vs. 2,91; KPL 3,24 vs. 3,12 (ero lähteiden kirjauksessa, ei selvitetty) |
 | karpaset, karpaset_l | "paloi kärpäsenä…" puolustusvuoroissa; _l = "…lukkarin toimesta" |
 
 Tarkistus kausi 2026: 458/458 lukkaririviä löysi ottelunsa tapahtumista, vapaita 1 390 (≈3,0 / joukkue / ottelu), kärpäsiä 485.
 
 ## Validointi
 - 3.10.2026: kausi 2026 runkosarja, 196 pelaajaa – 195 täsmää viralliseen kausisummaan (O, K, L, T, KL, KLY, KL3, KLY3); 1 ero korjattu (O = matches-kenttä).
+
+## Tapahtumadatan purun validointi (6.11.2026)
+Kärkietenijä = alitapahtuma, jossa on `pointhits`/`pointhitf`-tilasto (arvo = lähtöpesä). Jaksot 1–2 + supervuoro.
+Tarkistus kausi 2026, kaikki 5 496 ottelu–pelaaja-riviä stats-toolia vasten: KL0–KL3 ja KLY0–KLY3 5 496/5 496 täsmää,
+kärkietenijän palot (`batpe_outs_n` = kärkialitapahtumassa "paloi") 5 496/5 496, kopit (`batpe_caughts_n` = kärki "haavoittui") 5 496/5 496.
+Lisäksi jokainen epäonnistunut kärkiyritys on joko palo tai haava (lähtöpesittäin summat täsmäävät KLY − KL:ään).
+Etenijäkohtainen `runpadv` täsmää vain 98 %:sti eikä takaetenijöiden `runtadv` lainkaan, joten etenijäkohtaisia
+(pelaaja etenijänä, etenijä vs. lukkari) tilastoja ei vielä julkaista.
+
+**Takapalo + kärkilyönti** (`lyonnit_<kausi>/p<id>.json` kenttä 8): kärkilyönti onnistui (pointhits), mutta joku muu kuin
+kärkietenijä paloi samalla lyönnillä. Kausi 2026: 730 kartalla olevaa lyöntiä. Ennen 6.11.2026 nämä lyönnit luokiteltiin
+tulokseksi "palo"; nyt "eteni" kuten pesistulokset.fi:n KL (516 lyöntiä siirtyi).
+
+**Lukkari: vastustajan kärkietenijät** P0–P3_v, H0–H3_v = vastustajan lyöjien `batpe_outs_n` ja `batpe_caughts_n` ottelussa
+(stats-tool). Eteni + haava + paloi = 100 % kärkiyrityksistä lähtöpesittäin.
 
 ## Lyöntiprofiili (pelaajakortti, 6.11.2026)
 Lähde `data/out/lyonnit_<kausi>/p<id>.json` (kopioidaan sivustolle). Tilanne kärkietenijän mukaan: 0-tilanne, 1-tilanne, 2-tilanne (myös 1–2), takatilanne (kärki 3. pesällä).

@@ -27,3 +27,20 @@ def test_paattyneet():
     o = [{"id": 1, "pvm": "2027-06-01T15:00:00.000000Z", "tulos": "2-0"}, {"id": 2, "pvm": "2027-06-01T15:00:00.000000Z", "tulos": None},
          {"id": 3, "pvm": "2027-06-02T15:00:00.000000Z", "tulos": "1-1"}]
     assert [x["id"] for x in paattyneet(o, nyt)] == [1]
+
+def _s(pl, *t):
+    return {"texts": [{"type": "player", "id": pl}, *t], "runnersAtBases": [None] * 5}
+
+def test_takapalo_on_onnistunut_karkilyonti():
+    from ydin.lyonnit import takapalo
+    hit = {"batter_player_id": 1, "x": "50", "y": "50", "hit_number": 1}
+    g = {"period": 0, "inning": 0, "team": 5, "hit": hit, "events": [
+        {"texts": ["1. lyönti", {"type": "hit"}], "runnersAtBases": [1, 2, 3, None, None]},
+        _s(3, {"type": "event", "text": "eteni"}, "kolmospesälle", {"type": "stat", "pointhits": 2}),
+        _s(2, {"type": "event", "text": "paloi"}, {"type": "stat", "out": 1}, "kakkospesälle")]}
+    assert takapalo(g) == 1
+    rivi = ottelun_lyonnit({"events": [g]}, 0)[0][2]
+    assert TUL[rivi[5]] == "eteni" and rivi[7] == 1
+    # kärki itse paloi -> ei takapaloa, tulos palo
+    g["events"][1] = _s(3, {"type": "event", "text": "paloi"}, {"type": "stat", "out": 1}, {"type": "stat", "pointhitf": 2})
+    assert takapalo(g) == 0 and TUL[ottelun_lyonnit({"events": [g]}, 0)[0][2][5]] == "palo"
