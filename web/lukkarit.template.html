@@ -148,7 +148,7 @@ table.mini a:hover{color:var(--accent);text-decoration:underline}
   <div class="kaytto" id="kaytto"></div>
 </section>
 
-<p class="note">Lukkari = ottelun kokoonpanossa lukkarin paikalla aloittanut pelaaja. Kesken ottelun tehdyt lukkarivaihdot eivät näy datassa, joten koko ottelun puolustusluvut kohdistuvat aloittajalle. Juoksut ilman kotiutuskilpailua. KL%0–KL%3 vastaan = vastustajan kärkilyöntiprosentti sen mukaan, miltä pesältä kärkietenijä lähtee. Torjunta% = vastustajan epäonnistuneet kotiutusyritykset 3. pesältä. Kolmostilanteet = vastustajan tilanteet, joissa etenijä oli 3. pesällä. Lukkarin vapaita ja kärpäsiä ei ole ottelutason datassa.</p>
+<p class="note">Lukkari = ottelun kokoonpanossa lukkarin paikalla aloittanut pelaaja. Kesken ottelun tehdyt lukkarivaihdot eivät näy datassa, joten koko ottelun puolustusluvut kohdistuvat aloittajalle. Juoksut ilman kotiutuskilpailua. KL%0–KL%3 vastaan = vastustajan kärkilyöntiprosentti sen mukaan, miltä pesältä kärkietenijä lähtee. Torjunta% = vastustajan epäonnistuneet kotiutusyritykset 3. pesältä. Kolmostilanteet = vastustajan tilanteet, joissa etenijä oli 3. pesällä. Vapaat = väärien syöttöjen vapaataipaleet ja kärpäset lasketaan ottelutapahtumista (kaudesta 2026 alkaen, vain varsinaiset jaksot). Ne kohdistuvat aloittaneelle lukkarille kuten muutkin puolustusluvut; joukkueen kärpäset sisältävät myös ulkopelaajien kärpäset.</p>
 
 <!--SKRIPTI-->
 <script>
@@ -173,13 +173,18 @@ $("kaudet").innerHTML = KAUDET.map(k=>`<button data-k="${k}" aria-pressed="${k==
 /* Rivit -> lukkarikohtaiset summat */
 function rivit(k, v){ return (D.kaudet[k]||[]).filter(r => v==="kaikki" || r[ix.vaihe]===1); }
 const SUM = ["voitto","jaksot","jaksot_v","juoksut_v","j1_v","j2_v","juoksut","KL_v","KLY_v","KL0_v","KLY0_v","KL1_v","KLY1_v","KL2_v","KLY2_v","KL3_v","KLY3_v","kolmos_v","K_v"];
+/* Tapahtumadatasta (2026–): null, jos ottelun tapahtumia ei ole. Ot = ottelut, joista tapahtumat löytyvät. */
+const TSUM = ["vapaat","vapaat1","vapaat23","vapaatK","karpaset_l","karpaset"].filter(k=>k in ix);
+const uusi = id => ({id, O:0, Ot:0, jk:{}, ...Object.fromEntries(SUM.concat(TSUM).map(k=>[k,0]))});
+function lisaa(s, r){ s.O++; for(const k of SUM) s[k] += r[ix[k]];
+  if(TSUM.length && r[ix.vapaat]!=null){ s.Ot++; for(const k of TSUM) s[k] += r[ix[k]]; } }
 function summat(R){
   const M = new Map();
   for(const r of R){
     const id = r[ix.lukkari]; let s = M.get(id);
-    if(!s){ s = {id, O:0, jk:{}, ...Object.fromEntries(SUM.map(k=>[k,0]))}; M.set(id,s); }
-    s.O++; s.jk[r[ix.jk]] = (s.jk[r[ix.jk]]||0)+1;
-    for(const k of SUM) s[k] += r[ix[k]];
+    if(!s){ s = uusi(id); M.set(id,s); }
+    s.jk[r[ix.jk]] = (s.jk[r[ix.jk]]||0)+1;
+    lisaa(s, r);
   }
   for(const s of M.values()) johda(s);
   return [...M.values()];
@@ -192,9 +197,11 @@ function johda(s){
   for(let n=0;n<4;n++) s["kl"+n] = pct(s["KL"+n+"_v"], s["KLY"+n+"_v"]);
   s.torj = s.KLY3_v ? 100*(s.KLY3_v - s.KL3_v)/s.KLY3_v : null;
   s.kol = s.kolmos_v/s.O; s.kv = s.K_v/s.O;
+  s.vap = s.Ot ? s.vapaat/s.Ot : null; s.kar = s.Ot ? s.karpaset/s.Ot : null; s.karl = s.Ot ? s.karpaset_l : null;
+  s.vapK = s.Ot ? s.vapaatK/s.Ot : null;
   return s;
 }
-function sarja(R){ const s = {id:0, O:0, jk:{}, ...Object.fromEntries(SUM.map(k=>[k,0]))}; for(const r of R){ s.O++; for(const k of SUM) s[k]+=r[ix[k]]; } return johda(s); }
+function sarja(R){ const s = uusi(0); for(const r of R) lisaa(s, r); return johda(s); }
 
 /* Sarakkeet: suunta -1 = pienempi parempi lukkarille */
 const COLS = [
@@ -207,6 +214,8 @@ const COLS = [
   {k:"kl1", pb:true, t:"KL%1 v", f:s=>s.kl1, fmt:s=>fi(s.kl1), dir:-1, hide:true, ti:"Vastustajan KL% 1. pesältä"},
   {k:"kl2", pb:true, t:"KL%2 v", f:s=>s.kl2, fmt:s=>fi(s.kl2), dir:-1, hide:true, ti:"Vastustajan KL% 2. pesältä"},
   {k:"torj", t:"Torj%", f:s=>s.torj, fmt:s=>fi(s.torj), dir:1, ti:"Torjunta%: vastustajan epäonnistuneet kotiutusyritykset 3. pesältä"},
+  {k:"vap", t:"Vapaat / O", f:s=>s.vap, fmt:s=>fi(s.vap,2), dir:-1, sep:true, ti:"Väärien syöttöjen vapaataipaleet per ottelu (ottelutapahtumista, 2026–)"},
+  {k:"karl", t:"Kärp. L", f:s=>s.karl, fmt:s=>s.karl==null?"–":s.karl, hide:true, ti:"Lukkarin itse polttamat kärpäset (ottelutapahtumista, 2026–)"},
   {k:"kv", t:"K v / O", f:s=>s.kv, fmt:s=>fi(s.kv,2), dir:-1, hide:true, ti:"Vastustajan kunnarit / ottelu"},
 ];
 const HI = "#1d7a4a", LO = "#c2413a";
@@ -251,6 +260,12 @@ function band(R){
     ["Matalin KL% vastaan", b?fi(b.klv)+" %":"–", b?`${nimi(b.id)} · ${b.joukkue}`:"väh. 10 ottelua"],
     ["Yhden lukkarin joukkueet", yksi, "sama aloittaja joka ottelussa"],
   ];
+  if(SARJA.Ot){
+    const v = Q.filter(s=>s.Ot>=10).sort((a,b)=>a.vap-b.vap)[0], k = ALL.slice().sort((a,b)=>(b.karl||0)-(a.karl||0))[0];
+    tiles.push(["Vapaat / ottelu", fi(SARJA.vap,2), "sarjan keskiarvo"],
+      ["Vähiten vapaita / ottelu", v?fi(v.vap,2):"–", v?`${nimi(v.id)} · ${v.joukkue}`:"väh. 10 ottelua"],
+      ["Eniten lukkarin kärpäsiä", k&&k.karl?k.karl:"–", k&&k.karl?`${nimi(k.id)} · ${k.joukkue}`:"ei kärpäsiä"]);
+  }
   $("stats").innerHTML = tiles.map(([l,v,s])=>`<div class="st"><span>${l}</span><b>${v}</b><small title="${esc(s)}">${esc(s)}</small></div>`).join("");
 }
 
@@ -271,7 +286,7 @@ const PCT_HI="#d8323b", PCT_LO="#3a63b4";
 function prosentit(s){
   const pool = ALL.filter(x=>x.O>=10);
   const rows = [["Vast. tekemät juoksut / O","pv",-1,x=>fi(x.pv,2)],["KL% vastaan","klv",-1,x=>fi(x.klv)],["KL%0 vastaan","kl0",-1,x=>fi(x.kl0)],["KL%1 vastaan","kl1",-1,x=>fi(x.kl1)],
-    ["KL%2 vastaan","kl2",-1,x=>fi(x.kl2)],["Torjunta%","torj",1,x=>fi(x.torj)],["3-tilanteet / O","kol",-1,x=>fi(x.kol,1)],["Kunnarit v. / O","kv",-1,x=>fi(x.kv,2)],["Voitto%","vp",1,x=>fi(x.vp,0)]];
+    ["KL%2 vastaan","kl2",-1,x=>fi(x.kl2)],["Torjunta%","torj",1,x=>fi(x.torj)],["3-tilanteet / O","kol",-1,x=>fi(x.kol,1)],["Kunnarit v. / O","kv",-1,x=>fi(x.kv,2)],...(SARJA.Ot?[["Vapaat / O","vap",-1,x=>fi(x.vap,2)],["Kärpäset / O","kar",1,x=>fi(x.kar,2)]]:[]),["Voitto%","vp",1,x=>fi(x.vp,0)]];
   const html = rows.map(([t,k,dir,fmt])=>{
     const grp = pool.filter(x=>x[k]!=null), val = s[k];
     if(s.O<10 || grp.length<5 || val==null) return `<div class="prow na"><span class="k">${t}</span><span class="tr"></span><span class="v">${fmt(s)}</span></div>`;
@@ -290,6 +305,24 @@ function pesat(s){
   return `<div class="sec"><h4>Vastustajan KL% pesittäin <small>vs. sarjan ka</small></h4><div class="pesat">${P.map((t,n)=>{
     const v = s["kl"+n], ka = SARJA["kl"+n], e = v!=null&&ka!=null ? v-ka : null, y = s["KLY"+n+"_v"];
     return `<div class="pesa" title="${s["KL"+n+"_v"]}/${y}"><span>${t}</span><b>${fi(v)}</b><small class="${e==null?"":e<0?"hyva":"huono"}">${e==null?"":(e>0?"+":"")+fi(e)}</small></div>`; }).join("")}</div></div>`;
+}
+
+function vapaat(s){
+  if(!s.Ot) return "";
+  const e = (a,b,d=2,hyvaPieni=true) => { if(a==null||b==null) return ""; const x=a-b; return `<small class="${Math.abs(x)<0.005?"":(x<0)===hyvaPieni?"hyva":"huono"}">${x>0?"+":""}${fi(x,d)}</small>`; };
+  const P = [["1. pesälle", s.vapaat1, SARJA.vapaat1], ["2. tai 3. pesälle", s.vapaat23, SARJA.vapaat23], ["Kotiin (juoksu)", s.vapaatK, SARJA.vapaatK]];
+  return `<div class="sec"><h4>Vapaat ja kärpäset <small>${s.Ot} ottelun tapahtumista · vs. sarjan ka</small></h4>
+    <div class="pesat">
+      <div class="pesa"><span>Vapaat / O</span><b>${fi(s.vap,2)}</b>${e(s.vap,SARJA.vap)}</div>
+      ${P.map(([t,a,b])=>`<div class="pesa" title="${a} vapaata, sarja ${fi(b/SARJA.Ot*1,2)} / O"><span>${t}</span><b>${fi(a/s.Ot,2)}</b>${e(a/s.Ot,b/SARJA.Ot)}</div>`).join("")}
+    </div>
+    <div class="pesat" style="margin-top:6px">
+      <div class="pesa"><span>Vapaita yht.</span><b>${s.vapaat}</b></div>
+      <div class="pesa"><span>Lukkarin kärpäset</span><b>${s.karpaset_l}</b></div>
+      <div class="pesa"><span>Joukkueen kärpäset / O</span><b>${fi(s.kar,2)}</b>${e(s.kar,SARJA.kar,2,false)}</div>
+      <div class="pesa"><span>Kärpäsiä yht.</span><b>${s.karpaset}</b></div>
+    </div>
+    <p class="note" style="margin:6px 0 0">Vapaa = etenijä sai vapaataipaleen väärien syöttöjen johdosta. Pesä = mille pesälle etenijä pääsi; kotiin = vastustajalle juoksu.</p></div>`;
 }
 
 function kehitys(id){
@@ -317,13 +350,14 @@ function loki(id){
   if(!R.length) return "";
   const nyt = st.k===D.kausi;
   const pv = s => { const [y,m,d]=s.split("-"); return `${+d}.${+m}.`; };
+  const vapS = "vapaat" in ix && R.some(r=>r[ix.vapaat]!=null);
   const rows = R.slice(0,12).map(r=>{
     const w = r[ix.voitto], kl = pct(r[ix.KL_v], r[ix.KLY_v]);
     const vs = `${r[ix.koti]?"":"@ "}${esc(r[ix.vs])}`;
-    return `<tr><td class="l">${pv(r[ix.pvm])}</td><td class="l">${nyt?`<a href="ottelut.html?o=${r[ix.ottelu]}">${vs}</a>`:vs}</td><td><span class="wl ${w?"w":"l"}">${w?"V":"H"}</span></td><td>${r[ix.jaksot]}–${r[ix.jaksot_v]}</td><td>${r[ix.juoksut_v]}</td><td>${fi(kl)}</td><td>${r[ix.KL3_v]}/${r[ix.KLY3_v]}</td></tr>`;
+    return `<tr><td class="l">${pv(r[ix.pvm])}</td><td class="l">${nyt?`<a href="ottelut.html?o=${r[ix.ottelu]}">${vs}</a>`:vs}</td><td><span class="wl ${w?"w":"l"}">${w?"V":"H"}</span></td><td>${r[ix.jaksot]}–${r[ix.jaksot_v]}</td><td>${r[ix.juoksut_v]}</td><td>${fi(kl)}</td><td>${r[ix.KL3_v]}/${r[ix.KLY3_v]}</td>${vapS?`<td>${r[ix.vapaat]??"–"}</td>`:""}</tr>`;
   }).join("");
   return `<div class="sec"><h4>Viimeisimmät ottelut <small>${R.length>12?`12 / ${R.length}`:`${R.length} ottelua`}</small></h4>
-    <div style="overflow-x:auto"><table class="mini"><thead><tr><th class="l">Pvm</th><th class="l">Vastustaja</th><th></th><th>Jaksot</th><th title="Vastustajan tekemät juoksut ottelussa">Vast. juoksut</th><th title="Vastustajan KL%">KL% v</th><th title="Vastustajan kotiutukset 3. pesältä">KL3 v</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+    <div style="overflow-x:auto"><table class="mini"><thead><tr><th class="l">Pvm</th><th class="l">Vastustaja</th><th></th><th>Jaksot</th><th title="Vastustajan tekemät juoksut ottelussa">Vast. juoksut</th><th title="Vastustajan KL%">KL% v</th><th title="Vastustajan kotiutukset 3. pesältä">KL3 v</th>${vapS?`<th title="Väärien syöttöjen vapaataipaleet">Vap.</th>`:""}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 
 function kortti(){
@@ -343,6 +377,7 @@ function kortti(){
     </div>
     ${prosentit(s)}
     ${pesat(s)}
+    ${vapaat(s)}
     ${kehitys(s.id)}
     ${loki(s.id)}
     ${kuva||lg(jk)?`<p class="note">Kuvat ja logot: pesistulokset.fi</p>`:""}`;

@@ -150,8 +150,33 @@ def pelaajat_data():
             continue
         historia[kausi] = {laji: {pid: r for pid, r in h[laji].items() if pid in nykyiset} for laji in ("runko", "kaikki")}
     return {"kausi": KAUSI, "paivitetty": lue(f"meta_{KAUSI}.json")["paivitetty"], "kentat": ["id", "nimi", "jk"] + keys, "vaiheet": vaiheet,
+            "lyontipohja": lyontipohja(),
             "historia": historia, "hkentat": ["jk"] + HKENTAT,
             "kuvat": {pid: u for pid, u in kuvat["pelaajat"].items() if pid in nykyiset}, "logot": kuvat["logot"]}
+
+# Lyöntiprofiili (6.11.2026): pelaajakortti lukee lyonnit_<kausi>/p<id>.json (sama data kuin KPL Keskuksen Minun pelini).
+# Tilanne kärkietenijän mukaan: 0 = 0-tilanne (nollatilanne), 1 = kärki ykkösellä, 2 = kakkosella (1–2 mukaan lukien), T = kolmosella.
+KANSIO = {0: 0, 1: 1, 2: 2, 4: 2, 3: 3, 5: 3, 6: 3, 7: 3}
+ONNISTUI, LAITON = {0, 1, 6}, 2
+
+def lyontipohja(kausi=KAUSI):
+    """Sarjan vertailuluvut: [vaihe 0/1][kansio 0–3][palot 0–2][lyönti 1–3 → 0–2] = [lyönnit, onnistuneet, laittomat]."""
+    import glob
+    P = [[[[[0, 0, 0] for _ in range(3)] for _ in range(3)] for _ in range(4)] for _ in range(2)]
+    for f in glob.glob(os.path.join(OUT, f"lyonnit_{kausi}", "p*.json")):
+        with open(f, encoding="utf-8") as h:
+            for x, y, t, palot, lyonti, tulos, vaihe in json.load(h)["l"]:
+                if not 1 <= lyonti <= 3 or t not in KANSIO:
+                    continue
+                c = P[min(vaihe, 1)][KANSIO[t]][min(palot, 2)][lyonti - 1]
+                c[0] += 1; c[1] += tulos in ONNISTUI; c[2] += tulos == LAITON
+    return P
+
+def kopioi_lyonnit(kausi=KAUSI):
+    import shutil
+    lahde = os.path.join(OUT, f"lyonnit_{kausi}")
+    if os.path.isdir(lahde):
+        shutil.copytree(lahde, os.path.join(SITE, f"lyonnit_{kausi}"), dirs_exist_ok=True)
 
 def _tiimit():
     tm = {}
@@ -467,6 +492,7 @@ def main():
     print("index.html", rakenna("koti.template.html", k, "index.html", "YDIN 2027 Koti", "koti", **yht))
     print("kausi-2026.html", rakenna("kausi2026.template.html", k, "kausi-2026.html", "YDIN 2027 Kausi 2026", "kausi", **yht))
     print("joukkueet.html", rakenna("joukkueet.template.html", k, "joukkueet.html", "YDIN 2027 Joukkueet", "joukkueet", **yht))
+    kopioi_lyonnit()
     print("pelaajat.html", rakenna("pelaajat.template.html", pd, "pelaajat.html", "YDIN 2027 Pelaajat", "pelaajat", **yht))
     print("ottelut.html", rakenna("ottelut.template.html", ottelut_data(), "ottelut.html", "YDIN 2027 Ottelut", "ottelut", **yht))
     print("tulostaulut.html", rakenna("tulostaulut.template.html", tulostaulut_data({h[0] for h in haku}), "tulostaulut.html", "YDIN 2027 Tulostaulut", "tulostaulut", **yht))

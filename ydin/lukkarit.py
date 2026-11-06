@@ -4,12 +4,14 @@ Pelaajarivien `defensive_position` kertoo, kuka pelasi ottelussa lukkarina ("L",
 ottelun kokoonpanon mukaan). Lukkarille kohdistetaan hänen joukkueensa ottelukohtaiset puolustusluvut eli vastustajan
 kotiutusluvut (`*_opponent`). Kesken ottelun tehdyt lukkarivaihdot eivät näy datassa.
 
-Ei saatavilla ilman tapahtumadataa: lukkarin vapaat (väärät syötöt) ja kärpäset. Huom: stats-toolin `walks`-kenttä
-EI ole vapaat (koko kaudella vain 0–3 per joukkue).
+Tapahtumadatasta (6.11.2026, data/tapahtumat/<kausi>/, ei uusia hakuja) lasketaan lisäksi lukkarin joukkueen
+puolustusvuorojen vapaat (väärien syöttöjen vapaataipaleet, kohdepesän mukaan) ja kärpäset. Vain varsinaiset jaksot
+(1. ja 2. jakso), ei supervuoroa eikä kotiutuslyöntikilpailua. Kaudet ilman tapahtumadataa: kentät null.
+Huom: stats-toolin `walks`-kenttä EI ole vapaat (koko kaudella vain 0–3 per joukkue).
 
 python -m ydin.lukkarit  -> data/out/lukkarit_{kausi}.json (päättyneet kaudet haetaan vain kerran)
 Rivi: ks. KENTAT."""
-import json, os
+import glob, gzip, json, os
 from . import haku, kaudet
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "data", "out")
@@ -17,7 +19,11 @@ KULUVA = max(kaudet.MSU)
 KENTAT = ["ottelu", "pvm", "vaihe", "lukkari", "jk", "vs", "koti", "voitto", "jaksot", "jaksot_v",
           "juoksut_v", "j1_v", "j2_v", "juoksut",
           "KL_v", "KLY_v", "KL0_v", "KLY0_v", "KL1_v", "KLY1_v", "KL2_v", "KLY2_v", "KL3_v", "KLY3_v",
-          "kolmos_v", "K_v"]
+          "kolmos_v", "K_v",
+          "vapaat", "vapaat1", "vapaat23", "vapaatK", "karpaset_l", "karpaset"]
+TKENTAT = KENTAT[-6:]   # tapahtumadatasta; null jos ottelun tapahtumia ei ole
+TAPAHTUMAT = os.path.join(os.path.dirname(__file__), "..", "data", "tapahtumat")
+KOHDE = {"ykköspesälle": 1, "kakkospesälle": 23, "kolmospesälle": 23, "kotipesään": "K"}
 
 def _i(v):
     try:
@@ -45,6 +51,59 @@ def rivit_kaudelta(ottelut, lyh, pelaajarivit, joukkuerivit):
     out.sort(key=lambda x: (x[1], x[0]))
     return out
 
+def tapahtumaluvut(d):
+    """Yhden ottelun tapahtumista: {puolustava team_id: [vapaat, vapaat1, vapaat23, vapaatK, karpaset_l, karpaset]}.
+    Vapaa = "sai vapaataipaleen väärien syöttöjen johdosta" (kohde = pesä, jolle etenijä sai vapaan; kotipesään = juoksu).
+    Kärpänen = "paloi kärpäsenä…", lukkarin kärpäset erikseen ("…lukkarin toimesta")."""
+    joukkueet = {g["team"] for g in d.get("events") or [] if g.get("team")}
+    out = {t: [0] * 6 for t in joukkueet}
+    for g in d.get("events") or []:
+        if g.get("period") not in (0, 1) or g.get("team") not in joukkueet:
+            continue
+        puol = next((t for t in joukkueet if t != g["team"]), None)
+        if puol is None:
+            continue
+        for e in g.get("events") or []:
+            tx = e.get("texts") or []
+            for t in tx:
+                if not (isinstance(t, dict) and t.get("type") == "event"):
+                    continue
+                teksti = t.get("text") or ""
+                if teksti.startswith("sai vapaataipaleen väärien"):
+                    r = out[puol]; r[0] += 1
+                    k = next((KOHDE[x] for x in tx if isinstance(x, str) and x in KOHDE), None)
+                    if k == 1: r[1] += 1
+                    elif k == 23: r[2] += 1
+                    elif k == "K": r[3] += 1
+                elif teksti.startswith("paloi kärpäsenä"):
+                    out[puol][5] += 1
+                    if "lukkarin" in teksti:
+                        out[puol][4] += 1
+    return out
+
+def rikasta(rivit, kausi, lyh_id):
+    """Lisää tapahtumakentät riveihin (ottelu + lukkarin joukkue). lyh_id: {lyhenne: team_id}."""
+    kansio = os.path.join(TAPAHTUMAT, str(kausi))
+    luvut = {}
+    for f in glob.glob(os.path.join(kansio, "*.json.gz")):
+        with gzip.open(f, "rt", encoding="utf-8") as h:
+            luvut[int(os.path.basename(f).split(".")[0])] = tapahtumaluvut(json.load(h))
+    n = len(KENTAT) - len(TKENTAT)
+    for r in rivit:
+        del r[n:]
+        t = luvut.get(r[0], {}).get(lyh_id.get(r[4]))
+        r.extend(t if t is not None else [None] * len(TKENTAT))
+    return sum(1 for r in rivit if r[-1] is not None)
+
+def _lyh_id(kausi):
+    m = {}
+    for ph in ("runko", "jatko_ylempi", "jatko_alempi"):
+        p = os.path.join(OUT, f"joukkueet_{kausi}_{ph}.json")
+        if os.path.exists(p):
+            with open(p, encoding="utf-8") as f:
+                m.update({t["lyhenne"]: t["id"] for t in json.load(f)})
+    return m
+
 def hae_kausi(kausi):
     ss = kaudet.MSU[kausi]
     ott, maps = haku.ottelut(ss)
@@ -69,11 +128,15 @@ def main():
     for kausi in sorted(k for k in kaudet.MSU if k >= 2023):
         tied = os.path.join(OUT, f"lukkarit_{kausi}.json")
         if kausi != KULUVA and os.path.exists(tied):
-            continue
-        d = hae_kausi(kausi)
+            with open(tied, encoding="utf-8") as f:
+                d = json.load(f)   # päättynyttä kautta ei haeta uudelleen; tapahtumakentät lasketaan tallessa olevista tapahtumista
+        else:
+            d = hae_kausi(kausi)
+        d["kentat"] = KENTAT
+        tap = rikasta(d["rivit"], kausi, _lyh_id(kausi))
         with open(tied, "w", encoding="utf-8") as f:
             json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
-        print(kausi, "lukkaririvejä", len(d["rivit"]), "lukkareita", len(d["nimet"]))
+        print(kausi, "lukkaririvejä", len(d["rivit"]), "lukkareita", len(d["nimet"]), "tapahtumista", tap)
 
 if __name__ == "__main__":
     main()

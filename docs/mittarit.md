@@ -34,10 +34,21 @@ Lähde: pelaajarivin `defensive_position` = "L" (tasan yksi per joukkue per otte
 | 3-tilanteet / O | rab3_opponent / O (vastustajan tilanteet, joissa etenijä 3. pesällä; ≥ KLY3) |
 | K v / O | homeruns_opponent / O |
 
-Ei saatavilla ilman tapahtumadataa: lukkarin vapaat (väärät syötöt, 0-tilanne/kolmostilanne/täydet pesät) ja kärpäset.
+Ottelutapahtumista (6.11.2026, `ydin/lukkarit.py`, tallessa olevista `data/tapahtumat/<kausi>/`, ei uusia hakuja; kaudesta 2026, vain 1. ja 2. jakso):
+
+| Mittari | Laskenta |
+| --- | --- |
+| vapaat, vapaat1, vapaat23, vapaatK | tapahtumat "sai vapaataipaleen väärien syöttöjen johdosta" lukkarin joukkueen puolustusvuoroissa, kohdepesän mukaan (1. / 2.–3. / kotipesään = juoksu) |
+| karpaset, karpaset_l | "paloi kärpäsenä…" puolustusvuoroissa; _l = "…lukkarin toimesta" |
+
+Tarkistus kausi 2026: 458/458 lukkaririviä löysi ottelunsa tapahtumista, vapaita 1 390 (≈3,0 / joukkue / ottelu), kärpäsiä 485.
 
 ## Validointi
 - 3.10.2026: kausi 2026 runkosarja, 196 pelaajaa – 195 täsmää viralliseen kausisummaan (O, K, L, T, KL, KLY, KL3, KLY3); 1 ero korjattu (O = matches-kenttä).
+
+## Lyöntiprofiili (pelaajakortti, 6.11.2026)
+Lähde `data/out/lyonnit_<kausi>/p<id>.json` (kopioidaan sivustolle). Tilanne kärkietenijän mukaan: 0-tilanne, 1-tilanne, 2-tilanne (myös 1–2), takatilanne (kärki 3. pesällä).
+Onnistui = kunnari, juoksu tai kärkietenijä eteni (sama kuin KPL Keskuksen Minun pelini). Matriisi palot (0/1/2) × lyönti (1./2./3.), sarjan vertailuluvut `lyontipohja` (sivu.py). Laittomat-% ja onnistumisen hetki lyönneittäin. Kartalla kenttään osuneet lyönnit (laittomat pois), koppi ja haava samassa ryhmässä.
 
 ## YDIN 2026:n mittarit, joita ei saa ilman lyöntikohtaista dataa
 Ketjut (peräkkäiset onnistumiset), lyöntikartta/rajalyönnit (X/Y), palo-% kaikista lyönneistä, tilannekohtaiset onnistumiset (1-, 2-, 1-2-, 2-3-tilanne…), ajolähtö, lukkarin kärpäset pelaajatasolla.

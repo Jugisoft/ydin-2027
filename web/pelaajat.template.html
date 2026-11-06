@@ -129,6 +129,37 @@ tr.small td.pc b{opacity:.45}
 .prow.na .k,.prow.na .v{opacity:.5}
 .prscale{display:grid;grid-template-columns:62px minmax(0,1fr) 44px;gap:8px;font:600 .62rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .prscale span:nth-child(2){display:flex;justify-content:space-between}
+/* Lyöntiprofiili (6.11.2026): jokainen lyönti tilanteittain, palot × monesko lyönti, kartta */
+.lp h4{margin:2px 0 6px;font:700 .95rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.lp h4 small{font:600 .66rem var(--font-display);letter-spacing:.1em;color:var(--muted);text-align:right}
+.lp-chips{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px}
+.lp-chips button{font:600 .74rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);border-radius:999px;padding:5px 10px;cursor:pointer}
+.lp-chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.lp-chips button small{font-weight:500;opacity:.75;margin-left:4px}
+.lp-mx{width:100%;border-collapse:separate;border-spacing:3px;font-variant-numeric:tabular-nums;table-layout:fixed}
+.lp-mx th{font:600 .62rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;padding:2px}
+.lp-mx th.r{text-align:left;width:22%}
+.lp-mx td{background:var(--surface-2);border-radius:8px;text-align:center;padding:6px 2px;line-height:1.1}
+.lp-mx td b{display:block;font:700 1.05rem var(--font-display)}
+.lp-mx td small{display:block;font-size:.66rem;color:var(--muted)}
+.lp-mx td.pieni b{color:var(--muted);font-weight:600}
+.lp-mx tr.yht td{background:transparent;border:1px solid var(--line)}
+.lp-mx td .e{font-size:.66rem;font-weight:600;color:var(--muted)}
+.lp-rivi{display:grid;grid-template-columns:22% repeat(4,minmax(0,1fr));gap:3px;margin-top:3px;font-variant-numeric:tabular-nums}
+.lp-rivi>span{font:600 .62rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center}
+.lp-rivi>div{text-align:center;font-size:.8rem}
+.lp-rivi>div small{color:var(--muted);font-size:.66rem;display:block}
+.lp-kartta{display:grid;grid-template-columns:minmax(0,190px) 1fr;gap:12px;align-items:start;margin-top:10px}
+.lp-kartta svg{width:100%;height:auto;display:block}
+.lp-kartta .kent{fill:var(--surface-2);stroke:var(--line);stroke-width:.4}
+.lp-kartta .apu{stroke:var(--line);stroke-width:.3;stroke-dasharray:1.2 1.2}
+.lp-kartta .apuT{fill:var(--muted);font:600 2.2px var(--font-display)}
+.lp-kartta .m{stroke:var(--surface);stroke-width:.35}
+.lp-sel{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:.8rem}
+.lp-sel li{display:grid;grid-template-columns:14px 1fr auto;gap:6px;align-items:center}
+.lp-sel li b{font-variant-numeric:tabular-nums}
+.lp-sel svg{width:12px;height:12px}
+@media (max-width:420px){.lp-kartta{grid-template-columns:1fr}.lp-kartta svg{max-width:220px;margin:0 auto}}
 </style>
 <!--SISALTO-->
 <div class="wrap">
@@ -337,6 +368,86 @@ function kehitys(p){
     <div class="kausit"><table class="ktab"><thead><tr><th class="l">Kausi</th><th class="l">Jk</th><th>O</th><th>K+L</th><th>T</th><th>YHT</th><th>KL%</th></tr></thead><tbody>${tab}</tbody></table></div>`;
 }
 
+
+/* ---- Lyöntiprofiili: lyonnit_<kausi>/p<id>.json, rivi [x m, y m, tilanne 0–7, palot, lyönti 1–3, tulos 0–8, vaihe 0/1] ---- */
+const LP_KANSIO = {0:0,1:1,2:2,4:2,3:3,5:3,6:3,7:3};
+const LP_NIMET = [["k","Kaikki"],[0,"0-tilanne"],[1,"1-tilanne"],[2,"2-tilanne"],[3,"Takatilanne"]];
+const LP_ONN = new Set([0,1,6]);
+// Lopputulosryhmät kartalle: väri + muoto (ei pelkkä väri). Laittomat eivät osu kenttään, joten ne eivät ole kartalla.
+const LP_RYHMAT = [
+  {k:"onn", t:"Onnistui", tt:"kärki eteni, juoksu tai kunnari", c:"var(--win)", m:"o", tul:[0,1,6]},
+  {k:"ei", t:"Ei etenemistä", tt:"", c:"var(--muted)", m:"r", tul:[7,8]},
+  {k:"koppi", t:"Koppi tai haava", tt:"", c:"var(--accent)", m:"d", tul:[3,5]},
+  {k:"palo", t:"Palo", tt:"", c:"var(--loss)", m:"s", tul:[4]},
+];
+const LP_TUL = {}; LP_RYHMAT.forEach(g=>g.tul.forEach(t=>LP_TUL[t]=g));
+const LP_TNIMI = ["kunnari","juoksu","laiton","koppi","palo","haava","kärki eteni","ei edennyt","muu"];
+const lpTila = {k:"k"}; const lpVälimuisti = new Map();
+function lpHae(id){ if(!lpVälimuisti.has(id)) lpVälimuisti.set(id, fetch(`lyonnit_${DATA.kausi}/p${id}.json`).then(r=>r.ok?r.json():null).catch(()=>null)); return lpVälimuisti.get(id); }
+const lpVaihe = () => st.v==="runko" ? [0] : st.v==="kaikki" ? [0,1] : [1];
+function lpMerkki(m, x, y, r, c, otsikko){ x=+x; y=+y; const f=v=>v.toFixed(2);
+  const t = otsikko ? `<title>${otsikko}</title>` : "";
+  if(m==="o") return `<circle class="m" cx="${f(x)}" cy="${f(y)}" r="${r}" fill="${c}">${t}</circle>`;
+  if(m==="r") return `<circle class="m" cx="${f(x)}" cy="${f(y)}" r="${r*.85}" fill="none" stroke="${c}" stroke-width="${r*.45}" style="stroke:${c}">${t}</circle>`;
+  if(m==="s") return `<rect class="m" x="${f(x-r*.85)}" y="${f(y-r*.85)}" width="${r*1.7}" height="${r*1.7}" fill="${c}">${t}</rect>`;
+  if(m==="d") return `<path class="m" d="M${f(x)} ${f(y-r*1.15)}L${f(x+r*1.15)} ${f(y)}L${f(x)} ${f(y+r*1.15)}L${f(x-r*1.15)} ${f(y)}Z" fill="${c}">${t}</path>`;
+  return `<path class="m" d="M${f(x)} ${f(y-r*1.2)}L${f(x+r*1.1)} ${f(y+r*.8)}L${f(x-r*1.1)} ${f(y+r*.8)}Z" fill="${c}">${t}</path>`;
+}
+async function lyontiprofiili(p){
+  const el = document.getElementById("lp"); if(!el) return;
+  const d = await lpHae(p.id);
+  if(document.getElementById("lp")!==el) return;   // valinta vaihtui latauksen aikana
+  if(!d || !d.l || !d.l.length){ el.innerHTML = ""; return; }
+  const V = lpVaihe();
+  const L = d.l.filter(r=>V.includes(r[6]) && r[4]>=1 && r[4]<=3 && r[2] in LP_KANSIO);
+  if(!L.length){ el.innerHTML = `<h4>Lyöntiprofiili</h4><p class="note">Ei lyöntejä tässä sarjavaiheessa.</p>`; return; }
+  const kansiot = lpTila.k==="k" ? [0,1,2,3] : [lpTila.k];
+  const R = L.filter(r=>kansiot.includes(LP_KANSIO[r[2]]));
+  // sarja: pohja[vaihe][kansio][palot][lyönti] = [n, onn, laiton]
+  const pohja = (pa, ly) => { const s=[0,0,0]; for(const v of V) for(const k of kansiot) for(const a of (pa==null?[0,1,2]:[pa])) for(const l of (ly==null?[0,1,2]:[ly])){ const c=DATA.lyontipohja[v][k][a][l]; s[0]+=c[0]; s[1]+=c[1]; s[2]+=c[2]; } return s; };
+  const oma = (pa, ly) => { const s=[0,0,0]; for(const r of R) if((pa==null||Math.min(r[3],2)===pa) && (ly==null||r[4]-1===ly)){ s[0]++; s[1]+=LP_ONN.has(r[5]); s[2]+=r[5]===2; } return s; };
+  const solu = (pa, ly) => {
+    const o = oma(pa, ly), sa = pohja(pa, ly), op = pct(o[1],o[0]), sp = pct(sa[1],sa[0]);
+    if(!o[0]) return `<td class="pieni"><b>–</b><small>0</small></td>`;
+    const e = op-sp, vahva = o[0]>=10 && Math.abs(e)>=5;
+    const tausta = vahva ? `style="background:color-mix(in srgb, ${e>0?"var(--win)":"var(--loss)"} ${Math.min(34, 10+Math.abs(e))}%, var(--surface-2))"` : "";
+    return `<td class="${o[0]<10?"pieni":""}" ${tausta} title="${o[1]}/${o[0]} onnistui · sarja ${fmtP(sp)} %"><b>${Math.round(op)} %</b><small>${o[0]} lyöntiä</small><span class="e">${e>0?"+":"−"}${Math.abs(Math.round(e))} sarja</span></td>`;
+  };
+  const lkm = k => L.filter(r=>k==="k" || LP_KANSIO[r[2]]===k).length;
+  const chips = LP_NIMET.map(([k,t])=>`<button data-lpk="${k}" aria-pressed="${String(k)===String(lpTila.k)}">${t}<small>${lkm(k)}</small></button>`).join("");
+  const otsikot = ["1. lyönti","2. lyönti","3. lyönti","Yht."];
+  const mx = `<table class="lp-mx" aria-label="Onnistuneiden lyöntien osuus palojen ja lyönnin mukaan">
+    <thead><tr><th class="r"></th>${otsikot.map(t=>`<th>${t}</th>`).join("")}</tr></thead>
+    <tbody>${[0,1,2].map(pa=>`<tr><th class="r">${pa} ${pa===1?"palo":"paloa"}</th>${[0,1,2,null].map(ly=>solu(pa,ly)).join("")}</tr>`).join("")}
+    <tr class="yht"><th class="r">Yht.</th>${[0,1,2,null].map(ly=>solu(null,ly)).join("")}</tr></tbody></table>`;
+  // Laittomat ja etenemisen ajoitus lyönneittäin
+  const lait = [0,1,2,null].map(ly=>{ const o=oma(null,ly), s=pohja(null,ly); return `<div><b>${fmtP(pct(o[2],o[0]))} %</b><small>sarja ${fmtP(pct(s[2],s[0]))} %</small></div>`; }).join("");
+  const onnYht = oma(null,null)[1], sOnn = pohja(null,null)[1];
+  const ajoitus = [0,1,2].map(ly=>`<div><b>${fmtP(pct(oma(null,ly)[1], onnYht))} %</b><small>sarja ${fmtP(pct(pohja(null,ly)[1], sOnn))} %</small></div>`).join("") + `<div><b>${onnYht}</b><small>onnistunutta</small></div>`;
+  // Kartta: kenttä 42 m × 96 m, kotipesä alhaalla (x −21…21, y 0…96 kotirajasta)
+  const K = R.filter(r=>r[5]!==2 && !(r[0]===0&&r[1]===0));
+  const X = x => (Math.max(-23,Math.min(23,x))+23).toFixed(1), Y = y => (100-Math.max(-2,Math.min(98,y))).toFixed(1);
+  const merkit = LP_RYHMAT.slice().reverse().flatMap(g=>K.filter(r=>LP_TUL[r[5]]===g).map(r=>lpMerkki(g.m, X(r[0]), Y(r[1]), 1.15, g.c,
+    `${LP_TNIMI[r[5]]} · ${r[4]}. lyönti · ${Math.min(r[3],2)} paloa · ${Math.round(r[1])} m`))).join("");
+  const kartta = `<svg viewBox="0 0 46 104" role="img" aria-label="Lyöntien osumakohdat kentällä lopputuloksen mukaan">
+    <path class="kent" d="M2 4H44V96L27 102H19L2 96Z"/>
+    <line class="apu" x1="2" x2="44" y1="${Y(20)}" y2="${Y(20)}"/><line class="apu" x1="2" x2="44" y1="${Y(50)}" y2="${Y(50)}"/>
+    <text class="apuT" x="43" y="${+Y(20)-1}" text-anchor="end">20 m</text><text class="apuT" x="43" y="${+Y(50)-1}" text-anchor="end">50 m</text>
+    <path class="kent" d="M19.5 100 A3.5 3.5 0 0 1 26.5 100 Z"/>${merkit}</svg>`;
+  const sel = `<ul class="lp-sel">${LP_RYHMAT.map(g=>{ const n=K.filter(r=>LP_TUL[r[5]]===g).length;
+    return `<li><svg viewBox="-2 -2 4 4">${lpMerkki(g.m,0,0,1.2,g.c,"")}</svg><span>${g.t}</span><b>${n} · ${fmtP(pct(n,K.length))} %</b></li>`; }).join("")}
+    <li style="grid-template-columns:1fr;color:var(--muted);font-size:.72rem;margin-top:4px">${K.length} kenttään osunutta lyöntiä. Laittomat (${R.filter(r=>r[5]===2).length}) eivät näy kartalla. Vie osoitin merkin päälle.</li></ul>`;
+  const vaiheT = st.v==="runko" ? "runkosarja" : st.v==="kaikki" ? "koko kausi" : "jatkosarja";
+  el.innerHTML = `<h4>Lyöntiprofiili <small>jokainen lyönti · ${vaiheT} ${DATA.kausi}</small></h4>
+    <div class="lp-chips" role="group" aria-label="Tilanne">${chips}</div>
+    <p class="note" style="margin:0 0 6px">Onnistuneiden lyöntien osuus palojen ja lyönnin mukaan. Onnistui = kärkietenijä eteni, juoksu tai kunnari. Vihreä/punainen = vähintään 5 %-yks. sarjaa parempi/heikompi (väh. 10 lyöntiä).</p>
+    ${mx}
+    <div class="lp-rivi"><span>Laittomat</span>${lait}</div>
+    <div class="lp-rivi"><span title="Monennellako lyönnillä onnistuneet lyönnit tulivat">Onnistumisen hetki</span>${ajoitus}</div>
+    <div class="lp-kartta">${kartta}${sel}</div>`;
+  el.querySelectorAll("[data-lpk]").forEach(b=>b.onclick=()=>{ lpTila.k = b.dataset.lpk==="k" ? "k" : +b.dataset.lpk; lyontiprofiili(p); });
+}
+
 function card(p){
   if(!p){$("card").innerHTML=`<p class="note">Valitse pelaaja taulukosta.</p>`;return}
   // Suomalainen pesäpallokenttä (Jugin YDIN 2026 -kenttäkuvan geometria): epäsymmetrinen viisikulmio, koti alhaalla,
@@ -379,9 +490,11 @@ function card(p){
     <div class="kpi"><span>KL%</span><strong>${fmtP(p.KLp)}</strong></div></div>
     <div class="kenttabox"><h4>Kärkilyönnit pesittäin <small>kärkietenijän lähtöpesä</small></h4>${svg}
     <p class="note">KL%1 = 1-tilanteen purku eli kärkietenijä ykköspesällä, KL%2 = 2-tilanne, KL%3 = kotiutus kolmospesältä, KL%0 = kentällemeno tyhjiltä pesiltä. Korostettu = pelaajan vahvin (väh. 10 yritystä).</p></div>
+    <div class="lp" id="lp"><p class="note">Ladataan lyöntiprofiilia…</p></div>
     ${prosentit(p)}
     ${kehitys(p)}
     ${kuva||logo?`<p class="kred">Kuvat ja logot: pesistulokset.fi</p>`:""}`;
+  lyontiprofiili(p);
 }
 
 $("tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;st.v=b.dataset.v;
