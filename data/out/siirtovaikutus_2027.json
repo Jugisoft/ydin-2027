@@ -1,7 +1,7 @@
 {
  "kausi": 2027,
  "pohja": 2026,
- "seuranta_paivitetty": "12.11.2026 klo 17.50",
+ "seuranta_paivitetty": "13.11.2026 klo 22.05",
  "parametrit": {
   "kerroin_C": 1.02,
   "korvaustaso": 0.278,
@@ -24,12 +24,12 @@
    "teh": 8.7,
    "pa": 4.15,
    "ero": 4.55,
-   "hyokkays_muutos": -0.74,
+   "hyokkays_muutos": -0.66,
    "lukkari_muutos": -0.0,
-   "muutos": -0.74,
-   "ennuste_teh": 7.96,
+   "muutos": -0.66,
+   "ennuste_teh": 8.04,
    "ennuste_pa": 4.15,
-   "ennuste_ero": 3.81,
+   "ennuste_ero": 3.89,
    "lukkari_ed": "Ville Soini",
    "lukkari": "Ville Soini",
    "lukkari_ennuste": 4.66,
@@ -123,11 +123,11 @@
      "kokoonpanossa": true
     },
     {
-     "id": "12499",
-     "nimi": "Akseli Huusko",
-     "ennuste": 0.25,
-     "otos": 3.0,
-     "joukkue": "ViVe",
+     "id": "9825",
+     "nimi": "Joona Peltokangas",
+     "ennuste": 0.33,
+     "otos": 51.7,
+     "joukkue": "AA",
      "kokoonpanossa": true
     }
    ],
@@ -155,6 +155,22 @@
      "otos": 68.0,
      "joukkue": "Tahko",
      "kokoonpanossa": true
+    },
+    {
+     "id": "9825",
+     "nimi": "Joona Peltokangas",
+     "ennuste": 0.33,
+     "otos": 51.7,
+     "joukkue": "AA",
+     "kokoonpanossa": true
+    },
+    {
+     "id": "8311",
+     "nimi": "Aleksi Rantala",
+     "ennuste": 0.29,
+     "otos": 6.1,
+     "joukkue": null,
+     "kokoonpanossa": false
     }
    ],
    "lahteneet": [
@@ -200,7 +216,7 @@
     }
    ],
    "ilman_dataa": [],
-   "sopimuksia": 13,
+   "sopimuksia": 15,
    "tyhjia_paikkoja": 0
   },
   {
