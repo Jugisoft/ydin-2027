@@ -1,7 +1,7 @@
 {
  "kausi": 2027,
  "pohja": 2026,
- "seuranta_paivitetty": "18.11.2026 klo 17.55",
+ "seuranta_paivitetty": "19.11.2026 klo 17.55",
  "parametrit": {
   "kerroin_C": 1.02,
   "korvaustaso": 0.278,
@@ -715,8 +715,11 @@
      "kokoonpanossa": false
     }
    ],
-   "ilman_dataa": [],
-   "sopimuksia": 14,
+   "ilman_dataa": [
+    "Rasmus Leino",
+    "Petrus Lintula"
+   ],
+   "sopimuksia": 16,
    "tyhjia_paikkoja": 0
   },
   {
