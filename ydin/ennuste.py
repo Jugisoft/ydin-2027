@@ -1,4 +1,4 @@
-"""Otteluennuste (Karin kehikko, 19.11.2026): vastustajakorjatut hyökkäys- ja puolustusluvut ristiin.
+"""Otteluennuste (19.11.2026): vastustajakorjatut hyökkäys- ja puolustusluvut ristiin.
 
 python -m ydin.ennuste  ->  data/out/ennuste.json  (sivu: ennuste.html)
 
@@ -258,7 +258,7 @@ def jalkitesti(rivit):
 
 
 def luokat(ottelut, seurat, kausi):
-    """Karin taulukko: kauden runkosarjassa 3-tilanteet, kotiutus% ja KL%0–1 vastustajan luokan mukaan.
+    """Vastustajan luokka: kauden runkosarjassa 3-tilanteet, kotiutus% ja KL%0–1 vastustajan luokan mukaan.
     Luokka = vastustajan runkosarjasijoitus juoksueron mukaan: kärki (1–4), keski (5–8), häntä (9–)."""
     rs = [(o, h, v) for o, h, v in ottelut if o["kausi"] == kausi and o["vaihe"] == 1]
     if not rs:
@@ -294,7 +294,7 @@ def luokat(ottelut, seurat, kausi):
     return {"kausi": kausi, "joukkueita": n, "rivit": out}
 
 
-SAA_LUOKAT = [  # Karin luokat (19.11.2026). Järjestys = tarkistusjärjestys.
+SAA_LUOKAT = [  # Keliluokat (19.11.2026). Järjestys = tarkistusjärjestys.
     ("karmea", "Karmea keli", "sade ja kylmä (≤ 12 °C) tai sade ja tuuli", lambda t, tu, sa: sa and (t <= 12 or tu)),
     ("sade", "Sadekeli", "sataa", lambda t, tu, sa: sa),
     ("helle", "Helle", "≥ 26 °C, pouta", lambda t, tu, sa: t >= 26),

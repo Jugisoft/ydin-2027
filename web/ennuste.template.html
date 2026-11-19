@@ -206,7 +206,7 @@ const byL = Object.fromEntries(J.map(r => [r.lyh, r]));
 
 // --- huomio ---
 { const j = E.jalkitesti;
-  $("huom").innerHTML = `<span class="ik">i</span><div>Malli on testattu kausilla <b>${j.testi}</b>, joita ei käytetty viritykseen: se osui voittajaan <b>${pc(j.malli.osuma)}</b> otteluista (${j.malli.n}). Pelkkä juoksuihin perustuva vertailumalli osui ${pc(j.juoksut.osuma)}, ja pelkkä kotijoukkueen valinta ${pc(j.koti.osuma)}. Todennäköisyydet ovat kohdallaan (kalibrointi alla) – suurin ero on altavastaajien päässä, joita malli aliarvioi hieman. Ero juoksumalliin on pieni: Karin kehikko on tarkempi, mutta ei mullistavasti.</div>`;
+  $("huom").innerHTML = `<span class="ik">i</span><div>Malli on testattu kausilla <b>${j.testi}</b>, joita ei käytetty viritykseen: se osui voittajaan <b>${pc(j.malli.osuma)}</b> otteluista (${j.malli.n}). Pelkkä juoksuihin perustuva vertailumalli osui ${pc(j.juoksut.osuma)}, ja pelkkä kotijoukkueen valinta ${pc(j.koti.osuma)}. Todennäköisyydet ovat kohdallaan (kalibrointi alla) – suurin ero on altavastaajien päässä, joita malli aliarvioi hieman. Ero juoksumalliin on pieni: tilannepohjainen malli on tarkempi, mutta ei mullistavasti.</div>`;
 }
 
 // --- otteluvalinta ---
@@ -404,7 +404,7 @@ if (!SAA) $("saaOsio").hidden = true; else {
     `<b>Ristiin</b>: määrät = hyökkäys × vastustajan puolustus / sarjan keskiarvo; prosentit kerroinsuhteella (log5). Esim. hyvä kotiuttaja vs. hyvä torjuja asettuu niiden väliin sarjan tasoon suhteutettuna.`,
     `Voittotodennäköisyys = logistinen regressio joukkueiden ristiinlaskettujen lukujen eroista + kotietu. Juoksuodotus = 3-tilanteet × kotiutus% kerrottuna kotiedulla.`,
     `<b>Jälkitesti</b>: jokainen ennuste on laskettu vain ottelua edeltävästä datasta. Parametrit viritettiin kausilla ${pr.viritys}; luvut yllä ovat kausilta ${j.testi}, joita viritys ei nähnyt.`,
-    `<b>Keli</b> (Karin luokat): luokan havaittu ero juoksuihin mallin odotukseen nähden jaetaan joukkueille juoksuodotuksen suhteessa. Lämpötilalla ${fi(SAA?SAA.per_aste:0,2)} juoksua / °C. Pelattujen otteluiden normalisointi normikeliin ennen joukkueen lukuja testattiin – hyöty oli olematon, joten sitä ei käytetä.`,
+    `<b>Keli</b>: luokan havaittu ero juoksuihin mallin odotukseen nähden jaetaan joukkueille juoksuodotuksen suhteessa. Lämpötilalla ${fi(SAA?SAA.per_aste:0,2)} juoksua / °C. Pelattujen otteluiden normalisointi normikeliin ennen joukkueen lukuja testattiin – hyöty oli olematon, joten sitä ei käytetä.`,
     `Ei mukana: kokoonpanomuutokset (siirrot), loukkaantumiset ja kotiutuskilpailu.`,
   ].map(x => `<li>${x}</li>`).join("");
 }
