@@ -1,5 +1,5 @@
 {
- "paivitetty": "2026-11-19T16:17",
+ "paivitetty": "2026-11-19T18:18",
  "kausi": 2027,
  "pohja": "2010–2026",
  "otteluita": 3596,
@@ -1190,7 +1190,8 @@
     "Kauppi": 333,
     "Alajärvi": 75,
     "Vimpeli": 120,
-    "Meilahti": 10
+    "Meilahti": 10,
+    "Kannus": 22
    },
    "seurat": {
     "SoJy": "Sotkamo",
@@ -1205,7 +1206,8 @@
     "Manse": "Kauppi",
     "AA": "Alajärvi",
     "ViVe": "Vimpeli",
-    "PuMu": "Meilahti"
+    "PuMu": "Meilahti",
+    "Ura": "Kannus"
    }
   },
   "per_aste": 0.2195,
