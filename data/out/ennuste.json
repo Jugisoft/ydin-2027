@@ -1,5 +1,5 @@
 {
- "paivitetty": "2026-11-19T18:14",
+ "paivitetty": "2026-11-19T16:17",
  "kausi": 2027,
  "pohja": "2010–2026",
  "otteluita": 3596,
@@ -1121,8 +1121,8 @@
   "lampo_ka": 18.5,
   "juoksut_ka": 13.95,
   "myotatuuli": {
-   "n": 1824,
-   "per_ms": 0.2554,
+   "n": 1825,
+   "per_ms": 0.2548,
    "per_ms_luottamus": 0.0834,
    "myota_ka": -0.27,
    "luokat": [
@@ -1170,11 +1170,11 @@
      "avain": "vahva_myota",
      "nimi": "Vahva myötätuuli",
      "ehto": "≥ +3 m/s",
-     "n": 308,
+     "n": 309,
      "myota_ka": 4.56,
-     "havaittu": 1.61,
+     "havaittu": 1.59,
      "luottamus": 0.71,
-     "vaikutus": 1.17
+     "vaikutus": 1.16
     }
    ],
    "kentat": {
