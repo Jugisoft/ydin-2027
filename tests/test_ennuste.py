@@ -45,3 +45,16 @@ def test_saa_lampo_lisaa_juoksuja():
     assert d["per_aste"] - d["per_aste_luottamus"] > 0          # lämpö lisää juoksuja (merkitsevästi)
     L = {l["avain"]: l for l in d["luokat"]}
     assert L["helle"]["havaittu"] > L["hyva"]["havaittu"] > L["kylma"]["havaittu"]
+
+
+def test_myotatuuli_suunta():
+    from ydin.kentat import myota
+    # Vimpeli: kotipesä -> takaraja 120°, tuuli luoteesta (300°) puhaltaa kohti 120° = täysi myötätuuli
+    assert abs(myota(300, 5, "Vimpeli") - 5) < 1e-9
+    assert abs(myota(120, 5, "Vimpeli") + 5) < 1e-9      # kaakosta = vastatuuli
+    assert abs(myota(30, 5, "Vimpeli")) < 1e-9           # sivutuuli
+
+
+def test_tuuli_lisaa_juoksuja():
+    t = en.laske()["saa"]["myotatuuli"]
+    assert t and t["n"] > 1000 and t["per_ms"] - t["per_ms_luottamus"] > 0

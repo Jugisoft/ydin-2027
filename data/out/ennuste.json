@@ -1,5 +1,5 @@
 {
- "paivitetty": "2026-11-19T15:30",
+ "paivitetty": "2026-11-19T18:09",
  "kausi": 2027,
  "pohja": "2010–2026",
  "otteluita": 3596,
@@ -1120,6 +1120,92 @@
   "n": 3595,
   "lampo_ka": 18.5,
   "juoksut_ka": 13.95,
+  "myotatuuli": {
+   "n": 1824,
+   "per_ms": 0.2554,
+   "per_ms_luottamus": 0.0834,
+   "myota_ka": -0.27,
+   "luokat": [
+    {
+     "avain": "vahva_vasta",
+     "nimi": "Vahva vastatuuli",
+     "ehto": "≤ −3 m/s",
+     "n": 332,
+     "myota_ka": -4.95,
+     "havaittu": -0.79,
+     "luottamus": 0.59,
+     "vaikutus": -1.26
+    },
+    {
+     "avain": "vasta",
+     "nimi": "Vastatuuli",
+     "ehto": "−3…−1 m/s",
+     "n": 473,
+     "myota_ka": -1.93,
+     "havaittu": -0.14,
+     "luottamus": 0.52,
+     "vaikutus": -0.49
+    },
+    {
+     "avain": "normi",
+     "nimi": "Normituuli",
+     "ehto": "−1…+1 m/s",
+     "n": 371,
+     "myota_ka": -0.01,
+     "havaittu": -0.33,
+     "luottamus": 0.54,
+     "vaikutus": -0.0
+    },
+    {
+     "avain": "myota",
+     "nimi": "Myötätuuli",
+     "ehto": "+1…+3 m/s",
+     "n": 340,
+     "myota_ka": 1.93,
+     "havaittu": 1.35,
+     "luottamus": 0.74,
+     "vaikutus": 0.49
+    },
+    {
+     "avain": "vahva_myota",
+     "nimi": "Vahva myötätuuli",
+     "ehto": "≥ +3 m/s",
+     "n": 308,
+     "myota_ka": 4.56,
+     "havaittu": 1.61,
+     "luottamus": 0.71,
+     "vaikutus": 1.17
+    }
+   ],
+   "kentat": {
+    "Sotkamo": 262,
+    "Joensuu": 288,
+    "Kempele": 300,
+    "Kouvola": 295,
+    "Koskenkorva": 295,
+    "Kitee": 300,
+    "Imatra": 315,
+    "Pattijoki": 348,
+    "Hyvinkää": 357,
+    "Kauppi": 333,
+    "Alajärvi": 75,
+    "Vimpeli": 120
+   },
+   "seurat": {
+    "SoJy": "Sotkamo",
+    "JoMa": "Joensuu",
+    "KeKi": "Kempele",
+    "KPL": "Kouvola",
+    "KoU": "Koskenkorva",
+    "KiPa": "Kitee",
+    "IPV": "Imatra",
+    "PattU": "Pattijoki",
+    "Tahko": "Hyvinkää",
+    "Manse": "Kauppi",
+    "AA": "Alajärvi",
+    "ViVe": "Vimpeli"
+   }
+  },
   "per_aste": 0.2195,
   "per_aste_luottamus": 0.0448,
   "sade": 0.1,

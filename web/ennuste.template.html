@@ -78,6 +78,8 @@ table.et td.b{font-weight:700}
 .keli .lab{font:600 .7rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .keli .tabs button small{font:500 .7rem var(--font-body);text-transform:none;letter-spacing:0;opacity:.8;margin-left:4px}
 .keli input{width:72px;font:600 .95rem var(--font-body);padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--fg)}
+.keli select{font:600 .9rem var(--font-body);padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--fg)}
+.keli select.on{border-color:var(--accent);outline:2px solid var(--accent-soft)}
 .keli input.on{border-color:var(--accent);outline:2px solid var(--accent-soft)}
 .kelinote{font-size:.84rem;color:var(--muted);margin-top:4px}
 .kelinote b{color:var(--fg)}
@@ -102,6 +104,9 @@ table.et td.b{font-weight:700}
     <button id="vaihda" type="button" title="Vaihda koti ja vieras">⇄ Vaihda</button>
   </div>
   <div class="keli" id="keliRivi"><span class="lab">Keli</span><div class="tabs" id="keliTabs"></div><span class="lab">tai lämpötila</span><input id="keliC" type="number" min="0" max="35" step="1" placeholder="°C" aria-label="Lämpötila celsiusasteina"></div>
+  <div class="keli" id="tuuliRivi"><span class="lab">Tuuli</span><div class="tabs" id="tuuliTabs"></div><span class="lab">tai tuulee</span>
+    <select id="tuuliSuunta" aria-label="Mistä tuulee"><option value="">suunnasta…</option></select>
+    <input id="tuuliMs" type="number" min="0" max="20" step="0.5" placeholder="m/s" aria-label="Tuulen nopeus m/s"></div>
   <div id="ottelu"></div>
   <p class="kelinote" id="kelinote"></p>
   <div class="tw"><table class="et risti" id="risti"></table></div>
@@ -232,19 +237,47 @@ if (SAA) {
   $("keliC").oninput = () => { const v = $("keliC").value; KELI_C = v === "" ? null : +v; piirraOttelu(); };
 } else $("keliRivi").hidden = true;
 
+// --- tuuli ---
+const TU = SAA && SAA.myotatuuli;
+const ILMANSUUNNAT = ["P","PKo","KO","IKo","I","IKa","KA","EKa","E","ELo","LO","LLo","L","LLu","LU","PLu"];
+let TUULI = sp.get("tuuli") || "normi", TS = sp.get("ts") != null ? +sp.get("ts") : null, TMS = sp.get("tms") != null ? +sp.get("tms") : null;
+function tuuliEro(h){
+  if (!TU) return {ero:0, nimi:"", m:null};
+  if (TS != null && TMS != null && isFinite(TMS)) {
+    const kentta = TU.seurat[h.lyh], akseli = kentta != null ? TU.kentat[kentta] : null;
+    if (akseli == null) return {ero:0, nimi:`${ILMANSUUNNAT[TS/22.5]} ${fi(TMS,1)} m/s`, m:null, puuttuu:true};
+    const m = TMS * Math.cos((TS - (akseli + 180)) * Math.PI / 180);
+    return {ero: TU.per_ms * m, nimi: `${m>=0?"myötä":"vasta"} ${fi(Math.abs(m),1)} m/s (${ILMANSUUNNAT[TS/22.5]} ${fi(TMS,1)} m/s, ${kentta})`, m};
+  }
+  const l = TU.luokat.find(l => l.avain === TUULI);
+  return l && TUULI !== "normi" ? {ero: l.vaikutus, nimi: l.nimi.toLowerCase(), m: l.myota_ka} : {ero:0, nimi:"", m:null};
+}
+if (TU) {
+  $("tuuliTabs").innerHTML = ["normi","vahva_vasta","vasta","myota","vahva_myota"].map(k => TU.luokat.find(l=>l.avain===k)).filter(Boolean)
+    .map(l => `<button type="button" data-k="${l.avain}" title="${esc(l.ehto)} lyönnin suuntaan · ${l.n} ottelua">${esc(l.nimi.replace("tuuli",""))||esc(l.nimi)}${l.avain!=="normi"?`<small>${l.vaikutus>0?"+":""}${fi(l.vaikutus,1)}</small>`:""}</button>`).join("");
+  $("tuuliSuunta").innerHTML += ILMANSUUNNAT.map((n,i) => `<option value="${i*22.5}">${n} (${i*22.5}°)</option>`).join("");
+  if (TS != null) $("tuuliSuunta").value = TS; if (TMS != null) $("tuuliMs").value = TMS;
+  $("tuuliTabs").onclick = e => { const b = e.target.closest("button"); if (!b) return; TUULI = b.dataset.k; TS = TMS = null; $("tuuliSuunta").value = ""; $("tuuliMs").value = ""; piirraOttelu(); };
+  const lue = () => { const a = $("tuuliSuunta").value, b = $("tuuliMs").value; TS = a === "" ? null : +a; TMS = b === "" ? null : +b; piirraOttelu(); };
+  $("tuuliSuunta").onchange = lue; $("tuuliMs").oninput = lue;
+} else $("tuuliRivi").hidden = true;
+
 const RIVIT = [["t3","3-tilanteet / O",1],["kot","Kotiutus%",0],["kl0","KL%0 (nollatilanne)",0],["kl1","KL%1",0],["kl2","KL%2",0]];
 const arvo = (s,v) => PROS[s] ? fi(100*v) : fi(v,2);
 function piirraOttelu(){
   const h = byL[$("selK").value], v = byL[$("selV").value];
   if (!h || !v || h === v){ $("ottelu").innerHTML = `<p class="hint2">Valitse kaksi eri joukkuetta.</p>`; $("risti").innerHTML = ""; return; }
-  const ke = keliEro();
-  history.replaceState(null, "", `?k=${encodeURIComponent(h.lyh)}&v=${encodeURIComponent(v.lyh)}` + (KELI_C!=null ? `&c=${KELI_C}` : KELI!=="normi" ? `&keli=${KELI}` : ""));
+  const ke0 = keliEro(), tu = tuuliEro(h);
+  const ke = {ero: ke0.ero + tu.ero, nimi: [Math.abs(ke0.ero)>=0.005 ? ke0.nimi : "", tu.nimi].filter(Boolean).join(" · ") || "Normikeli"};
+  history.replaceState(null, "", `?k=${encodeURIComponent(h.lyh)}&v=${encodeURIComponent(v.lyh)}` + (KELI_C!=null ? `&c=${KELI_C}` : KELI!=="normi" ? `&keli=${KELI}` : "")
+    + (TS!=null && TMS!=null ? `&ts=${TS}&tms=${TMS}` : TUULI!=="normi" ? `&tuuli=${TUULI}` : ""));
+  if (TU) { $("tuuliTabs").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", TS==null && b.dataset.k===TUULI)); const on = TS!=null && TMS!=null; $("tuuliSuunta").classList.toggle("on", on); $("tuuliMs").classList.toggle("on", on); }
   if (SAA) { $("keliTabs").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", KELI_C==null && b.dataset.k===KELI)); $("keliC").classList.toggle("on", KELI_C!=null); }
   const e = ennuste(h, v);
   const n0 = {jh: e.jh, jv: e.jv}, yht = e.jh + e.jv;
   e.jh = n0.jh + ke.ero * n0.jh / yht; e.jv = n0.jv + ke.ero * n0.jv / yht;   // kelin vaikutus juoksuodotuksen suhteessa
   $("kelinote").innerHTML = SAA ? (Math.abs(ke.ero) < 0.005 ? `Normikeli: keskimääräiset olosuhteet (${fi(SAA.lampo_ka,1)} °C). Voittotodennäköisyyteen keli ei vaikuta – sitä ei ole näkynyt datassa.`
-    : `<b>${esc(ke.nimi)}</b>: juoksuodotus ${fi(e.jh,1)}–${fi(e.jv,1)} (yht. ${fi(e.jh+e.jv,1)}). Normikelissä ${fi(n0.jh,1)}–${fi(n0.jv,1)} (yht. ${fi(yht,1)}), ero ${ke.ero>0?"+":""}${fi(ke.ero,1)}. Voittotodennäköisyyteen keli ei vaikuta.`) : "";
+    : `<b>${esc(ke.nimi)}</b>: juoksuodotus ${fi(e.jh,1)}–${fi(e.jv,1)} (yht. ${fi(e.jh+e.jv,1)}). Normikelissä ${fi(n0.jh,1)}–${fi(n0.jv,1)} (yht. ${fi(yht,1)}), ero ${ke.ero>0?"+":""}${fi(ke.ero,1)}. Voittotodennäköisyyteen keli ei vaikuta.`) + (tu.puuttuu ? ` <b>${esc(h.lyh)}:n kentän suunta puuttuu</b>, joten tuulta ei voi laskea.` : "") : "";
   $("ottelu").innerHTML = `<div class="ottelu">
     <div class="puoli"><span class="nm">${logo(h.lyh)}${esc(h.lyh)}</span><span class="pc">${fi(100*e.p,0)} %</span><small>kotivoitto · odotus ${fi(e.jh,1)} juoksua</small></div>
     <div class="keski"><b>${fi(e.jh+e.jv,1)}</b>juoksua yht.${Math.abs(ke.ero)>=0.005?`<br><small>${esc(ke.nimi)}</small>`:""}</div>
@@ -350,7 +383,12 @@ if (!SAA) $("saaOsio").hidden = true; else {
   $("saahint").textContent = `${SAA.n.toLocaleString("fi-FI")} ottelua 2010–`;
   $("saataulu").innerHTML = `<thead><tr><th>Keli</th><th>Ehto</th><th>Otteluita</th><th>Lämpö ka</th><th>Juoksut</th><th>Odotus</th><th class="sep">Ero</th></tr></thead><tbody>${["helle","hyva","kylma","sade","karmea"].map(a => SAA.luokat.find(l=>l.avain===a)).filter(Boolean).map(k =>
     `<tr><td><b>${esc(k.nimi)}</b></td><td style="white-space:normal;text-align:left;color:var(--muted);font-size:.82rem">${esc(k.ehto)}</td><td>${k.n}</td><td>${fi(k.lampo,1)} °C</td><td>${fi(k.juoksut,1)}</td><td>${fi(k.odotus,1)}</td><td class="sep b ${k.havaittu>0.3?"up":k.havaittu<-0.3?"dn":""}" title="±${fi(k.luottamus,2)}">${k.havaittu>0?"+":""}${fi(k.havaittu,1)} <small style="color:var(--muted);font-weight:400">±${fi(k.luottamus,1)}</small></td></tr>`).join("")}</tbody>`;
-  $("saateksti2").innerHTML = `Ero = ottelun juoksut yhteensä miinus mallin odotus, keskimäärin. Kun lämpötila on huomioitu, sateella (${SAA.sade>0?"+":""}${fi(SAA.sade,1)} ±${fi(SAA.sade_luottamus,1)}) ja tuulella (${SAA.tuuli>0?"+":""}${fi(SAA.tuuli,1)} ±${fi(SAA.tuuli_luottamus,1)}) ei ole omaa mitattavaa vaikutusta – sadepäivät ovat yleensä kylmiä. Tuulen suuntaa (myötä/vasta) ei ole kirjattu, joten sitä ei voi arvioida. Sää ei muuta voittotodennäköisyyttä.`;
+  if (TU) {
+    $("saataulu").insertAdjacentHTML("afterend", `<div class="tw" style="margin-top:14px"><table class="et"><thead><tr><th>Tuuli lyönnin suuntaan</th><th>Ehto</th><th>Otteluita</th><th>Ka</th><th>Havaittu</th><th class="sep">Malli</th></tr></thead><tbody>${TU.luokat.map(k =>
+      `<tr><td><b>${esc(k.nimi)}</b></td><td style="text-align:left;color:var(--muted);font-size:.82rem">${esc(k.ehto)}</td><td>${k.n}</td><td>${k.myota_ka>0?"+":""}${fi(k.myota_ka,1)} m/s</td><td>${k.havaittu>0?"+":""}${fi(k.havaittu,1)} <small style="color:var(--muted)">±${fi(k.luottamus,1)}</small></td><td class="sep b ${k.vaikutus>0.3?"up":k.vaikutus<-0.3?"dn":""}">${k.vaikutus>0?"+":""}${fi(k.vaikutus,1)}</td></tr>`).join("")}</tbody></table></div>
+      <p class="hint2">Tuuli: Ilmatieteen laitoksen lähimmän aseman tuntihavainnot ottelun ajalta (${TU.n.toLocaleString("fi-FI")} kotikentän ottelua). Myötätuuli = tuulen komponentti kotipesältä takarajalle. Malli: ${fi(TU.per_ms,2)} juoksua / m/s (±${fi(TU.per_ms_luottamus,2)}), lämpö vakioitu; vaikutus näkyi kaikilla kentillä. Sivutuulella ei vaikutusta. Kenttien suunnat: ${Object.entries(TU.kentat).map(([k,a])=>`${esc(k)} ${a}°`).join(", ")}.</p>`);
+  }
+  $("saateksti2").innerHTML = `Ero = ottelun juoksut yhteensä miinus mallin odotus, keskimäärin. Kun lämpötila on huomioitu, sateella (${SAA.sade>0?"+":""}${fi(SAA.sade,1)} ±${fi(SAA.sade_luottamus,1)}) ja tuulella (${SAA.tuuli>0?"+":""}${fi(SAA.tuuli,1)} ±${fi(SAA.tuuli_luottamus,1)}) ei ole omaa mitattavaa vaikutusta – sadepäivät ovat yleensä kylmiä. Pöytäkirjan tuulimerkintä (kyllä/ei) ei kerro suuntaa – myötä- ja vastatuuli on laskettu alla Ilmatieteen laitoksen havainnoista. Sää ei muuta voittotodennäköisyyttä.`;
 }
 
 // --- kotietu ---
@@ -404,7 +442,7 @@ if (!SAA) $("saaOsio").hidden = true; else {
     `<b>Ristiin</b>: määrät = hyökkäys × vastustajan puolustus / sarjan keskiarvo; prosentit kerroinsuhteella (log5). Esim. hyvä kotiuttaja vs. hyvä torjuja asettuu niiden väliin sarjan tasoon suhteutettuna.`,
     `Voittotodennäköisyys = logistinen regressio joukkueiden ristiinlaskettujen lukujen eroista + kotietu. Juoksuodotus = 3-tilanteet × kotiutus% kerrottuna kotiedulla.`,
     `<b>Jälkitesti</b>: jokainen ennuste on laskettu vain ottelua edeltävästä datasta. Parametrit viritettiin kausilla ${pr.viritys}; luvut yllä ovat kausilta ${j.testi}, joita viritys ei nähnyt.`,
-    `<b>Keli</b>: luokan havaittu ero juoksuihin mallin odotukseen nähden jaetaan joukkueille juoksuodotuksen suhteessa. Lämpötilalla ${fi(SAA?SAA.per_aste:0,2)} juoksua / °C. Pelattujen otteluiden normalisointi normikeliin ennen joukkueen lukuja testattiin – hyöty oli olematon, joten sitä ei käytetä.`,
+    `<b>Keli</b>: luokan havaittu ero juoksuihin mallin odotukseen nähden jaetaan joukkueille juoksuodotuksen suhteessa. Lämpötilalla ${fi(SAA?SAA.per_aste:0,2)} juoksua / °C. <b>Tuuli</b>: myötätuulikomponentti kotikentän suunnan (kotipesä → takaraja) mukaan, ${fi(TU?TU.per_ms:0,2)} juoksua / m/s; tuulen voi valita luokkana tai suuntana ja nopeutena (mistä tuulee). Pelattujen otteluiden normalisointi normikeliin ennen joukkueen lukuja testattiin – hyöty oli olematon, joten sitä ei käytetä.`,
     `Ei mukana: kokoonpanomuutokset (siirrot), loukkaantumiset ja kotiutuskilpailu.`,
   ].map(x => `<li>${x}</li>`).join("");
 }

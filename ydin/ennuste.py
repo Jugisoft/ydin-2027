@@ -67,6 +67,25 @@ def hae_kausi(kausi):
                       "peruttu": bool(o.get("canceled"))} for o in ott],
          "rivit": [[r.get(k) or 0 for k in KENTAT] for r in rivit], "kentat": KENTAT,
          "saa": saa, "saa_kentat": ["lampo", "tuuli", "sade", "yleiso"]}
+    # tuuli (Ilmatieteen laitos) kotikentän otteluille; aiemmin haetut säilytetään
+    from . import kentat
+    vanha = lue_kausi(kausi).get("tuuli", {}) if os.path.exists(_polku(kausi)) else {}
+    tu = {}
+    for o in d["ottelut"]:
+        if o["peruttu"] or not o["tulos"]:
+            continue
+        k = kentat.kentta((tiimit.get(o["koti"]) or [None, None])[1], o["stadion"])
+        if not k:
+            continue
+        w = vanha.get(str(o["id"]))
+        if not w:
+            try:
+                w = kentat.tuuli(k, o["pvm"]); w = [k] + w if w else None
+            except Exception:
+                w = None
+        if w:
+            tu[str(o["id"])] = w
+    d["tuuli"] = tu; d["tuuli_kentat"] = ["kentta", "tulosuunta", "nopeus", "fmisid"]
     os.makedirs(POHJA, exist_ok=True)
     with gzip.open(_polku(kausi), "wt", encoding="utf-8") as f:
         json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
@@ -95,6 +114,10 @@ def lataa(kaudet_lista=None):
         for mid, w in (d.get("saa") or {}).items():
             if int(mid) in om:
                 om[int(mid)]["saa"] = w
+        for mid, w in (d.get("tuuli") or {}).items():
+            if int(mid) in om:
+                from .kentat import myota
+                om[int(mid)]["myota"] = myota(w[1], w[2], w[0])
         per = collections.defaultdict(list)
         for r in d["rivit"]:
             r = dict(zip(d["kentat"], r))
@@ -182,7 +205,7 @@ def kulje(ottelut, **par):
             eh, ev = odotus(A, h["team_id"], v["team_id"]), odotus(A, v["team_id"], h["team_id"])
             out.append({"id": o["id"], "kausi": o["kausi"], "vaihe": o["vaihe"], "koti": h["team_id"], "vieras": v["team_id"],
                         "won": h["won"], "runs_h": h["runs"], "runs_v": v["runs"], "eh": eh, "ev": ev, "x": erot(eh, ev),
-                        "saa": o.get("saa"), "kk": int(o["pvm"][5:7])})
+                        "saa": o.get("saa"), "myota": o.get("myota"), "kk": int(o["pvm"][5:7])})
         A.lisaa(h, o["vaihe"]); A.lisaa(v, o["vaihe"])
     return out, A
 
@@ -350,7 +373,46 @@ def saavaikutus(rivit, sk):
         if len(g) >= 20:
             m = sum(x["ero"] for x in g) / len(g); sd = math.sqrt(sum((x["ero"] - m) ** 2 for x in g) / (len(g) - 1))
             lampo.append({"vali": f"{a}–{a + 2}", "keski": a + 1, "n": len(g), "ero": round(m, 2), "luottamus": round(1.96 * sd / math.sqrt(len(g)), 2)})
-    return {"n": len(R), "lampo_ka": round(ka_t, 1), "juoksut_ka": round(ka_jk, 2),
+    # tuuli: myötätuulikomponentti (kotikentät, joiden suunta tiedetään), sama kuukauden sisäinen OLS lämmön kanssa
+    tuuli = None
+    W = []
+    for r in rivit:
+        w = r.get("saa")
+        if r.get("myota") is None or not w or w[0] is None or w[0] < -5:
+            continue
+        odo = sk * (r["eh"]["t3"] * r["eh"]["kot"] + r["ev"]["t3"] * r["ev"]["kot"])
+        W.append({"t": max(5, min(32, w[0])), "m": r["myota"], "kk": r["kk"], "ero": r["runs_h"] + r["runs_v"] - odo})
+    if len(W) >= 300:
+        g2 = collections.defaultdict(list)
+        for x in W:
+            g2[x["kk"]].append(x)
+        X2, Y2 = [], []
+        for g in g2.values():
+            m = [sum(x[k] for x in g) / len(g) for k in ("t", "m", "ero")]
+            for x in g:
+                X2.append([x["t"] - m[0], x["m"] - m[1]]); Y2.append(x["ero"] - m[2])
+        A2 = [[sum(a[i] * a[j] for a in X2) for j in range(2)] for i in range(2)]
+        b2 = _ratkaise(A2, [sum(a[i] * y for a, y in zip(X2, Y2)) for i in range(2)])
+        e2 = [y - b2[0] * a[0] - b2[1] * a[1] for a, y in zip(X2, Y2)]
+        s22 = sum(v * v for v in e2) / (len(e2) - 2 - len(g2))
+        inv2 = [_ratkaise(A2, [1.0 if i == j else 0.0 for i in range(2)]) for j in range(2)]
+        ka_m = sum(x["m"] for x in W) / len(W)
+        TL = [("vahva_vasta", "Vahva vastatuuli", "≤ −3 m/s", lambda v: v <= -3), ("vasta", "Vastatuuli", "−3…−1 m/s", lambda v: -3 < v < -1),
+              ("normi", "Normituuli", "−1…+1 m/s", lambda v: -1 <= v <= 1), ("myota", "Myötätuuli", "+1…+3 m/s", lambda v: 1 < v < 3),
+              ("vahva_myota", "Vahva myötätuuli", "≥ +3 m/s", lambda v: v >= 3)]
+        luokat_t = []
+        for avain, nimi, ehto, f in TL:
+            g = [x for x in W if f(x["m"])]
+            if not g:
+                continue
+            mm = sum(x["m"] for x in g) / len(g); hv = sum(x["ero"] for x in g) / len(g)
+            sd = math.sqrt(sum((x["ero"] - hv) ** 2 for x in g) / max(1, len(g) - 1))
+            luokat_t.append({"avain": avain, "nimi": nimi, "ehto": ehto, "n": len(g), "myota_ka": round(mm, 2),
+                             "havaittu": round(hv, 2), "luottamus": round(1.96 * sd / math.sqrt(len(g)), 2), "vaikutus": round(b2[1] * mm, 2)})
+        from .kentat import KENTAT, SEURA
+        tuuli = {"n": len(W), "per_ms": round(b2[1], 4), "per_ms_luottamus": round(1.96 * math.sqrt(s22 * inv2[1][1]), 4),
+                 "myota_ka": round(ka_m, 2), "luokat": luokat_t, "kentat": KENTAT, "seurat": SEURA}
+    return {"n": len(R), "lampo_ka": round(ka_t, 1), "juoksut_ka": round(ka_jk, 2), "myotatuuli": tuuli,
             "per_aste": round(b[0], 4), "per_aste_luottamus": round(1.96 * se[0], 4),
             "sade": round(b[1], 2), "sade_luottamus": round(1.96 * se[1], 2), "tuuli": round(b[2], 2), "tuuli_luottamus": round(1.96 * se[2], 2),
             "luokat": luokat, "lampo": lampo}
