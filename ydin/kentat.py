@@ -1,7 +1,8 @@
 """Kenttien suunnat ja tuulihavainnot (19.11.2026).
 
 Suunta = kotipesä → takarajan keskipiste asteina (0 = pohjoinen), Jugin taulukko 19.11.2026.
-Puuttuu: Helsinki (PuMu, Meilahti) ja Kannus (Ura) – lisää KENTAT- ja SEURA-tauluihin, kun suunta tiedetään.
+Meilahti (PuMu): ~10°, arvioitu Jugin karttakuvasta 19.11.2026 (kotipesä etelässä, takaraja pohjoisessa).
+Puuttuu: Kannus (Ura) – lisää KENTAT-, SEURA-, NIMET- ja ASEMA-tauluihin, kun suunta tiedetään.
 
 Tuuli: Ilmatieteen laitoksen avoin data (opendata.fmi.fi), lähimmän automaattiaseman tuntihavainnot
 (WD_PT1H_AVG tulosuunta, WS_PT1H_AVG nopeus) ottelun alkutunnilta ja kahdelta seuraavalta, vektorikeskiarvona.
@@ -10,19 +11,20 @@ Myötätuuli = komponentti kotipesältä takarajalle päin (lyönnin suuntaan), 
 import calendar, datetime, math, re, time, urllib.request
 
 KENTAT = {"Sotkamo": 262, "Joensuu": 288, "Kempele": 300, "Kouvola": 295, "Koskenkorva": 295, "Kitee": 300,
-          "Imatra": 315, "Pattijoki": 348, "Hyvinkää": 357, "Kauppi": 333, "Alajärvi": 75, "Vimpeli": 120}
+          "Imatra": 315, "Pattijoki": 348, "Hyvinkää": 357, "Kauppi": 333, "Alajärvi": 75, "Vimpeli": 120, "Meilahti": 10}
 SEURA = {"SoJy": "Sotkamo", "JoMa": "Joensuu", "KeKi": "Kempele", "KPL": "Kouvola", "KoU": "Koskenkorva", "KiPa": "Kitee",
-         "IPV": "Imatra", "PattU": "Pattijoki", "Tahko": "Hyvinkää", "Manse": "Kauppi", "AA": "Alajärvi", "ViVe": "Vimpeli"}
+         "IPV": "Imatra", "PattU": "Pattijoki", "Tahko": "Hyvinkää", "Manse": "Kauppi", "AA": "Alajärvi", "ViVe": "Vimpeli",
+         "PuMu": "Meilahti"}
 NIMET = {"Sotkamo": ["hiukka", "hiukan", "marjex", "terrafame", "sotkamo"],
          "Joensuu": ["joensuu", "mehtimä", "bolt", "telekarelia", "ilosaarirock"],
          "Kempele": ["kempele", "sarkkiranta", "autofix"], "Kouvola": ["kouvola", "kss energia"],
          "Koskenkorva": ["koskenkorva", "sähkökoje", "ilmajoki"], "Kitee": ["kitee", "rantakenttä"],
          "Imatra": ["imatra", "ukonniem", "tornator"], "Pattijoki": ["pattijoki", "rännäri"], "Hyvinkää": ["hyvinkää", "pihkala"],
-         "Kauppi": ["kauppi", "kaupin", "tampere"], "Alajärvi": ["alajärvi", "kitro", "saltex"], "Vimpeli": ["vimpeli", "saarikenttä"]}
+         "Kauppi": ["kauppi", "kaupin", "tampere"], "Alajärvi": ["alajärvi", "kitro", "saltex"], "Vimpeli": ["vimpeli", "saarikenttä"], "Meilahti": ["meilahti", "good guy", "helsinki"]}
 ASEMA = {"Sotkamo": [101756, 107113], "Joensuu": [101632, 101628], "Kempele": [108040, 101794, 101787],
          "Kouvola": [101191, 101194], "Koskenkorva": [101486, 101503], "Kitee": [101459, 101441],
          "Imatra": [101252, 101246, 101237], "Pattijoki": [101785, 101787, 101775], "Hyvinkää": [101130, 101149],
-         "Kauppi": [101311, 101124], "Alajärvi": [101533, 101503], "Vimpeli": [101533, 101503]}
+         "Kauppi": [101311, 101124], "Alajärvi": [101533, 101503], "Vimpeli": [101533, 101503], "Meilahti": [101004, 100971]}
 
 
 def kentta(koti_lyh, stadion):

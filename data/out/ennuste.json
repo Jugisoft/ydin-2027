@@ -1,5 +1,5 @@
 {
- "paivitetty": "2026-11-19T16:12",
+ "paivitetty": "2026-11-19T18:14",
  "kausi": 2027,
  "pohja": "2010–2026",
  "otteluita": 3596,
@@ -1189,7 +1189,8 @@
     "Hyvinkää": 357,
     "Kauppi": 333,
     "Alajärvi": 75,
-    "Vimpeli": 120
+    "Vimpeli": 120,
+    "Meilahti": 10
    },
    "seurat": {
     "SoJy": "Sotkamo",
@@ -1203,7 +1204,8 @@
     "Tahko": "Hyvinkää",
     "Manse": "Kauppi",
     "AA": "Alajärvi",
-    "ViVe": "Vimpeli"
+    "ViVe": "Vimpeli",
+    "PuMu": "Meilahti"
    }
   },
   "per_aste": 0.2195,
