@@ -45,11 +45,13 @@ jobs:
           python -c "import json; d=json.load(open('/tmp/seuranta.json', encoding='utf-8')); assert isinstance(d.get('siirrot'), list) and d['siirrot'], 'siirrot puuttuu'"
           if cmp -s /tmp/seuranta.json data/seuranta/seuranta.json; then echo "Seuranta ennallaan"; else cp /tmp/seuranta.json data/seuranta/seuranta.json; echo "Seuranta päivitetty Keskuksesta"; fi
       - run: python -m ydin.siirtovaikutus
+      - name: Otteluennuste (päättyneet kaudet välimuistista, kuluva haetaan)
+        run: python -m ydin.ennuste
       - name: Tallenna data
         run: |
           git config user.name "ydin-bot"
           git config user.email "ydin-bot@users.noreply.github.com"
-          git add data/out data/tapahtumat data/seuranta
+          git add data/out data/tapahtumat data/seuranta data/ottelupohja
           git diff --cached --quiet || git commit -m "Data päivitetty $(date -u +%Y-%m-%dT%H:%MZ)"
           git push
       - name: Rakenna sivusto

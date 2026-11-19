@@ -215,7 +215,7 @@ function johda(s){
   for(let n=0;n<4;n++) s["kl"+n] = pct(s["KL"+n+"_v"], s["KLY"+n+"_v"]);
   s.torj = s.KLY3_v ? 100*(s.KLY3_v - s.KL3_v)/s.KLY3_v : null;
   s.kol = s.kolmos_v/s.O; s.kv = s.K_v/s.O;
-  s.vap = s.Ot ? s.vapaat/s.Ot : null; s.kar = s.Ot ? s.karpaset/s.Ot : null; s.karl = s.Ot ? s.karpaset_l : null;
+  s.vap = s.Ot ? s.vapaat/s.Ot : null; s.kar = s.Ot ? s.karpaset/s.Ot : null; s.karl = s.Ot ? s.karpaset_l : null; s.karlo = s.Ot ? s.karpaset_l/s.Ot : null;
   s.vapK = s.Ot ? s.vapaatK/s.Ot : null;
   // palo-% = vastustajan kärkietenijän palot / kärkiyritykset (sama otos, ottelut joista P/H-luvut ovat)
   const vY = n => s["vKLY"+n+"_v"];
@@ -310,7 +310,7 @@ const PCT_HI="#d8323b", PCT_LO="#3a63b4";
 function prosentit(s){
   const pool = ALL.filter(x=>x.O>=10);
   const rows = [["Vast. tekemät juoksut / O","pv",-1,x=>fi(x.pv,2)],["KL% vastaan","klv",-1,x=>fi(x.klv)],["KL%0 vastaan","kl0",-1,x=>fi(x.kl0)],["KL%1 vastaan","kl1",-1,x=>fi(x.kl1)],
-    ["KL%2 vastaan","kl2",-1,x=>fi(x.kl2)],["Torjunta%","torj",1,x=>fi(x.torj)],["3-tilanteet / O","kol",-1,x=>fi(x.kol,1)],["Kunnarit v. / O","kv",-1,x=>fi(x.kv,2)],...(SARJA.Ov?[["Palo% vastaan","ppk",1,x=>fi(x.ppk)]]:[]),...(SARJA.Ot?[["Vapaat / O","vap",-1,x=>fi(x.vap,2)],["Kärpäset / O","kar",1,x=>fi(x.kar,2)]]:[]),["Voitto%","vp",1,x=>fi(x.vp,0)]];
+    ["KL%2 vastaan","kl2",-1,x=>fi(x.kl2)],["Torjunta%","torj",1,x=>fi(x.torj)],["3-tilanteet / O","kol",-1,x=>fi(x.kol,1)],["Kunnarit v. / O","kv",-1,x=>fi(x.kv,2)],...(SARJA.Ov?[["Palo% vastaan","ppk",1,x=>fi(x.ppk)]]:[]),...(SARJA.Ot?[["Vapaat / O","vap",-1,x=>fi(x.vap,2)],["Joukkueen kärpäset / O","kar",1,x=>fi(x.kar,2)],["Lukkarin omat kärpäset / O","karlo",1,x=>fi(x.karlo,2)]]:[]),["Voitto%","vp",1,x=>fi(x.vp,0)]];
   const html = rows.map(([t,k,dir,fmt])=>{
     const grp = pool.filter(x=>x[k]!=null), val = s[k];
     if(s.O<10 || grp.length<5 || val==null) return `<div class="prow na"><span class="k">${t}</span><span class="tr"></span><span class="v">${fmt(s)}</span></div>`;
@@ -319,7 +319,7 @@ function prosentit(s){
     const col = `color-mix(in srgb, ${PCT_HI} ${pc}%, ${PCT_LO})`;
     return `<div class="prow" title="${t}: parempi kuin ${pc} % sarjan lukkareista (${grp.length})"><span class="k">${t}</span><span class="tr"><i style="width:${pc}%;background:${col};opacity:.35"></i><b style="left:${pc}%;background:${col}">${pc}</b></span><span class="v">${fmt(s)}</span></div>`;
   }).join("");
-  return `<div class="sec"><h4>Prosenttipisteet <small>vertailu: väh. 10 ottelua</small></h4>
+  return `<div class="sec"><h4>Prosenttipisteet <small>vertailu: väh. 10 ottelua</small></h4><p class="note" style="margin:0 0 6px">Pallurassa on prosenttipiste (1–99): parempi kuin näin moni prosentti sarjan lukkareista. Oikealla itse lukema. Joukkueen kärpäset sisältävät myös ulkopelaajien polttamat.</p>
     <div class="prscale"><span></span><span><span>heikko</span><span>keskitaso</span><span>kärki</span></span><span></span></div>${html}
     ${s.O<10?`<p class="note">Alle 10 ottelua – prosenttipisteitä ei lasketa.</p>`:""}</div>`;
 }

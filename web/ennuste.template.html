@@ -1,0 +1,343 @@
+<!--TYYLI-->
+<style>
+/* Otteluennuste (ydin/ennuste.py): vastustajakorjatut hyökkäys- ja puolustusluvut ristiin, kotietu, jälkitesti */
+.kpi4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px}
+.kpi4 .k{background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.kpi4 .k small{display:block;font:600 .68rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.kpi4 .k b{font:700 1.8rem var(--font-display);line-height:1.1;display:block}
+.kpi4 .k span{font-size:.8rem;color:var(--muted);display:block}
+.huom{display:flex;gap:12px;align-items:flex-start;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));background:color-mix(in srgb,var(--accent) 7%,var(--surface));border-radius:var(--r);padding:12px 16px;font-size:.92rem;line-height:1.5}
+.huom .ik{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font:700 .95rem var(--font-display)}
+.tw{overflow-x:auto}
+table.et{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.9rem}
+table.et th{font:600 .68rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:bottom}
+table.et th.s{cursor:pointer} table.et th.s:hover{color:var(--fg)} table.et th[aria-sort]{color:var(--accent)}
+table.et th:first-child,table.et td:first-child{text-align:left}
+table.et td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.et tr:last-child td{border-bottom:0}
+table.et .grp th{border-bottom:0;padding-bottom:0;text-align:center;color:var(--fg)}
+table.et td.sep,table.et th.sep{border-left:1px solid var(--line)}
+table.et td.b{font-weight:700}
+.jk{display:flex;align-items:center;gap:8px;font-weight:600}
+.jk img,.jk .ph{width:22px;height:22px;object-fit:contain;flex:none}
+.jk .ph{border-radius:6px;background:var(--surface-2);display:grid;place-items:center;font:700 .6rem var(--font-display)}
+.tag{display:inline-block;font:600 .62rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:2px 7px;background:var(--sand-soft);color:var(--fg);margin-left:4px}
+.valinta{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:end}
+.valinta label{display:flex;flex-direction:column;gap:4px;font:600 .7rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.valinta select{font:600 1rem var(--font-body);padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);min-width:150px}
+.valinta .vs{font:700 1.2rem var(--font-display);color:var(--muted);padding-bottom:8px}
+.valinta button{font:600 .85rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 12px;cursor:pointer}
+.ottelu{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:14px;align-items:center;margin-top:6px}
+.puoli{display:flex;flex-direction:column;gap:2px}
+.puoli.v{align-items:flex-end;text-align:right}
+.puoli .nm{display:flex;align-items:center;gap:10px;font:700 1.4rem var(--font-display)}
+.puoli.v .nm{flex-direction:row-reverse}
+.puoli .nm img,.puoli .nm .ph{width:40px;height:40px;object-fit:contain}
+.puoli .nm .ph{border-radius:10px;background:var(--surface-2);display:grid;place-items:center;font:700 .8rem var(--font-display)}
+.puoli .pc{font:700 2.6rem var(--font-display);line-height:1}
+.puoli small{color:var(--muted);font-size:.8rem}
+.palkki{grid-column:1/-1;display:flex;height:10px;border-radius:999px;overflow:hidden;gap:2px}
+.palkki i{display:block;height:100%}
+.palkki .h{background:var(--accent);border-radius:999px 0 0 999px}
+.palkki .a{background:var(--sand);border-radius:0 999px 999px 0}
+.keski{text-align:center;color:var(--muted);font-size:.8rem}
+.keski b{display:block;font:700 1.1rem var(--font-display);color:var(--fg)}
+.risti td small{color:var(--muted);font-size:.78rem;display:block}
+.risti .ero{font-weight:700}
+.up{color:var(--win)} .dn{color:var(--loss)}
+.matriisi{border-collapse:separate;border-spacing:2px;font-variant-numeric:tabular-nums;font-size:.8rem;margin:0 auto}
+.matriisi th{font:600 .66rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px;white-space:nowrap}
+.matriisi th.r{text-align:right}
+.matriisi td{width:46px;height:34px;text-align:center;border-radius:6px;cursor:pointer;color:var(--fg)}
+.matriisi td.x{background:transparent;cursor:default}
+.matriisi td:hover:not(.x){outline:2px solid var(--fg);outline-offset:-2px}
+.mleg{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);justify-content:center;margin-top:8px}
+.mleg i{display:block;width:180px;height:10px;border-radius:999px}
+.cols2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:980px){.cols2{grid-template-columns:minmax(0,1fr)}}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);border-radius:12px;padding:4px;width:fit-content;max-width:100%}
+.tabs button{font:600 .82rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;border:0;background:none;color:var(--muted);padding:6px 11px;border-radius:9px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.kuva{width:100%;display:block}
+.kuva text{font:500 11px var(--font-body);fill:var(--muted)}
+.kuva .ax{stroke:var(--line)} .kuva .ref{stroke:var(--muted);stroke-dasharray:4 4;stroke-width:1}
+.kuva .ln{fill:none;stroke:var(--accent);stroke-width:2}
+.kuva .pt{fill:var(--accent);stroke:var(--surface);stroke-width:2}
+.kuva .hit{fill:transparent;cursor:pointer}
+.kuva .hit:hover + .pt, .kuva g:hover .pt{r:7}
+.tip{position:fixed;pointer-events:none;background:var(--band);color:var(--band-fg);font-size:.8rem;padding:6px 9px;border-radius:8px;z-index:50;line-height:1.35;max-width:260px;display:none}
+.paino{display:grid;grid-template-columns:110px minmax(0,1fr) 52px;gap:8px;align-items:center;font-size:.86rem;padding:4px 0}
+.paino .tr{height:10px;background:var(--surface-2);border-radius:999px;position:relative}
+.paino .tr i{position:absolute;top:0;bottom:0;border-radius:999px;background:var(--accent)}
+.paino .tr i.neg{background:var(--loss)}
+.paino b{text-align:right;font-variant-numeric:tabular-nums}
+.metodi ol{margin:0;padding-left:1.2rem;display:flex;flex-direction:column;gap:9px;line-height:1.55;font-size:.92rem}
+.metodi code{font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:5px}
+.hint2{font-size:.82rem;color:var(--muted);margin:8px 0 0}
+@media (max-width:640px){.valinta .vs{display:none} .puoli .pc{font-size:2rem} .puoli .nm{font-size:1.1rem} .matriisi td{width:34px;height:30px;font-size:.72rem}}
+</style>
+<!--SISALTO-->
+<div class="top">
+  <div><h1>Otteluennuste <span id="kausi"></span></h1><p>Miesten Superpesis · vastustajaan suhteutetut luvut ristiin · pohjana <span id="pohja"></span> (<span id="ott"></span> ottelua)</p></div>
+  <span class="pill"><i></i>Päivitetty <span id="paiv"></span></span>
+</div>
+
+<div class="huom" id="huom"></div>
+
+<section class="card">
+  <div class="head"><h3>Ennuste ottelulle</h3><span class="hint">Valitse koti- ja vierasjoukkue</span></div>
+  <div class="valinta">
+    <label>Koti<select id="selK"></select></label>
+    <span class="vs">–</span>
+    <label>Vieras<select id="selV"></select></label>
+    <button id="vaihda" type="button" title="Vaihda koti ja vieras">⇄ Vaihda</button>
+  </div>
+  <div id="ottelu"></div>
+  <div class="tw"><table class="et risti" id="risti"></table></div>
+  <p class="hint2">Hyökkäys = joukkueen oma luku, puolustus = mitä vastustajat ovat tehneet sitä vastaan. Ristiin = joukkueen hyökkäys vastustajan puolustusta vastaan, sarjan tasoon suhteutettuna. Juoksuodotus = 3-tilanteet × kotiutus% (+ kotietu), ilman kotiutuskilpailua.</p>
+</section>
+
+<section class="card">
+  <div class="head"><h3>Kotivoiton todennäköisyys</h3><span class="hint">Rivi = kotijoukkue, sarake = vieras · klikkaa ruutua</span></div>
+  <div class="tw"><table class="matriisi" id="matriisi"></table></div>
+  <div class="mleg"><span>vieras vahvoilla</span><i id="mlegi"></i><span>koti vahvoilla</span></div>
+</section>
+
+<section class="card">
+  <div class="head"><h3>Joukkueiden lähtötaso <span id="lk"></span></h3><span class="hint">Klikkaa otsikkoa järjestääksesi</span></div>
+  <div class="tw"><table class="et" id="vahv"></table></div>
+  <p class="hint2">Vahvuus = voittotodennäköisyys sarjan keskitasoista joukkuetta vastaan neutraalilla kentällä. Luvut ovat kutistettuja arvioita (ei raakoja kausilukuja). Kokoonpanomuutokset eivät ole mukana – ks. <a href="siirtovaikutus.html">Siirtovaikutus</a>. Nousijan lähtötaso on sarjan keskitasoa heikompi.</p>
+</section>
+
+<section class="card">
+  <div class="head"><h3>Vastustajan luokka <span id="lkausi"></span></h3><span class="hint" id="lhint"></span></div>
+  <div class="tabs" id="ltabs"></div>
+  <div class="tw" style="margin-top:10px"><table class="et" id="luokka"></table></div>
+  <p class="hint2">Vastustajat jaetaan runkosarjan juoksueron mukaan: kärki = sijat 1–4, keski = 5–8, häntä = 9–12. Joukkue ei pelaa itseään vastaan, joten esim. kärkijoukkueilla on vähemmän otteluita kärkeä vastaan. Raakaluvut, ei kutistusta.</p>
+</section>
+
+<div class="cols2">
+  <section class="card">
+    <div class="head"><h3>Kotietu kausittain</h3><span class="hint">Kotijoukkueen voitto%</span></div>
+    <svg class="kuva" id="kotikuva" viewBox="0 0 560 240" role="img" aria-label="Kotijoukkueen voittoprosentti kausittain"></svg>
+    <p class="hint2" id="kotiteksti"></p>
+  </section>
+  <section class="card">
+    <div class="head"><h3>Kotietu joukkueittain</h3><span class="hint" id="kjhint"></span></div>
+    <div class="tw"><table class="et" id="kotij"></table></div>
+  </section>
+</div>
+
+<div class="cols2">
+  <section class="card">
+    <div class="head"><h3>Jälkitesti</h3><span class="hint" id="jhint"></span></div>
+    <div class="kpi4" id="jkpi"></div>
+    <svg class="kuva" id="kalkuva" viewBox="0 0 560 300" role="img" aria-label="Kalibrointi: ennustettu vs toteutunut voitto%"></svg>
+    <p class="hint2">Kalibrointi: testikausien ottelut ryhmitelty ennustetun kotivoiton todennäköisyyden mukaan. Jos pisteet ovat katkoviivalla, todennäköisyydet pitävät paikkansa.</p>
+    <div class="tw"><table class="et" id="kausit"></table></div>
+  </section>
+  <section class="card">
+    <div class="head"><h3>Mikä painaa</h3><span class="hint">Vaikutus voittoon, 1 keskihajonnan ero</span></div>
+    <div id="painot"></div>
+    <p class="hint2">3-tilanteiden synnyttäminen (ja vastustajan 3-tilanteiden estäminen) ratkaisee eniten. KL%0–2 tuovat vähän lisätietoa, koska niiden vaikutus näkyy jo 3-tilanteissa – pienet ja negatiiviset painot johtuvat tästä päällekkäisyydestä.</p>
+    <div class="metodi" style="margin-top:14px"><h4 style="margin:0 0 8px;font:700 .78rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Miten luvut on laskettu</h4><ol id="metodi"></ol></div>
+  </section>
+</div>
+<p class="note">Lähde: pesistulokset.fi, joukkueiden ottelukohtaiset tilastot (stats-tool) kaudesta 2010. Laskenta: <code>ydin/ennuste.py</code>, päivittyy iltaajossa. Ennuste perustuu pelattuihin otteluihin – se ei tiedä loukkaantumisista, kokoonpanoista eikä säästä.</p>
+<div class="tip" id="tip"></div>
+
+<!--SKRIPTI-->
+<script>
+const D = __DATA__;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fi = (v,d=1) => v==null||!isFinite(v) ? "–" : v.toFixed(d).replace(".", ",").replace("-", "−");
+const pc = (v,d=1) => v==null ? "–" : fi(100*v,d) + " %";
+const LOGOT = D.logot || {};
+const E = D.e, M = E.malli, LG = E.sarja, TIL = E.tilastot, J = E.joukkueet;
+const PROS = {kot:1, kl0:1, kl1:1, kl2:1};
+const MALLI = Object.keys(M.kertoimet);
+const logo = (t, cls="") => LOGOT[t] ? `<img src="${esc(LOGOT[t])}" alt="" loading="lazy">` : `<span class="ph">${esc((t||"?").slice(0,3))}</span>`;
+const jk = r => `<span class="jk">${logo(r.lyh)}${esc(r.lyh)}${r.nousija?'<span class="tag">nousija</span>':""}</span>`;
+const tip = $("tip");
+function naytaTip(e, html){ tip.innerHTML = html; tip.style.display = "block"; const x = Math.min(e.clientX + 14, innerWidth - 270); tip.style.left = x + "px"; tip.style.top = (e.clientY + 14) + "px"; }
+function piilota(){ tip.style.display = "none"; }
+
+$("kausi").textContent = E.kausi; $("pohja").textContent = E.pohja; $("ott").textContent = E.otteluita.toLocaleString("fi-FI");
+$("paiv").textContent = (E.paivitetty||"").slice(0,10).split("-").reverse().map(x=>+x).join(".");
+$("lk").textContent = E.kesken ? "" : E.kausi;
+
+// --- laskenta (sama kuin ydin/ennuste.py) ---
+const logit = p => { p = Math.min(Math.max(p,1e-6),1-1e-6); return Math.log(p/(1-p)); };
+const risti = (s,o,d) => PROS[s] ? (x => x/(1+x))(Math.exp(logit(o)+logit(d)-logit(LG[s]))) : o*d/LG[s];
+const odot = (a,b) => Object.fromEntries(Object.keys(TIL).map(s => [s, risti(s, a["o_"+s], b["d_"+s])]));
+function ennuste(h, v){
+  const eh = odot(h,v), ev = odot(v,h);
+  let z = M.vakio;
+  for (const s of MALLI) z += M.kertoimet[s] * (PROS[s] ? logit(eh[s]) - logit(ev[s]) : Math.log(eh[s]/ev[s]));
+  const p = 1/(1+Math.exp(-z));
+  return {p, eh, ev, jh: M.skaala_juoksut*eh.t3*eh.kot*M.koti_juoksut, jv: M.skaala_juoksut*ev.t3*ev.kot*M.vieras_juoksut};
+}
+const byL = Object.fromEntries(J.map(r => [r.lyh, r]));
+
+// --- huomio ---
+{ const j = E.jalkitesti;
+  $("huom").innerHTML = `<span class="ik">i</span><div>Malli on testattu kausilla <b>${j.testi}</b>, joita ei käytetty viritykseen: se osui voittajaan <b>${pc(j.malli.osuma)}</b> otteluista (${j.malli.n}). Pelkkä juoksuihin perustuva vertailumalli osui ${pc(j.juoksut.osuma)}, ja pelkkä kotijoukkueen valinta ${pc(j.koti.osuma)}. Todennäköisyydet ovat kohdallaan (kalibrointi alla) – suurin ero on altavastaajien päässä, joita malli aliarvioi hieman. Ero juoksumalliin on pieni: Karin kehikko on tarkempi, mutta ei mullistavasti.</div>`;
+}
+
+// --- otteluvalinta ---
+const opts = J.map(r => `<option value="${esc(r.lyh)}">${esc(r.lyh)}</option>`).join("");
+$("selK").innerHTML = opts; $("selV").innerHTML = opts;
+const sp = new URLSearchParams(location.search);
+$("selK").value = byL[sp.get("k")] ? sp.get("k") : (byL.KPL ? "KPL" : J[0].lyh);
+$("selV").value = byL[sp.get("v")] ? sp.get("v") : J.find(r => r.lyh !== $("selK").value).lyh;
+const RIVIT = [["t3","3-tilanteet / O",1],["kot","Kotiutus%",0],["kl0","KL%0 (nollatilanne)",0],["kl1","KL%1",0],["kl2","KL%2",0]];
+const arvo = (s,v) => PROS[s] ? fi(100*v) : fi(v,2);
+function piirraOttelu(){
+  const h = byL[$("selK").value], v = byL[$("selV").value];
+  if (!h || !v || h === v){ $("ottelu").innerHTML = `<p class="hint2">Valitse kaksi eri joukkuetta.</p>`; $("risti").innerHTML = ""; return; }
+  history.replaceState(null, "", `?k=${encodeURIComponent(h.lyh)}&v=${encodeURIComponent(v.lyh)}`);
+  const e = ennuste(h, v);
+  $("ottelu").innerHTML = `<div class="ottelu">
+    <div class="puoli"><span class="nm">${logo(h.lyh)}${esc(h.lyh)}</span><span class="pc">${fi(100*e.p,0)} %</span><small>kotivoitto · odotus ${fi(e.jh,1)} juoksua</small></div>
+    <div class="keski"><b>${fi(e.jh+e.jv,1)}</b>juoksua yht.</div>
+    <div class="puoli v"><span class="nm">${logo(v.lyh)}${esc(v.lyh)}</span><span class="pc">${fi(100*(1-e.p),0)} %</span><small>vierasvoitto · odotus ${fi(e.jv,1)} juoksua</small></div>
+    <div class="palkki"><i class="h" style="width:${100*e.p}%"></i><i class="a" style="width:${100*(1-e.p)}%"></i></div></div>`;
+  const rivi = (x, y, ex, nimi, s) => {
+    const parempi = ex[s] - LG[s];
+    return `<td class="sep">${arvo(s, x["o_"+s])}</td><td>${arvo(s, y["d_"+s])}</td><td class="b ${parempi>0?'up':'dn'}">${arvo(s, ex[s])}</td>`; };
+  $("risti").innerHTML = `<thead><tr class="grp"><th></th><th colspan="3" class="sep">${esc(h.lyh)} lyö</th><th colspan="3" class="sep">${esc(v.lyh)} lyö</th><th class="sep"></th></tr>
+    <tr><th>Tilanne</th><th class="sep">${esc(h.lyh)} hyökk.</th><th>${esc(v.lyh)} puol.</th><th>Ristiin</th><th class="sep">${esc(v.lyh)} hyökk.</th><th>${esc(h.lyh)} puol.</th><th>Ristiin</th><th class="sep">Sarja</th></tr></thead>
+    <tbody>${RIVIT.map(([s,n]) => `<tr><td>${n}</td>${rivi(h,v,e.eh,n,s)}${rivi(v,h,e.ev,n,s)}<td class="sep">${arvo(s, LG[s])}</td></tr>`).join("")}
+    <tr><td><b>Juoksuodotus</b></td><td class="sep" colspan="2"></td><td class="b">${fi(e.jh,2)}</td><td class="sep" colspan="2"></td><td class="b">${fi(e.jv,2)}</td><td class="sep">${fi(LG.jk,2)}</td></tr></tbody>`;
+}
+$("selK").onchange = $("selV").onchange = piirraOttelu;
+$("vaihda").onclick = () => { const a = $("selK").value; $("selK").value = $("selV").value; $("selV").value = a; piirraOttelu(); };
+piirraOttelu();
+
+// --- matriisi ---
+{
+  const col = p => { const d = p - .5, k = Math.min(1, Math.abs(d)/.4); return `background:color-mix(in srgb, ${d>=0?"var(--accent)":"var(--sand)"} ${Math.round(6+k*58)}%, var(--surface-2))`; };
+  $("mlegi").style.background = "linear-gradient(90deg, color-mix(in srgb,var(--sand) 64%,var(--surface-2)), var(--surface-2), color-mix(in srgb,var(--accent) 64%,var(--surface-2)))";
+  let html = `<thead><tr><th></th>${J.map(v => `<th title="${esc(v.lyh)}">${esc(v.lyh)}</th>`).join("")}</tr></thead><tbody>`;
+  for (const h of J){
+    html += `<tr><th class="r">${esc(h.lyh)}</th>`;
+    for (const v of J){
+      if (h === v){ html += `<td class="x"></td>`; continue; }
+      const e = ennuste(h, v);
+      html += `<td style="${col(e.p)}" data-k="${esc(h.lyh)}" data-v="${esc(v.lyh)}" data-t="${esc(`<b>${h.lyh} – ${v.lyh}</b><br>Kotivoitto ${fi(100*e.p,0)} % · juoksut ${fi(e.jh,1)}–${fi(e.jv,1)}`)}">${fi(100*e.p,0)}</td>`;
+    }
+    html += `</tr>`;
+  }
+  $("matriisi").innerHTML = html + "</tbody>";
+  $("matriisi").addEventListener("mousemove", e => { const td = e.target.closest("td[data-t]"); td ? naytaTip(e, td.dataset.t) : piilota(); });
+  $("matriisi").addEventListener("mouseleave", piilota);
+  $("matriisi").addEventListener("click", e => { const td = e.target.closest("td[data-k]"); if (!td) return; $("selK").value = td.dataset.k; $("selV").value = td.dataset.v; piirraOttelu(); $("selK").scrollIntoView({behavior:"smooth", block:"center"}); });
+}
+
+// --- lähtötaso ---
+{
+  const C = [
+    {k:"vahvuus", t:"Vahvuus", f:r=>r.vahvuus, fmt:r=>pc(r.vahvuus,0), dir:1, b:1},
+    {k:"o_t3", t:"3-til. tehdyt", f:r=>r.o_t3, fmt:r=>fi(r.o_t3,1), dir:1, sep:1},
+    {k:"d_t3", t:"3-til. päästetyt", f:r=>r.d_t3, fmt:r=>fi(r.d_t3,1), dir:-1},
+    {k:"o_kot", t:"Kotiutus%", f:r=>r.o_kot, fmt:r=>fi(100*r.o_kot), dir:1, sep:1},
+    {k:"d_kot", t:"Torjunta%", f:r=>1-r.d_kot, fmt:r=>fi(100*(1-r.d_kot)), dir:1},
+    {k:"o_kl0", t:"KL%0", f:r=>r.o_kl0, fmt:r=>fi(100*r.o_kl0), dir:1, sep:1},
+    {k:"d_kl0", t:"KL%0 v", f:r=>r.d_kl0, fmt:r=>fi(100*r.d_kl0), dir:-1},
+    {k:"o_kl1", t:"KL%1", f:r=>r.o_kl1, fmt:r=>fi(100*r.o_kl1), dir:1, sep:1},
+    {k:"d_kl1", t:"KL%1 v", f:r=>r.d_kl1, fmt:r=>fi(100*r.d_kl1), dir:-1},
+    {k:"o_jk", t:"Juoksut / O", f:r=>r.o_jk, fmt:r=>fi(r.o_jk,2), dir:1, sep:1},
+    {k:"d_jk", t:"Päästetyt / O", f:r=>r.d_jk, fmt:r=>fi(r.d_jk,2), dir:-1},
+  ];
+  const heat = (c, r) => { const v = J.map(c.f).sort((a,b)=>a-b), x = c.f(r); const q = v.filter(y=>y<x).length/(v.length-1); const g = c.dir>0 ? q : 1-q, d = Math.abs(g-.5)*2; return d<.3 ? "" : `background:color-mix(in srgb, ${g>.5?"var(--win)":"var(--loss)"} ${Math.round(6+d*20)}%, transparent)`; };
+  let sk = "vahvuus", sd = -1;
+  const draw = () => {
+    const c = C.find(c=>c.k===sk); const R = [...J].sort((a,b) => sd<0 ? c.f(b)-c.f(a) : c.f(a)-c.f(b));
+    $("vahv").innerHTML = `<thead><tr><th>Joukkue</th>${C.map(c => `<th class="s${c.sep?" sep":""}" data-k="${c.k}"${c.k===sk?' aria-sort="'+(sd<0?"descending":"ascending")+'"':""}>${c.t}</th>`).join("")}</tr></thead>
+      <tbody>${R.map(r => `<tr><td><a href="?k=${encodeURIComponent(r.lyh)}" style="text-decoration:none">${jk(r)}</a></td>${C.map(c => `<td class="${c.sep?"sep ":""}${c.b?"b":""}" style="${heat(c,r)}">${c.fmt(r)}</td>`).join("")}</tr>`).join("")}</tbody>`;
+    $("vahv").querySelectorAll("th.s").forEach(th => th.onclick = () => { if (sk === th.dataset.k) sd = -sd; else { sk = th.dataset.k; sd = C.find(c=>c.k===sk).dir > 0 ? -1 : 1; } draw(); });
+  };
+  draw();
+}
+
+// --- vastustajan luokka ---
+{
+  const L = E.luokat;
+  if (!L){ $("luokka").closest("section").hidden = true; }
+  else {
+    $("lkausi").textContent = "– runkosarja " + L.kausi;
+    const MT = [["t3","3-til. tehdyt / O",1,2],["t3v","3-til. päästetyt / O",-1,2],["kot","Kotiutus%",1,1],["torj","Torjunta%",1,1],["kl0","KL%0",1,1],["kl1","KL%1",1,1],["j","Juoksut / O",1,2],["jv","Päästetyt / O",-1,2]];
+    let mk = "t3";
+    $("ltabs").innerHTML = MT.map(([k,t]) => `<button type="button" data-k="${k}">${t}</button>`).join("");
+    const draw = () => {
+      $("ltabs").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.k===mk));
+      const [_, t, dir, dd] = MT.find(m=>m[0]===mk);
+      $("lhint").textContent = t + " vastustajan luokan mukaan";
+      const LUOK = [["karki","Kärkeä vastaan"],["keski","Keskeä vastaan"],["hanta","Häntää vastaan"],["kaikki","Kaikki"]];
+      const all = L.rivit.flatMap(r => LUOK.slice(0,3).map(([k]) => r[k] && r[k][mk])).filter(v=>v!=null).sort((a,b)=>a-b);
+      const heat = x => { if (x==null) return ""; const q = all.filter(y=>y<x).length/(all.length-1), g = dir>0?q:1-q, d=Math.abs(g-.5)*2; return d<.3?"":`background:color-mix(in srgb, ${g>.5?"var(--win)":"var(--loss)"} ${Math.round(6+d*20)}%, transparent)`; };
+      $("luokka").innerHTML = `<thead><tr><th>Joukkue</th><th>Sija</th>${LUOK.map(([k,n],i) => `<th class="${i===3?"sep":""}">${n}</th>`).join("")}<th class="sep" title="Kärkeä vastaan − häntää vastaan">Ero kärki–häntä</th></tr></thead>
+        <tbody>${L.rivit.map(r => { const a = r.karki && r.karki[mk], b = r.hanta && r.hanta[mk]; const e = a!=null&&b!=null ? a-b : null;
+          return `<tr><td>${jk(r)}</td><td>${r.sija}.</td>${LUOK.map(([k],i) => { const x = r[k]; return `<td class="${i===3?"sep b":""}" style="${i<3?heat(x&&x[mk]):""}" title="${x?x.O+" ottelua":""}">${x?fi(x[mk],dd):"–"}${x&&i<3?`<small style="color:var(--muted);font-size:.72rem"> (${x.O})</small>`:""}</td>`; }).join("")}<td class="sep">${fi(e,dd)}</td></tr>`; }).join("")}</tbody>`;
+    };
+    $("ltabs").onclick = e => { const b = e.target.closest("button"); if (b){ mk = b.dataset.k; draw(); } };
+    draw();
+  }
+}
+
+// --- kotietu ---
+{
+  const K = E.kotietu, ks = Object.keys(K.kausittain).map(Number), vs = ks.map(k => K.kausittain[k].voitto);
+  const W = 560, H = 240, l = 40, r = 14, t = 14, b = 28, x = i => l + i*(W-l-r)/(ks.length-1), y = v => t + (0.7 - v)/(0.7-0.4)*(H-t-b);
+  let s = "";
+  for (const g of [.4,.5,.6,.7]) s += `<line class="${g===.5?"ref":"ax"}" x1="${l}" x2="${W-r}" y1="${y(g)}" y2="${y(g)}"/><text x="${l-6}" y="${y(g)+4}" text-anchor="end">${g*100} %</text>`;
+  ks.forEach((k,i) => { const vika = ks.length-1; if ((i%3===0 && vika-i>=2) || i===vika) s += `<text x="${x(i)}" y="${H-8}" text-anchor="middle">${k}</text>`; });
+  s += `<path class="ln" d="${vs.map((v,i)=>(i?"L":"M")+x(i)+" "+y(v)).join("")}"/>`;
+  ks.forEach((k,i) => { const o = K.kausittain[k]; s += `<g data-t="${esc(`<b>${k}</b><br>Kotivoitto ${fi(100*o.voitto,1)} % · ${o.O} ottelua<br>Juoksuero kotijoukkueelle ${fi(o.juoksuero,2)} / O`)}"><circle class="hit" cx="${x(i)}" cy="${y(vs[i])}" r="14"/><circle class="pt" cx="${x(i)}" cy="${y(vs[i])}" r="4.5"/></g>`; });
+  $("kotikuva").innerHTML = s;
+  $("kotikuva").addEventListener("mousemove", e => { const g = e.target.closest("g[data-t]"); g ? naytaTip(e, g.dataset.t) : piilota(); });
+  $("kotikuva").addEventListener("mouseleave", piilota);
+  const ka = vs.reduce((a,b)=>a+b,0)/vs.length;
+  $("kotiteksti").textContent = `Kotijoukkue on voittanut keskimäärin ${fi(100*ka,1)} % otteluista kausina ${ks[0]}–${ks[ks.length-1]}. Mallissa kotietu on vakio; juoksuodotuksessa kotijoukkueen juoksut kerrotaan ${fi(M.koti_juoksut,3)}:lla ja vieraan ${fi(M.vieras_juoksut,3)}:lla.`;
+  $("kjhint").textContent = "Kaudet " + K.kaudet + ", kaikki vaiheet";
+  $("kotij").innerHTML = `<thead><tr><th>Joukkue</th><th>Koti V%</th><th>Vieras V%</th><th class="sep">Ero</th></tr></thead><tbody>${K.joukkueittain.map(r => { const e = r.koti - r.vieras;
+    return `<tr><td>${jk(r)}</td><td title="${r.kotiO} ottelua">${fi(100*r.koti,0)} %</td><td title="${r.vierasO} ottelua">${fi(100*r.vieras,0)} %</td><td class="sep b ${e>0.15?"up":e<0.05?"dn":""}">${e>0?"+":""}${fi(100*e,0)}</td></tr>`; }).join("")}</tbody>`;
+}
+
+// --- jälkitesti ---
+{
+  const j = E.jalkitesti;
+  $("jhint").textContent = `Viritys ${j.opetus}, testi ${j.testi}`;
+  $("jkpi").innerHTML = [
+    ["Osuma, malli", pc(j.malli.osuma), `${j.malli.n} ottelua`],
+    ["Osuma, pelkät juoksut", pc(j.juoksut.osuma), "vertailumalli"],
+    ["Log-loss", fi(j.malli.logloss,3), `juoksut ${fi(j.juoksut.logloss,3)} · koti ${fi(j.koti.logloss,3)} (pienempi parempi)`],
+    ["Juoksuvirhe / joukkue", fi(j.juoksut_rmse.malli,2), `keskiarvo ${fi(j.juoksut_rmse.keskiarvo,2)} (RMSE)`],
+  ].map(([a,b,c]) => `<div class="k"><small>${a}</small><b>${b}</b><span>${c}</span></div>`).join("");
+  const W = 560, H = 300, l = 44, r = 14, t = 14, b = 34, x = v => l + v*(W-l-r), y = v => t + (1-v)*(H-t-b);
+  let s = "";
+  for (const g of [0,.25,.5,.75,1]) s += `<line class="ax" x1="${l}" x2="${W-r}" y1="${y(g)}" y2="${y(g)}"/><text x="${l-6}" y="${y(g)+4}" text-anchor="end">${g*100} %</text><text x="${x(g)}" y="${H-16}" text-anchor="middle">${g*100} %</text>`;
+  s += `<text x="${(l+W-r)/2}" y="${H-2}" text-anchor="middle">ennustettu kotivoitto</text><line class="ref" x1="${x(0)}" y1="${y(0)}" x2="${x(1)}" y2="${y(1)}"/>`;
+  s += `<path class="ln" d="${j.kalibrointi.map((c,i)=>(i?"L":"M")+x(c.ennuste)+" "+y(c.toteutui)).join("")}"/>`;
+  for (const c of j.kalibrointi) s += `<g data-t="${esc(`<b>${c.vali}</b><br>Ennuste ${fi(100*c.ennuste,1)} % · toteutui ${fi(100*c.toteutui,1)} %<br>${c.n} ottelua`)}"><circle class="hit" cx="${x(c.ennuste)}" cy="${y(c.toteutui)}" r="14"/><circle class="pt" cx="${x(c.ennuste)}" cy="${y(c.toteutui)}" r="5"/></g>`;
+  $("kalkuva").innerHTML = s;
+  $("kalkuva").addEventListener("mousemove", e => { const g = e.target.closest("g[data-t]"); g ? naytaTip(e, g.dataset.t) : piilota(); });
+  $("kalkuva").addEventListener("mouseleave", piilota);
+  const kk = Object.entries(j.kausittain);
+  $("kausit").innerHTML = `<thead><tr><th>Testikausi</th>${kk.map(([k])=>`<th>${k}</th>`).join("")}</tr></thead><tbody><tr><td>Osuma</td>${kk.map(([,v])=>`<td>${fi(100*v,0)} %</td>`).join("")}</tr></tbody>`;
+  const P = M.painoarvo, mx = Math.max(...Object.values(P).map(Math.abs));
+  const nimi = {t3:"3-tilanteet", kot:"Kotiutus%", kl0:"KL%0", kl1:"KL%1", kl2:"KL%2"};
+  $("painot").innerHTML = Object.entries(P).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).map(([k,v]) => `<div class="paino"><span>${nimi[k]}</span><span class="tr"><i class="${v<0?"neg":""}" style="left:0;width:${Math.max(2,100*Math.abs(v)/mx)}%"></i></span><b>${v>0?"+":""}${fi(v,2)}</b></div>`).join("")
+    + `<div class="paino"><span>Kotietu</span><span class="tr"><i style="left:0;width:${100*M.vakio/mx}%"></i></span><b>+${fi(M.vakio,2)}</b></div>`;
+  const pr = E.parametrit;
+  $("metodi").innerHTML = [
+    `Jokaisesta ottelusta otetaan joukkueen ja vastustajan luvut: 3. pesältä lähteneet kärkiyritykset (3-tilanteet), niistä onnistuneet (kotiutus%) ja kärkilyönnit lähtöpesittäin (KL%0–2). Juoksut ≈ 3-tilanteet × kotiutus% (korrelaatio 0,99).`,
+    `Joukkueen <b>hyökkäysluku</b> on sen oma luku, <b>puolustusluku</b> se, mitä vastustajat ovat tehneet sitä vastaan. Vanhat ottelut painuvat (kerroin ${fi(pr.lambda,2)} / ottelu), edellinen kausi kantaa ${fi(pr.carry,1)}-painolla ja luvut kutistetaan sarjan keskiarvoon ${pr.k} ottelun verran. Nousijan lähtötaso on ${fi(100*pr.nousija,0)} % sarjan keskitasoa heikompi.`,
+    `<b>Ristiin</b>: määrät = hyökkäys × vastustajan puolustus / sarjan keskiarvo; prosentit kerroinsuhteella (log5). Esim. hyvä kotiuttaja vs. hyvä torjuja asettuu niiden väliin sarjan tasoon suhteutettuna.`,
+    `Voittotodennäköisyys = logistinen regressio joukkueiden ristiinlaskettujen lukujen eroista + kotietu. Juoksuodotus = 3-tilanteet × kotiutus% kerrottuna kotiedulla.`,
+    `<b>Jälkitesti</b>: jokainen ennuste on laskettu vain ottelua edeltävästä datasta. Parametrit viritettiin kausilla ${pr.viritys}; luvut yllä ovat kausilta ${j.testi}, joita viritys ei nähnyt.`,
+    `Ei mukana: kokoonpanomuutokset (siirrot), loukkaantumiset, sää ja kotiutuskilpailu. Säävaikutus tutkitaan seuraavaksi.`,
+  ].map(x => `<li>${x}</li>`).join("");
+}
+</script>

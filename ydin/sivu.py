@@ -401,6 +401,14 @@ def siirtovaikutus_data():
         sv = json.load(f)
     return {"sv": sv, "logot": lue_kuvat()["logot"]}
 
+def ennuste_data():
+    """Otteluennuste-sivu: ydin/ennuste.py:n tulos + seuralogot."""
+    try:
+        e = lue("ennuste.json")
+    except FileNotFoundError:
+        return None
+    return {"e": e, "logot": lue_kuvat()["logot"]}
+
 def kulku_data():
     """Ottelun kulku -sivu: ydin/kulku.py:n tulos + joukkuelyhenteet ja logot."""
     try:
@@ -433,13 +441,14 @@ IKONIT = {
     "vertailu": '<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
     "lukkarit": '<circle cx="12" cy="6" r="3"/><path d="M12 9v6M8 21l4-6 4 6M6 12l6-2 6 2"/>',
     "siirtovaikutus": '<path d="M4 7h13l-3-3M20 17H7l3 3"/>',
+    "ennuste": '<path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
     "sanasto": '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M10 8h5"/>',
     "sisalto": '<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/>',
 }
 # (avain, otsikko, tiedosto tai None = tulossa)
 VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("joukkueet", "Joukkueet", "joukkueet.html"),
            ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"), ("vire", "Vire", "vire.html"), ("kulku", "Ottelun kulku", "kulku.html"),
-           ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), ("siirtovaikutus", "Siirtovaikutus", "siirtovaikutus.html"), None, ("sanasto", "Selitteet", "sanasto.html"), ("sisalto", "Sisältö", None)]
+           ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), ("siirtovaikutus", "Siirtovaikutus", "siirtovaikutus.html"), ("ennuste", "Otteluennuste", "ennuste.html"), None, ("sanasto", "Selitteet", "sanasto.html"), ("sisalto", "Sisältö", None)]
 
 def nav(nykyinen):
     osat = []
@@ -521,6 +530,9 @@ def main():
     sv = siirtovaikutus_data()
     if sv:
         print("siirtovaikutus.html", rakenna("siirtovaikutus.template.html", sv, "siirtovaikutus.html", "YDIN 2027 Siirtovaikutus", "siirtovaikutus", **yht))
+    en = ennuste_data()
+    if en:
+        print("ennuste.html", rakenna("ennuste.template.html", en, "ennuste.html", "YDIN 2027 Otteluennuste", "ennuste", **yht))
     print("sanasto.html", rakenna("sanasto.template.html", {}, "sanasto.html", "YDIN 2027 Selitteet", "sanasto", **yht))
     print([(t["lyh"], t["P"]) for t in k["taulukko"]])
 

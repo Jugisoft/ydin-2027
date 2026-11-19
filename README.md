@@ -8,7 +8,7 @@ GitHub Actions (ajastus) → ydin/haku.py → ydin/mittarit.py → data/out/*.js
 
 - **Ei Exceliä eikä Power Queryä.**
 - **Julkista dataa:** tilastot stats-toolista (koko kausi ≈ 8 pyyntöä) ja ottelutapahtumat kerran per päättynyt ottelu (lyöntikartat). Ks. `docs/linjaukset.md`.
-- **Iltaajo klo 21.30** Suomen aikaa.
+- **Iltaajo klo 21.30** Suomen aikaa (siirtoseuranta myös klo 18.20).
 - **Termit pesistulokset.fi-standardin mukaan** (K, L, T, YHT, KL, KLY, KL%, KL0–KL3 = lähtöpesä).
 
 ## Ajo paikallisesti
@@ -28,6 +28,7 @@ python -m pytest
 | `ydin/tapahtumat.py` | Uusien päättyneiden otteluiden tapahtumat → `data/tapahtumat/<kausi>/<id>.json.gz` |
 | `ydin/lyonnit.py` | Lyöntikartat → `data/out/lyonnit_<kausi>/` (KPL Keskus lukee) |
 | `ydin/kulku.py` | Ottelun kulku: juoksut vuoroittain, ratkeamistapa → `data/out/kulku_<kausi>.json/.csv` |
+| `ydin/ennuste.py` | Otteluennuste: vastustajakorjatut 3-tilanteet, kotiutus%, KL%0–2 ristiin + kotietu, jälkitesti → `data/out/ennuste.json`. Pohja `data/ottelupohja/<kausi>.json.gz` (2010–) |
 | `.github/workflows/paivita.yml` | Ajastettu päivitys + julkaisu |
 | `docs/` | `mittarit.md`, `linjaukset.md` |
 | `arkisto/` | Vanha tapahtumapohjainen portti (ei käytössä) |

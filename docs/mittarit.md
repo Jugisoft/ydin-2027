@@ -75,3 +75,18 @@ Onnistui = kunnari, juoksu tai kärkietenijä eteni (sama kuin KPL Keskuksen Min
 ## YDIN 2026:n mittarit, joita ei saa ilman lyöntikohtaista dataa
 Ketjut (peräkkäiset onnistumiset), lyöntikartta/rajalyönnit (X/Y), palo-% kaikista lyönneistä, tilannekohtaiset onnistumiset (1-, 2-, 1-2-, 2-3-tilanne…), ajolähtö, lukkarin kärpäset pelaajatasolla.
 Korvaavat: KL0–KL3 (pesäkohtaiset kärkilyönnit), joukkueen vapaat ja harhaheitot, juoksut jaksoittain.
+
+## Otteluennuste (19.11.2026, `ydin/ennuste.py`)
+Lähde: `stats-tool/teams` ottelittain kaudesta 2010 (≈ 3 600 ottelua). Joukkueet yhdistetään kausien yli seuratunnisteella (`sport_club_id`).
+
+| Tilasto | Laskenta | Huom |
+| --- | --- | --- |
+| 3-tilanteet / O | pe_tries_b3 | 3. pesältä lähteneet kärkiyritykset. Juoksut ≈ 3-tilanteet × kotiutus% (r = 0,99) |
+| Kotiutus% | pe_total_b3 / pe_tries_b3 | puolustuksessa: vastustajan luku = 1 − torjunta% |
+| KL%0–2 | pe_total_bn / pe_tries_bn | |
+
+Hyökkäys = oma luku, puolustus = vastustajan luku joukkuetta vastaan; painotus 0,97 / ottelu, edellinen kausi 0,6, kutistus 4 ottelua sarjan ka:hon, nousija −20 %.
+Ristiin: määrät o·d/ka, prosentit log5. Voitto% = logistinen regressio eroista + vakio (kotietu).
+
+Validointi (walk-forward, viritys 2011–2019, testi 2020–2026, 1 587 ottelua): osuma 72,7 % (pelkät juoksut 72,6 %, kotijoukkue 57,5 %),
+log-loss 0,543 (juoksut 0,545, koti 0,683), kalibrointi ±4 %-yks. ryhmittäin. Läpilyöntejä ei ole julkisessa datassa (vain X/Y), joten niitä ei käytetä.
