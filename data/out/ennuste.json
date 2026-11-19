@@ -1,5 +1,5 @@
 {
- "paivitetty": "2026-11-19T15:13",
+ "paivitetty": "2026-11-19T17:23",
  "kausi": 2027,
  "pohja": "2010–2026",
  "otteluita": 3596,
@@ -1115,5 +1115,143 @@
    }
   ],
   "kaudet": "2024–2026"
+ },
+ "saa": {
+  "n": 3595,
+  "lampo_ka": 18.5,
+  "juoksut_ka": 13.95,
+  "per_aste": 0.2195,
+  "per_aste_luottamus": 0.0448,
+  "sade": 0.1,
+  "sade_luottamus": 0.58,
+  "tuuli": 0.05,
+  "tuuli_luottamus": 0.52,
+  "luokat": [
+   {
+    "avain": "karmea",
+    "nimi": "Karmea keli",
+    "ehto": "sade ja kylmä (≤ 12 °C) tai sade ja tuuli",
+    "n": 223,
+    "lampo": 12.5,
+    "juoksut": 12.6,
+    "odotus": 13.71,
+    "havaittu": -1.11,
+    "luottamus": 0.78,
+    "vaikutus": -1.32
+   },
+   {
+    "avain": "sade",
+    "nimi": "Sadekeli",
+    "ehto": "sataa",
+    "n": 285,
+    "lampo": 17.2,
+    "juoksut": 13.64,
+    "odotus": 13.92,
+    "havaittu": -0.28,
+    "luottamus": 0.66,
+    "vaikutus": -0.29
+   },
+   {
+    "avain": "helle",
+    "nimi": "Helle",
+    "ehto": "≥ 26 °C, pouta",
+    "n": 309,
+    "lampo": 27.7,
+    "juoksut": 16.79,
+    "odotus": 14.31,
+    "havaittu": 2.47,
+    "luottamus": 0.75,
+    "vaikutus": 2.03
+   },
+   {
+    "avain": "kylma",
+    "nimi": "Kylmä keli",
+    "ehto": "≤ 13 °C, pouta",
+    "n": 333,
+    "lampo": 10.9,
+    "juoksut": 11.85,
+    "odotus": 13.62,
+    "havaittu": -1.77,
+    "luottamus": 0.56,
+    "vaikutus": -1.68
+   },
+   {
+    "avain": "hyva",
+    "nimi": "Hyvä keli",
+    "ehto": "14–25 °C, pouta",
+    "n": 2445,
+    "lampo": 19.1,
+    "juoksut": 14.04,
+    "odotus": 13.97,
+    "havaittu": 0.06,
+    "luottamus": 0.23,
+    "vaikutus": 0.13
+   }
+  ],
+  "lampo": [
+   {
+    "vali": "6–8",
+    "keski": 7,
+    "n": 73,
+    "ero": -1.96,
+    "luottamus": 1.15
+   },
+   {
+    "vali": "9–11",
+    "keski": 10,
+    "n": 149,
+    "ero": -1.34,
+    "luottamus": 0.9
+   },
+   {
+    "vali": "12–14",
+    "keski": 13,
+    "n": 425,
+    "ero": -1.63,
+    "luottamus": 0.53
+   },
+   {
+    "vali": "15–17",
+    "keski": 16,
+    "n": 894,
+    "ero": -0.32,
+    "luottamus": 0.38
+   },
+   {
+    "vali": "18–20",
+    "keski": 19,
+    "n": 883,
+    "ero": -0.02,
+    "luottamus": 0.39
+   },
+   {
+    "vali": "21–23",
+    "keski": 22,
+    "n": 579,
+    "ero": 0.75,
+    "luottamus": 0.47
+   },
+   {
+    "vali": "24–26",
+    "keski": 25,
+    "n": 350,
+    "ero": 1.24,
+    "luottamus": 0.64
+   },
+   {
+    "vali": "27–29",
+    "keski": 28,
+    "n": 177,
+    "ero": 2.2,
+    "luottamus": 0.96
+   },
+   {
+    "vali": "30–32",
+    "keski": 31,
+    "n": 48,
+    "ero": 3.75,
+    "luottamus": 2.11
+   }
+  ]
  }
 }

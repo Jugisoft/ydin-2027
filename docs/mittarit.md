@@ -90,3 +90,7 @@ Ristiin: määrät o·d/ka, prosentit log5. Voitto% = logistinen regressio erois
 
 Validointi (walk-forward, viritys 2011–2019, testi 2020–2026, 1 587 ottelua): osuma 72,7 % (pelkät juoksut 72,6 %, kotijoukkue 57,5 %),
 log-loss 0,543 (juoksut 0,545, koti 0,683), kalibrointi ±4 %-yks. ryhmittäin. Läpilyöntejä ei ole julkisessa datassa (vain X/Y), joten niitä ei käytetä.
+
+**Sää** (pelaajarivien `temperature`, `windy`, `rainy`, kirjattu kaikkiin otteluihin 2010–): ottelun juoksut vs. mallin odotus.
+Kuukauden sisällä lämpö +0,22 juoksua / °C (±0,04); sade ja tuuli eivät vaikuta, kun lämpö huomioitu. Tuulen suuntaa ei ole.
+Sää ei muuta voittajaennustetta. Pelattujen otteluiden normalisointi normikeliin testattiin: ei hyötyä (log-loss 0,5432 → 0,5434).

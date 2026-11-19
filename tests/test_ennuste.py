@@ -37,3 +37,11 @@ def test_jalkitesti_ja_rakenne():
     # kalibrointi: ryhmien toteuma lähellä ennustetta
     for k in j["kalibrointi"]:
         assert abs(k["ennuste"] - k["toteutui"]) < 0.08
+
+
+def test_saa_lampo_lisaa_juoksuja():
+    d = en.laske()["saa"]
+    assert d and d["n"] > 1000
+    assert d["per_aste"] - d["per_aste_luottamus"] > 0          # lämpö lisää juoksuja (merkitsevästi)
+    L = {l["avain"]: l for l in d["luokat"]}
+    assert L["helle"]["havaittu"] > L["hyva"]["havaittu"] > L["kylma"]["havaittu"]

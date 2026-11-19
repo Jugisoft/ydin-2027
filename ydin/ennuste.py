@@ -56,14 +56,17 @@ def hae_kausi(kausi):
     tiimit = {}
     for t in maps.get("team", []):
         v = t["value"]; tiimit[t["id"]] = [v.get("sport_club_id") or t["id"], v.get("shorthand"), v.get("name")]
-    rivit = []
+    rivit, saa = [], {}
     for ph in (1, 2, 3):
         rivit += haku.joukkueet_otteluittain(ss, ph).get("data", [])
+        for x in haku.pelaajat_otteluittain(ss, ph).get("data", []):   # sää kirjataan ottelun pelaajariveille
+            saa[str(x["match_id"])] = [x.get("temperature"), x.get("windy"), x.get("rainy"), x.get("spectators")]
     d = {"kausi": kausi, "tiimit": {str(k): v for k, v in tiimit.items()},
          "ottelut": [{"id": o["id"], "pvm": o["date"], "koti": o["home"], "vieras": o["away"], "vaihe": o["series"]["phase"],
                       "tulos": (o.get("result") or {}).get("result_string"), "stadion": (o.get("stadium") or {}).get("name"),
                       "peruttu": bool(o.get("canceled"))} for o in ott],
-         "rivit": [[r.get(k) or 0 for k in KENTAT] for r in rivit], "kentat": KENTAT}
+         "rivit": [[r.get(k) or 0 for k in KENTAT] for r in rivit], "kentat": KENTAT,
+         "saa": saa, "saa_kentat": ["lampo", "tuuli", "sade", "yleiso"]}
     os.makedirs(POHJA, exist_ok=True)
     with gzip.open(_polku(kausi), "wt", encoding="utf-8") as f:
         json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
@@ -89,6 +92,9 @@ def lataa(kaudet_lista=None):
         for tid, (seura, lyh, nimi) in T.items():
             seurat[seura] = {"lyh": lyh, "nimi": nimi}
         om = {o["id"]: o for o in d["ottelut"]}
+        for mid, w in (d.get("saa") or {}).items():
+            if int(mid) in om:
+                om[int(mid)]["saa"] = w
         per = collections.defaultdict(list)
         for r in d["rivit"]:
             r = dict(zip(d["kentat"], r))
@@ -175,7 +181,8 @@ def kulje(ottelut, **par):
         if A.lg:
             eh, ev = odotus(A, h["team_id"], v["team_id"]), odotus(A, v["team_id"], h["team_id"])
             out.append({"id": o["id"], "kausi": o["kausi"], "vaihe": o["vaihe"], "koti": h["team_id"], "vieras": v["team_id"],
-                        "won": h["won"], "runs_h": h["runs"], "runs_v": v["runs"], "eh": eh, "ev": ev, "x": erot(eh, ev)})
+                        "won": h["won"], "runs_h": h["runs"], "runs_v": v["runs"], "eh": eh, "ev": ev, "x": erot(eh, ev),
+                        "saa": o.get("saa"), "kk": int(o["pvm"][5:7])})
         A.lisaa(h, o["vaihe"]); A.lisaa(v, o["vaihe"])
     return out, A
 
@@ -287,6 +294,68 @@ def luokat(ottelut, seurat, kausi):
     return {"kausi": kausi, "joukkueita": n, "rivit": out}
 
 
+SAA_LUOKAT = [  # Karin luokat (19.11.2026). Järjestys = tarkistusjärjestys.
+    ("karmea", "Karmea keli", "sade ja kylmä (≤ 12 °C) tai sade ja tuuli", lambda t, tu, sa: sa and (t <= 12 or tu)),
+    ("sade", "Sadekeli", "sataa", lambda t, tu, sa: sa),
+    ("helle", "Helle", "≥ 26 °C, pouta", lambda t, tu, sa: t >= 26),
+    ("kylma", "Kylmä keli", "≤ 13 °C, pouta", lambda t, tu, sa: t <= 13),
+    ("hyva", "Hyvä keli", "14–25 °C, pouta", lambda t, tu, sa: True),
+]
+
+def saavaikutus(rivit, sk):
+    """Sään vaikutus ottelun yhteisjuoksuihin mallin odotukseen nähden.
+    Lämpötilan kulmakerroin lasketaan kuukauden sisältä (kauden ajankohta vakioitu). Sade ja tuuli testataan
+    samassa mallissa; niiden omaa vaikutusta ei löytynyt (19.11.2026), joten luokan vaikutus = lämpötila."""
+    R = []
+    for r in rivit:
+        w = r.get("saa")
+        if not w or w[0] is None or w[0] < -5:
+            continue
+        t = max(5, min(32, w[0])); odo = sk * (r["eh"]["t3"] * r["eh"]["kot"] + r["ev"]["t3"] * r["ev"]["kot"])
+        R.append({"t": t, "tu": bool(w[1]), "sa": bool(w[2]), "kk": r["kk"], "ero": r["runs_h"] + r["runs_v"] - odo,
+                  "jk": r["runs_h"] + r["runs_v"], "odo": odo})
+    if len(R) < 200:
+        return None
+    # kuukauden sisäinen OLS: ero ~ lämpö + sade + tuuli
+    kk = collections.defaultdict(list)
+    for x in R:
+        kk[x["kk"]].append(x)
+    X, Y = [], []
+    for g in kk.values():
+        m = [sum(x[k] for x in g) / len(g) for k in ("t", "sa", "tu", "ero")]
+        for x in g:
+            X.append([x["t"] - m[0], x["sa"] - m[1], x["tu"] - m[2]]); Y.append(x["ero"] - m[3])
+    XtX = [[sum(a[i] * a[j] for a in X) for j in range(3)] for i in range(3)]
+    Xty = [sum(a[i] * y for a, y in zip(X, Y)) for i in range(3)]
+    b = _ratkaise(XtX, Xty)
+    e = [y - sum(bi * ai for bi, ai in zip(b, a)) for a, y in zip(X, Y)]
+    s2 = sum(v * v for v in e) / (len(e) - 3 - len(kk))
+    inv = [_ratkaise(XtX, [1.0 if i == j else 0.0 for i in range(3)]) for j in range(3)]
+    se = [math.sqrt(s2 * inv[i][i]) for i in range(3)]
+    ka_t = sum(x["t"] for x in R) / len(R); ka_jk = sum(x["jk"] for x in R) / len(R)
+    luokat = []
+    for avain, nimi, ehto, f in SAA_LUOKAT:
+        g = [x for x in R if f(x["t"], x["tu"], x["sa"]) and not any(ff(x["t"], x["tu"], x["sa"]) for a2, _, _, ff in SAA_LUOKAT[:[l[0] for l in SAA_LUOKAT].index(avain)])]
+        if not g:
+            continue
+        gt = sum(x["t"] for x in g) / len(g); havaittu = sum(x["ero"] for x in g) / len(g)
+        sd = math.sqrt(sum((x["ero"] - havaittu) ** 2 for x in g) / max(1, len(g) - 1))
+        luokat.append({"avain": avain, "nimi": nimi, "ehto": ehto, "n": len(g), "lampo": round(gt, 1),
+                       "juoksut": round(sum(x["jk"] for x in g) / len(g), 2), "odotus": round(sum(x["odo"] for x in g) / len(g), 2),
+                       "havaittu": round(havaittu, 2), "luottamus": round(1.96 * sd / math.sqrt(len(g)), 2),
+                       "vaikutus": round(b[0] * (gt - ka_t), 2)})
+    lampo = []
+    for a in range(6, 31, 3):
+        g = [x for x in R if a <= x["t"] < a + 3]
+        if len(g) >= 20:
+            m = sum(x["ero"] for x in g) / len(g); sd = math.sqrt(sum((x["ero"] - m) ** 2 for x in g) / (len(g) - 1))
+            lampo.append({"vali": f"{a}–{a + 2}", "keski": a + 1, "n": len(g), "ero": round(m, 2), "luottamus": round(1.96 * sd / math.sqrt(len(g)), 2)})
+    return {"n": len(R), "lampo_ka": round(ka_t, 1), "juoksut_ka": round(ka_jk, 2),
+            "per_aste": round(b[0], 4), "per_aste_luottamus": round(1.96 * se[0], 4),
+            "sade": round(b[1], 2), "sade_luottamus": round(1.96 * se[1], 2), "tuuli": round(b[2], 2), "tuuli_luottamus": round(1.96 * se[2], 2),
+            "luokat": luokat, "lampo": lampo}
+
+
 def kotietu(ottelut, seurat, rajaus=None):
     """Kotijoukkueen voitto% kausittain (kaikki vaiheet) ja joukkueittain kolmelta viimeiseltä kaudelta."""
     kk = collections.defaultdict(lambda: [0, 0, 0])
@@ -361,7 +430,8 @@ def laske():
                    "painoarvo": {s: round(c * sd[s], 4) for s, c in zip(MALLI, w[1:])},
                    "koti_juoksut": round(2 * kj / (kj + vj), 4), "vieras_juoksut": round(2 * vj / (kj + vj), 4)},
          "sarja": {s: round(v, 4) for s, v in A.lg.items()}, "tilastot": {s: TIL[s][2] for s in TIL},
-         "joukkueet": tj, "jalkitesti": jt, "luokat": luokat(ottelut, seurat, viimeisin), "kotietu": kotietu(ottelut, seurat, {s for _, s in joukkueet})}
+         "joukkueet": tj, "jalkitesti": jt, "luokat": luokat(ottelut, seurat, viimeisin), "kotietu": kotietu(ottelut, seurat, {s for _, s in joukkueet}),
+         "saa": saavaikutus(rivit, sk)}
     return d
 
 
