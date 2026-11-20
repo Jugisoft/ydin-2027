@@ -1,0 +1,193 @@
+<!--TYYLI-->
+<meta name="robots" content="noindex, nofollow">
+<style>
+/* Sisältö (20.11.2026): ennakkojen työjono kolmelle tekijälle. Sivu itse on julkinen kuori – sisältö tulee
+   YDIN Sisältö -tietokannasta vain kirjautuneille, joiden osoite on sallittujen listalla (RLS). Ei valikossa. */
+.lukko{max-width:440px;margin:6vh auto;text-align:center}
+.lukko .ik{width:54px;height:54px;border-radius:16px;background:var(--surface-2);display:grid;place-items:center;margin:0 auto 14px}
+.lukko h1{font:700 1.6rem var(--font-display);margin:0 0 6px}
+.lukko p{color:var(--muted);margin:0 0 18px;line-height:1.5}
+.lukko form{display:flex;gap:8px}
+.lukko input{flex:1;font:500 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg)}
+.btn{font:600 .85rem var(--font-display);letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:9px 13px;cursor:pointer;white-space:nowrap}
+.btn.p{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn:disabled{opacity:.5;cursor:default}
+.ilmo{margin-top:14px;font-size:.9rem;color:var(--muted)}
+.ylarivi{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.ylarivi .kuka{font-size:.85rem;color:var(--muted)}
+.suod{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);border-radius:12px;padding:4px}
+.tabs button{font:600 .8rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;border:0;background:none;color:var(--muted);padding:6px 11px;border-radius:9px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.suod input{font:500 .9rem var(--font-body);padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);min-width:180px}
+.jono{display:grid;grid-template-columns:minmax(260px,360px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.jono{grid-template-columns:minmax(0,1fr)}}
+.lista{display:flex;flex-direction:column;gap:8px;max-height:calc(100vh - 220px);overflow:auto;padding-right:4px}
+.kortti{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);cursor:pointer;text-align:left;font:inherit;color:inherit}
+.kortti:hover{border-color:var(--accent)}
+.kortti[aria-current="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.kortti b{display:block;font-size:.95rem;line-height:1.3}
+.kortti small{color:var(--muted);font-size:.78rem}
+.tila{display:inline-block;font:600 .62rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:2px 8px;margin-right:6px;vertical-align:1px}
+.tila.luonnos{background:var(--sand-soft);color:var(--fg)}
+.tila.tarkastettu{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--fg)}
+.tila.toimitettu{background:color-mix(in srgb,var(--win) 25%,transparent);color:var(--fg)}
+.tila.hylatty{background:color-mix(in srgb,var(--loss) 22%,transparent);color:var(--fg)}
+.tila.kiire{background:var(--loss);color:#fff}
+.tyhja{color:var(--muted);padding:30px 10px;text-align:center}
+.lukija .toiminnot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.lukija .toiminnot .vali{flex:1}
+.artikkeli{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,3vw,34px);max-width:780px;line-height:1.62;font-size:1.02rem}
+.artikkeli[contenteditable="true"]{outline:2px dashed var(--accent);outline-offset:4px}
+.artikkeli h1{font:800 clamp(1.5rem,3vw,2.1rem) var(--font-display);line-height:1.15;margin:0 0 10px}
+.artikkeli .ingressi{font-weight:600;font-size:1.08rem}
+.artikkeli h2{font:800 1.25rem var(--font-display);margin:28px 0 6px;text-transform:uppercase;letter-spacing:.02em}
+.artikkeli h3{font:700 1.05rem var(--font-display);margin:20px 0 4px}
+.artikkeli .koukku{font-weight:700;font-style:italic}
+.artikkeli ul{padding-left:1.2rem}
+.artikkeli .arvio{font-weight:700;margin-top:14px}
+.artikkeli .ottelubox{border:2px solid var(--fg);border-radius:12px;padding:12px 14px;margin:14px 0;font:700 .95rem var(--font-display);letter-spacing:.03em;text-transform:uppercase;display:grid;gap:2px}
+.artikkeli .ottelubox span{font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)}
+.artikkeli .vastuu{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;margin-top:22px}
+.spes{max-width:780px;margin-top:14px;border:1px dashed var(--loss);border-radius:var(--r);padding:14px 16px;background:color-mix(in srgb,var(--loss) 5%,var(--surface))}
+.spes h4{margin:0 0 8px;font:700 .75rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--loss)}
+.spes table{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+.spes td,.spes th{padding:6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.spes th{font:600 .66rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tyopoyta{max-width:780px;margin-top:14px;display:grid;gap:8px}
+.tyopoyta textarea{width:100%;min-height:70px;font:500 .92rem var(--font-body);padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);box-sizing:border-box}
+.tyopoyta .meta{font-size:.8rem;color:var(--muted)}
+details.datat{max-width:780px;margin-top:10px;font-size:.82rem}
+details.datat pre{white-space:pre-wrap;background:var(--surface-2);border-radius:10px;padding:10px;max-height:300px;overflow:auto}
+</style>
+<!--SISALTO-->
+<div id="kirjaudu" hidden>
+  <div class="lukko card">
+    <div class="ik"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+    <h1>Sisältö</h1>
+    <p>Suljettu työtila. Kirjaudu Google-tunnuksella.</p>
+    <button class="btn p" id="google" type="button" style="width:100%;padding:12px">Kirjaudu Googlella</button>
+    <div class="ilmo" id="kilmo"></div>
+  </div>
+</div>
+<div id="eioikeutta" hidden>
+  <div class="lukko card"><h1>Ei käyttöoikeutta</h1><p id="eiteksti"></p><button class="btn" id="ulos2" type="button">Kirjaudu ulos</button></div>
+</div>
+<div id="tyotila" hidden>
+  <div class="top"><div><h1>Sisältö</h1><p>Ennakot Pallomerelle · luonnos → tarkastettu → toimitettu</p></div>
+    <div class="ylarivi"><span class="kuka" id="kuka"></span><button class="btn" id="ulos" type="button">Kirjaudu ulos</button></div></div>
+  <div class="suod" style="margin-bottom:12px">
+    <div class="tabs" id="tyyppiTabs"></div>
+    <div class="tabs" id="tilaTabs"></div>
+    <input id="haku2" type="search" placeholder="Hae otsikosta tai joukkueesta">
+  </div>
+  <div class="jono">
+    <div class="lista" id="lista"></div>
+    <div class="lukija" id="lukija"><div class="tyhja">Valitse juttu listalta.</div></div>
+  </div>
+</div>
+<!--SKRIPTI-->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const CFG = __DATA__;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const sb = supabase.createClient(CFG.url, CFG.avain, {auth: {persistSession: true, detectSessionInUrl: true}});
+const TYYPIT = [["kaikki","Kaikki"],["kausiennakko","Kausiennakko"],["sarjaennakko","Sarjaennakot"],["otteluennakko","Otteluennakot"],["spesiaali","Spesiaalit"]];
+const TILAT = [["avoimet","Avoimet"],["luonnos","Luonnos"],["tarkastettu","Tarkastettu"],["toimitettu","Toimitettu"],["kaikki","Kaikki"]];
+const TILANIMI = {luonnos:"Luonnos", tarkastettu:"Tarkastettu", toimitettu:"Toimitettu", hylatty:"Hylätty"};
+let RIVIT = [], TY = "kaikki", TI = "avoimet", VALITTU = null, MUOKKAA = false;
+const pvm = s => s ? new Date(s).toLocaleDateString("fi-FI", {day:"numeric", month:"numeric", weekday:"short"}) : "";
+const tanaan = () => new Date().toISOString().slice(0,10);
+
+function nayta(tila){ for (const id of ["kirjaudu","eioikeutta","tyotila"]) $(id).hidden = id !== tila; }
+
+$("google").onclick = async () => {
+  const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + location.pathname } });
+  if (error) $("kilmo").textContent = "Virhe: " + error.message;
+};
+$("ulos").onclick = $("ulos2").onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+async function lataa(){
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { nayta("kirjaudu"); return; }
+  const { data: s, error: e1 } = await sb.from("sallitut").select("email,nimi");
+  const minä = (s || []).find(x => x.email === session.user.email.toLowerCase());
+  if (e1 || !minä) { $("eiteksti").textContent = `Osoitteella ${session.user.email} ei ole pääsyä tähän työtilaan.`; nayta("eioikeutta"); return; }
+  $("kuka").textContent = `${minä.nimi} · ${session.user.email}`;
+  const { data, error } = await sb.from("sisalto").select("id,tyyppi,otsikko,ingressi,html,spesiaalit,data,ottelu_id,ottelu_pvm,joukkueet,toimitus_pvm,status,kommentti,muokkaaja,luotu,paivitetty").order("ottelu_pvm", {ascending: true, nullsFirst: true});
+  if (error) { $("lista").innerHTML = `<div class="tyhja">Virhe: ${esc(error.message)}</div>`; nayta("tyotila"); return; }
+  RIVIT = data || []; nayta("tyotila"); piirraLista();
+  const h = decodeURIComponent(location.hash.slice(1)); if (h && RIVIT.find(r => r.id === h)) avaa(h);
+}
+sb.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_IN" || ev === "SIGNED_OUT") lataa(); });
+
+function suodatetut(){
+  const q = $("haku2").value.trim().toLowerCase();
+  return RIVIT.filter(r => (TY === "kaikki" || r.tyyppi === TY)
+    && (TI === "kaikki" || (TI === "avoimet" ? ["luonnos","tarkastettu"].includes(r.status) : r.status === TI))
+    && (!q || (r.otsikko + " " + (r.joukkueet || []).join(" ")).toLowerCase().includes(q)));
+}
+function tabit(el, lista, arvo, aseta){
+  el.innerHTML = lista.map(([k,n]) => `<button type="button" data-k="${k}" aria-pressed="${k===arvo}">${n}${k!=="kaikki"&&k!=="avoimet"?"":""}</button>`).join("");
+  el.onclick = e => { const b = e.target.closest("button"); if (b){ aseta(b.dataset.k); piirraLista(); } };
+}
+function piirraLista(){
+  tabit($("tyyppiTabs"), TYYPIT, TY, v => TY = v); tabit($("tilaTabs"), TILAT, TI, v => TI = v);
+  const R = suodatetut();
+  $("lista").innerHTML = R.length ? R.map(r => {
+    const kiire = r.status === "luonnos" && r.toimitus_pvm && r.toimitus_pvm <= tanaan();
+    return `<button class="kortti" type="button" data-id="${esc(r.id)}" aria-current="${r.id===VALITTU}">
+      <span class="tila ${r.status}">${TILANIMI[r.status]}</span>${kiire?'<span class="tila kiire">Kiireellinen</span>':""}
+      <b>${esc(r.otsikko)}</b><small>${esc(r.tyyppi)}${r.ottelu_pvm?" · ottelu "+pvm(r.ottelu_pvm):""}${r.toimitus_pvm?" · toimitus "+pvm(r.toimitus_pvm):""}</small></button>`; }).join("")
+    : `<div class="tyhja">Ei juttuja tällä rajauksella.</div>`;
+  $("lista").onclick = e => { const b = e.target.closest(".kortti"); if (b) avaa(b.dataset.id); };
+}
+$("haku2").oninput = piirraLista;
+
+function spesiaalit(r){
+  const S = r.spesiaalit; if (!S || !S.length) return "";
+  return `<div class="spes"><h4>Spesiaalit kertoimenlaskijalle – ei julkaisutekstiin</h4><table><thead><tr><th>Kohde</th><th>Arvio</th><th>Reilu kerroin</th><th>Peruste</th></tr></thead><tbody>${
+    S.map(s => `<tr><td><b>${esc(s.kohde)}</b></td><td>${s.todennakoisyys!=null?Math.round(100*s.todennakoisyys)+" %":"–"}</td><td>${s.kerroin!=null?String(s.kerroin).replace(".",","):"–"}</td><td>${esc(s.peruste||"")}</td></tr>`).join("")}</tbody></table>
+    <p class="hint" style="margin:8px 0 0;font-size:.8rem;color:var(--muted)">Kerroin = 1 / todennäköisyys, ilman marginaalia.</p></div>`;
+}
+function avaa(id){
+  VALITTU = id; MUOKKAA = false; const r = RIVIT.find(x => x.id === id); if (!r) return;
+  history.replaceState(null, "", "#" + encodeURIComponent(id)); piirraLista();
+  $("lukija").innerHTML = `<div class="toiminnot">
+      ${["luonnos","tarkastettu","toimitettu","hylatty"].map(s => `<button class="btn${r.status===s?" p":""}" type="button" data-tila="${s}">${TILANIMI[s]}</button>`).join("")}
+      <span class="vali"></span>
+      <button class="btn" type="button" id="muok">Muokkaa</button>
+      <button class="btn" type="button" id="kopioi">Kopioi</button>
+      <button class="btn" type="button" id="word">Lataa Word</button></div>
+    <article class="artikkeli" id="art">${r.html}</article>
+    ${spesiaalit(r)}
+    <div class="tyopoyta"><textarea id="kommentti" placeholder="Kommentti tiimille (ei näy jutussa)">${esc(r.kommentti||"")}</textarea>
+      <div class="ylarivi"><span class="meta">Viimeksi ${esc(r.muokkaaja||"Jarvis")} ${new Date(r.paivitetty).toLocaleString("fi-FI")}</span><button class="btn" type="button" id="tallenna">Tallenna kommentti</button></div></div>
+    ${r.data ? `<details class="datat"><summary>Luvut, joihin juttu perustuu</summary><pre>${esc(JSON.stringify(r.data, null, 1))}</pre></details>` : ""}`;
+  $("lukija").querySelectorAll("[data-tila]").forEach(b => b.onclick = () => paivita(r, {status: b.dataset.tila}));
+  $("tallenna").onclick = () => paivita(r, {kommentti: $("kommentti").value});
+  $("muok").onclick = () => {
+    if (!MUOKKAA){ MUOKKAA = true; $("art").contentEditable = "true"; $("art").focus(); $("muok").textContent = "Tallenna muutokset"; $("muok").classList.add("p"); }
+    else paivita(r, {html: $("art").innerHTML});
+  };
+  $("kopioi").onclick = async () => {
+    const html = $("art").innerHTML, txt = $("art").innerText;
+    try { await navigator.clipboard.write([new ClipboardItem({"text/html": new Blob([html], {type:"text/html"}), "text/plain": new Blob([txt], {type:"text/plain"})})]); }
+    catch { await navigator.clipboard.writeText(txt); }
+    $("kopioi").textContent = "Kopioitu ✓"; setTimeout(() => $("kopioi").textContent = "Kopioi", 1500);
+  };
+  $("word").onclick = () => {
+    const doc = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>${esc(r.otsikko)}</title>
+      <style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.4} h1{font-size:20pt} h2{font-size:14pt;text-transform:uppercase} h3{font-size:12pt} .ottelubox{border:1.5pt solid #000;padding:8pt;font-weight:bold} .vastuu{font-size:9pt;color:#555}</style></head><body>${$("art").innerHTML}</body></html>`;
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿", doc], {type: "application/msword"}));
+    a.download = `${(r.ottelu_pvm||r.luotu).slice(0,10)}_${r.id}.doc`; a.click(); URL.revokeObjectURL(a.href);
+  };
+}
+async function paivita(r, muutos){
+  const { data, error } = await sb.from("sisalto").update(muutos).eq("id", r.id).select().single();
+  if (error) { alert("Tallennus epäonnistui: " + error.message); return; }
+  Object.assign(r, data); avaa(r.id);
+}
+lataa();
+</script>

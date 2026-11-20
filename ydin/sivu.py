@@ -448,7 +448,7 @@ IKONIT = {
 # (avain, otsikko, tiedosto tai None = tulossa)
 VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("joukkueet", "Joukkueet", "joukkueet.html"),
            ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"), ("vire", "Vire", "vire.html"), ("kulku", "Ottelun kulku", "kulku.html"),
-           ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), ("siirtovaikutus", "Siirtovaikutus", "siirtovaikutus.html"), ("ennuste", "Otteluennuste", "ennuste.html"), None, ("sanasto", "Selitteet", "sanasto.html"), ("sisalto", "Sisältö", None)]
+           ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), ("siirtovaikutus", "Siirtovaikutus", "siirtovaikutus.html"), ("ennuste", "Otteluennuste", "ennuste.html"), None, ("sanasto", "Selitteet", "sanasto.html")]
 
 def nav(nykyinen):
     osat = []
@@ -533,6 +533,10 @@ def main():
     en = ennuste_data()
     if en:
         print("ennuste.html", rakenna("ennuste.template.html", en, "ennuste.html", "YDIN 2027 Otteluennuste", "ennuste", **yht))
+    # Sisältö: suljettu työtila (ei valikossa). Sivu on julkinen kuori; sisältö YDIN Sisältö -tietokannasta vain
+    # kirjautuneille sallituille (RLS). Julkaistava avain on tarkoitettu selaimeen – sillä ei pääse dataan ilman oikeutta.
+    print("sisalto.html", rakenna("sisalto.template.html", {"url": "https://oflffauxlpwrufkijxvl.supabase.co",
+          "avain": "sb_publishable_92je7YGANpmvcFTJrL54Gg_wEFJ7Rzb"}, "sisalto.html", "YDIN 2027 Sisältö", "sisalto", **yht))
     print("sanasto.html", rakenna("sanasto.template.html", {}, "sanasto.html", "YDIN 2027 Selitteet", "sanasto", **yht))
     print([(t["lyh"], t["P"]) for t in k["taulukko"]])
 
