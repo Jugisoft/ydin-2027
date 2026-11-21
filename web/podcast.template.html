@@ -1,0 +1,319 @@
+<!--TYYLI-->
+<meta name="robots" content="noindex, nofollow">
+<style>
+/* Podcast (21.11.2026): viikon nostot + vinkkilaatikko podcastin tekijöille. Ei valikossa – linkki Sisältö-sivulta.
+   Sivu on julkinen kuori; data YDIN Sisältö -tietokannasta vain podcast-oikeudella (RLS). Kuvat yksityisessä bucketissa. */
+.lukko{max-width:440px;margin:6vh auto;text-align:center}
+.lukko .ik{width:54px;height:54px;border-radius:16px;background:var(--surface-2);display:grid;place-items:center;margin:0 auto 14px}
+.lukko h1{font:700 1.6rem var(--font-display);margin:0 0 6px}
+.lukko p{color:var(--muted);margin:0 0 18px;line-height:1.5}
+.btn{font:600 .85rem var(--font-display);letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:9px 13px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
+.btn.p{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn:disabled{opacity:.5;cursor:default}
+.ilmo{margin-top:14px;font-size:.9rem;color:var(--muted)}
+.top h1{font:800 clamp(1.6rem,3vw,2.2rem) var(--font-display);margin:0}
+.top p{margin:2px 0 0;color:var(--muted)}
+.ylarivi{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.ylarivi .kuka{font-size:.85rem;color:var(--muted)}
+.tabs{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);border-radius:12px;padding:4px}
+.tabs button{font:600 .8rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;border:0;background:none;color:var(--muted);padding:7px 12px;border-radius:9px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.tabs .lkm{display:inline-block;min-width:18px;margin-left:6px;padding:0 5px;border-radius:999px;background:var(--loss);color:#fff;font-size:.7rem}
+.jono{display:grid;grid-template-columns:minmax(240px,320px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.jono{grid-template-columns:minmax(0,1fr)}}
+.lista{display:flex;flex-direction:column;gap:8px}
+.kortti{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);cursor:pointer;text-align:left;font:inherit;color:inherit}
+.kortti:hover{border-color:var(--accent)}
+.kortti[aria-current="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.kortti b{display:block;font-size:.95rem;line-height:1.3}
+.kortti small{color:var(--muted);font-size:.78rem}
+.chip{display:inline-block;font:600 .62rem var(--font-display);letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:2px 8px;margin-right:6px;vertical-align:1px;background:var(--surface-2);color:var(--fg)}
+.chip.uusi{background:var(--loss);color:#fff}
+.chip.luettu,.chip.listassa{background:color-mix(in srgb,var(--accent) 22%,transparent)}
+.chip.kaytetty,.chip.kasitelty{background:color-mix(in srgb,var(--win) 25%,transparent)}
+.chip.vahvistettu{background:color-mix(in srgb,var(--win) 25%,transparent)}
+.chip.kuultu{background:var(--sand-soft)}
+.chip.huhu{background:color-mix(in srgb,var(--loss) 20%,transparent)}
+.tyhja{color:var(--muted);padding:30px 10px;text-align:center}
+.toiminnot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.toiminnot .vali{flex:1}
+.artikkeli{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,3vw,32px);max-width:820px;line-height:1.6;font-size:1.02rem}
+.artikkeli h1{font:800 clamp(1.4rem,3vw,2rem) var(--font-display);line-height:1.15;margin:0 0 8px}
+.artikkeli h2{font:800 1.2rem var(--font-display);margin:26px 0 6px;text-transform:uppercase;letter-spacing:.02em}
+.artikkeli h3{font:700 1.05rem var(--font-display);margin:18px 0 4px}
+.artikkeli ul,.artikkeli ol{padding-left:1.2rem}
+.artikkeli hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+.artikkeli a{color:var(--accent)}
+.tyopoyta{max-width:820px;margin-top:14px;display:grid;gap:8px}
+textarea,input[type=text],input[type=url],select{width:100%;font:500 .95rem var(--font-body);padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg)}
+textarea{min-height:76px;resize:vertical}
+.meta{font-size:.8rem;color:var(--muted)}
+/* Vinkkilaatikko */
+.vinkkilomake{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:12px;max-width:820px}
+.vinkkilomake h2{font:800 1.15rem var(--font-display);margin:0;text-transform:uppercase;letter-spacing:.03em}
+.kuvaalue{border:2px dashed var(--line);border-radius:12px;padding:16px;text-align:center;color:var(--muted);cursor:pointer;display:grid;gap:8px;place-items:center}
+.kuvaalue:hover,.kuvaalue.yli{border-color:var(--accent);color:var(--fg)}
+.kuvaalue img{max-height:260px;border-radius:8px}
+.rivi2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.rivi2{grid-template-columns:1fr}}
+.seg{display:flex;gap:4px;background:var(--surface-2);border-radius:10px;padding:4px}
+.seg button{flex:1;border:0;background:none;padding:8px 6px;border-radius:8px;font:600 .8rem var(--font-display);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.label{font:600 .72rem var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block}
+.vinkit{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:14px}
+.vinkki{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.vinkki .kuva{display:block;background:var(--surface-2);aspect-ratio:4/3;cursor:zoom-in}
+.vinkki .kuva img{width:100%;height:100%;object-fit:cover;object-position:top}
+.vinkki .runko{padding:10px 12px;display:grid;gap:6px;flex:1;align-content:start}
+.vinkki p{margin:0;white-space:pre-wrap;line-height:1.4}
+.vinkki .ala{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 12px;border-top:1px solid var(--line)}
+.vinkki .ala select{width:auto;padding:5px 8px;font-size:.8rem}
+.vinkki .ala .vali{flex:1}
+.pieni{font-size:.75rem;padding:6px 9px}
+.iso{position:fixed;inset:0;background:rgba(0,0,0,.85);display:grid;place-items:center;z-index:50;cursor:zoom-out;padding:16px}
+.iso img{max-width:100%;max-height:100%;border-radius:8px}
+.viikonvinkit{max-width:820px;margin-top:14px}
+.viikonvinkit h4{font:700 .75rem var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+</style>
+<!--SISALTO-->
+<div id="kirjaudu" hidden>
+  <div class="lukko card">
+    <div class="ik"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+    <h1>Työtila</h1>
+    <p>Suljettu työtila. Kirjaudu Google-tunnuksella.</p>
+    <button class="btn p" id="google" type="button" style="width:100%;padding:12px">Kirjaudu Googlella</button>
+    <div class="ilmo" id="kilmo"></div>
+  </div>
+</div>
+<div id="eioikeutta" hidden>
+  <div class="lukko card"><h1>Ei käyttöoikeutta</h1><p id="eiteksti"></p><button class="btn" id="ulos2" type="button">Kirjaudu ulos</button></div>
+</div>
+<div id="tyotila" hidden>
+  <div class="top ylarivi"><div><h1>Podcast</h1><p>Viikon nostot sunnuntaiaamuisin · vinkkilaatikko koko viikon</p></div>
+    <div class="ylarivi"><a class="btn" id="ennakot" href="sisalto.html" hidden>Ennakot</a><span class="kuka" id="kuka"></span><button class="btn" id="ulos" type="button">Kirjaudu ulos</button></div></div>
+  <div><div class="tabs" id="paaTabs">
+    <button type="button" data-k="nostot" aria-pressed="true">Viikon nostot</button>
+    <button type="button" data-k="vinkit" aria-pressed="false">Vinkkilaatikko<span class="lkm" id="uusiaLkm" hidden></span></button>
+  </div></div>
+
+  <section id="nostot">
+    <div class="jono">
+      <div class="lista" id="nostoLista"></div>
+      <div id="lukija"><div class="tyhja">Valitse viikko listalta.</div></div>
+    </div>
+  </section>
+
+  <section id="vinkit" hidden>
+    <form class="vinkkilomake" id="lomake">
+      <h2>Uusi vinkki</h2>
+      <label class="kuvaalue" id="kuvaalue">
+        <input type="file" id="kuva" accept="image/*" hidden>
+        <span id="kuvateksti"><b>+ Lisää kuvakaappaus</b><br><small>Puhelimessa avaa kuvat · koneella voit myös liittää (Ctrl+V) tai raahata</small></span>
+        <img id="esikatselu" alt="" hidden>
+      </label>
+      <div><span class="label">Mistä on kyse? *</span>
+        <textarea id="teksti" required maxlength="2000" placeholder="Yksi rivi riittää: kuka, mitä, missä. Esim. ”KeKin Määttä treenaa jo Kempeleessä – seuran Insta-story”"></textarea></div>
+      <div class="rivi2">
+        <div><span class="label">Varmuus</span><div class="seg" id="varmuus">
+          <button type="button" data-k="vahvistettu" aria-pressed="false">Vahvistettu</button>
+          <button type="button" data-k="kuultu" aria-pressed="true">Kuultu</button>
+          <button type="button" data-k="huhu" aria-pressed="false">Huhu</button></div></div>
+        <div><span class="label">Joukkue / aihe</span><select id="joukkue"></select></div>
+      </div>
+      <div><span class="label">Linkki (vapaaehtoinen)</span><input type="url" id="linkki" placeholder="https://"></div>
+      <div class="ylarivi"><span class="meta" id="lahtoilmo">Vinkit näkyvät vain podcastin tekijöille. Sunnuntain koonti poimii viikon uudet.</span>
+        <button class="btn p" id="laheta" type="submit">Tallenna vinkki</button></div>
+    </form>
+    <div class="ylarivi" style="margin-top:18px;max-width:820px">
+      <div class="tabs" id="tilaTabs"></div>
+    </div>
+    <div class="vinkit" id="vinkkiLista"></div>
+  </section>
+</div>
+<div class="iso" id="iso" hidden><img id="isoKuva" alt=""></div>
+<!--SKRIPTI-->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const CFG = __DATA__;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const sb = supabase.createClient(CFG.url, CFG.avain, {auth: {persistSession: true, detectSessionInUrl: true}});
+const BUCKET = "podcast-vinkit";
+const JOUKKUEET = ["Yleinen", "IPV", "JoMa", "KeKi", "KiPa", "KPL", "Manse", "PattU", "PuMu", "SoJy", "Tahko", "Ura", "ViVe", "Ykköspesis", "Naiset", "Liitto / Superpesis", "Superpörssi"];
+const NOSTOTILA = {uusi: "Uusi", luettu: "Luettu", kaytetty: "Käytetty jaksossa"};
+const VINKKITILA = {uusi: "Uusi", listassa: "Listassa", kasitelty: "Käsitelty"};
+let MINA = null, NOSTOT = [], VINKIT = [], VALITTU = null, TILA = "auki", VARMUUS = "kuultu", KUVA = null;
+const URLIT = {};
+const pvm = s => new Date(s).toLocaleDateString("fi-FI", {weekday: "short", day: "numeric", month: "numeric"});
+const aika = s => new Date(s).toLocaleString("fi-FI", {day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit"});
+
+function nayta(t){ for (const id of ["kirjaudu","eioikeutta","tyotila"]) $(id).hidden = id !== t; }
+$("google").onclick = async () => {
+  const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + location.pathname } });
+  if (error) $("kilmo").textContent = "Virhe: " + error.message;
+};
+$("ulos").onclick = $("ulos2").onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+async function lataa(){
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { nayta("kirjaudu"); return; }
+  const { data: s } = await sb.from("sallitut").select("email,nimi,osiot");
+  MINA = (s || []).find(x => x.email === session.user.email.toLowerCase());
+  if (!MINA || !(MINA.osiot || []).includes("podcast")) { $("eiteksti").textContent = `Osoitteella ${session.user.email} ei ole pääsyä tähän työtilaan.`; nayta("eioikeutta"); return; }
+  $("kuka").textContent = MINA.nimi; $("ennakot").hidden = !(MINA.osiot || []).includes("sisalto");
+  nayta("tyotila");
+  await Promise.all([lataaNostot(), lataaVinkit()]);
+  const h = location.hash.slice(1);
+  if (h === "vinkit") vaihda("vinkit"); else if (NOSTOT.length) avaa(NOSTOT.find(n => n.id === h)?.id || NOSTOT[0].id);
+}
+sb.auth.onAuthStateChange(ev => { if (ev === "SIGNED_IN" || ev === "SIGNED_OUT") lataa(); });
+
+function vaihda(k){
+  $("paaTabs").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === k));
+  $("nostot").hidden = k !== "nostot"; $("vinkit").hidden = k !== "vinkit";
+  if (k === "vinkit") history.replaceState(null, "", "#vinkit");
+}
+$("paaTabs").onclick = e => { const b = e.target.closest("button"); if (b) vaihda(b.dataset.k); };
+
+/* ---------- Nostot ---------- */
+async function lataaNostot(){
+  const { data, error } = await sb.from("podcast_nostot").select("*").order("jakso_pvm", {ascending: false});
+  if (error) { $("nostoLista").innerHTML = `<div class="tyhja">Virhe: ${esc(error.message)}</div>`; return; }
+  NOSTOT = data || []; piirraNostot();
+}
+function piirraNostot(){
+  $("nostoLista").innerHTML = NOSTOT.length ? NOSTOT.map(n => `<button class="kortti" type="button" data-id="${esc(n.id)}" aria-current="${n.id===VALITTU}">
+      <span class="chip ${n.status}">${NOSTOTILA[n.status]}</span><b>${esc(n.otsikko)}</b><small>Jakso ${pvm(n.jakso_pvm)} · ${VINKIT.filter(v => v.noston_id === n.id).length} tekijöiden vinkkiä</small></button>`).join("")
+    : `<div class="tyhja">Ensimmäinen lista tulee sunnuntaiaamuna.</div>`;
+  $("nostoLista").onclick = e => { const b = e.target.closest(".kortti"); if (b) avaa(b.dataset.id); };
+}
+function avaa(id){
+  VALITTU = id; const n = NOSTOT.find(x => x.id === id); if (!n) return;
+  history.replaceState(null, "", "#" + encodeURIComponent(id)); piirraNostot();
+  const omat = VINKIT.filter(v => v.noston_id === id);
+  $("lukija").innerHTML = `<div class="toiminnot">
+      ${Object.entries(NOSTOTILA).map(([k,t]) => `<button class="btn${n.status===k?" p":""}" type="button" data-tila="${k}">${t}</button>`).join("")}
+      <span class="vali"></span><button class="btn" type="button" id="kopioi">Kopioi</button></div>
+    <article class="artikkeli" id="art">${n.html}</article>
+    ${omat.length ? `<div class="viikonvinkit"><h4>Tekijöiden vinkit tässä listassa</h4><div class="vinkit">${omat.map(vinkkiKortti).join("")}</div></div>` : ""}
+    <div class="tyopoyta"><textarea id="kommentti" placeholder="Muistiinpanot jaksoa varten (näkyy tekijöille)">${esc(n.kommentti||"")}</textarea>
+      <div class="ylarivi"><span class="meta">${n.muokkaaja ? "Viimeksi " + esc(n.muokkaaja) + " " + aika(n.paivitetty) : "Jarvis " + aika(n.luotu)}</span><button class="btn" type="button" id="tallenna">Tallenna muistiinpanot</button></div></div>`;
+  $("lukija").querySelectorAll("[data-tila]").forEach(b => b.onclick = () => paivitaNosto(n, {status: b.dataset.tila}));
+  $("tallenna").onclick = () => paivitaNosto(n, {kommentti: $("kommentti").value});
+  $("kopioi").onclick = async () => {
+    const html = $("art").innerHTML, txt = $("art").innerText;
+    try { await navigator.clipboard.write([new ClipboardItem({"text/html": new Blob([html], {type:"text/html"}), "text/plain": new Blob([txt], {type:"text/plain"})})]); }
+    catch { await navigator.clipboard.writeText(txt); }
+    $("kopioi").textContent = "Kopioitu ✓"; setTimeout(() => $("kopioi").textContent = "Kopioi", 1500);
+  };
+  kytkeVinkkiKortit($("lukija")); lataaKuvat($("lukija"));
+}
+async function paivitaNosto(n, muutos){
+  const { data, error } = await sb.from("podcast_nostot").update(muutos).eq("id", n.id).select().single();
+  if (error) { alert("Tallennus epäonnistui: " + error.message); return; }
+  Object.assign(n, data); avaa(n.id);
+}
+
+/* ---------- Vinkit ---------- */
+$("joukkue").innerHTML = JOUKKUEET.map(j => `<option>${esc(j)}</option>`).join("");
+$("varmuus").onclick = e => { const b = e.target.closest("button"); if (!b) return; VARMUUS = b.dataset.k;
+  $("varmuus").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); };
+
+async function pienenna(file){
+  // Pienennetään selaimessa (max 1600 px, JPEG) – kuvakaappaukset pysyvät luettavina mutta kevyinä.
+  try {
+    const bmp = await createImageBitmap(file);
+    const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.82));
+    return blob && blob.size < file.size ? blob : file;
+  } catch { return file; }
+}
+function asetaKuva(file){
+  if (!file || !file.type.startsWith("image/")) return;
+  KUVA = file; const e = $("esikatselu"); e.src = URL.createObjectURL(file); e.hidden = false;
+  $("kuvateksti").innerHTML = "<small>Vaihda kuva napauttamalla</small>";
+}
+$("kuva").onchange = e => asetaKuva(e.target.files[0]);
+const ka = $("kuvaalue");
+ka.ondragover = e => { e.preventDefault(); ka.classList.add("yli"); };
+ka.ondragleave = () => ka.classList.remove("yli");
+ka.ondrop = e => { e.preventDefault(); ka.classList.remove("yli"); asetaKuva(e.dataTransfer.files[0]); };
+document.addEventListener("paste", e => { if ($("vinkit").hidden) return; const f = [...(e.clipboardData?.files || [])].find(x => x.type.startsWith("image/")); if (f) asetaKuva(f); });
+
+$("lomake").onsubmit = async e => {
+  e.preventDefault();
+  const teksti = $("teksti").value.trim(); if (teksti.length < 3) { $("teksti").focus(); return; }
+  $("laheta").disabled = true; $("lahtoilmo").textContent = "Tallennetaan…";
+  let kuva = null;
+  if (KUVA) {
+    const blob = await pienenna(KUVA), paate = blob.type === "image/jpeg" ? "jpg" : (KUVA.name.split(".").pop() || "png").toLowerCase();
+    kuva = `${new Date().toISOString().slice(0,10)}/${crypto.randomUUID()}.${paate}`;
+    const { error } = await sb.storage.from(BUCKET).upload(kuva, blob, {contentType: blob.type || KUVA.type});
+    if (error) { $("lahtoilmo").textContent = "Kuvan lataus epäonnistui: " + error.message; $("laheta").disabled = false; return; }
+  }
+  const linkki = $("linkki").value.trim() || null;
+  const { error } = await sb.from("podcast_vinkit").insert({teksti, linkki, kuva, varmuus: VARMUUS, joukkue: $("joukkue").value});
+  $("laheta").disabled = false;
+  if (error) { $("lahtoilmo").textContent = "Tallennus epäonnistui: " + error.message; return; }
+  $("lomake").reset(); KUVA = null; $("esikatselu").hidden = true;
+  $("kuvateksti").innerHTML = "<b>+ Lisää kuvakaappaus</b><br><small>Puhelimessa avaa kuvat · koneella voit myös liittää (Ctrl+V) tai raahata</small>";
+  $("lahtoilmo").textContent = "Tallennettu ✓ Sunnuntain koonti poimii sen mukaan.";
+  await lataaVinkit();
+};
+
+async function lataaVinkit(){
+  const { data, error } = await sb.from("podcast_vinkit").select("*").order("luotu", {ascending: false});
+  if (error) { $("vinkkiLista").innerHTML = `<div class="tyhja">Virhe: ${esc(error.message)}</div>`; return; }
+  VINKIT = data || [];
+  const u = VINKIT.filter(v => v.tila === "uusi").length; $("uusiaLkm").textContent = u; $("uusiaLkm").hidden = !u;
+  piirraVinkit(); if (NOSTOT.length) piirraNostot();
+}
+function piirraVinkit(){
+  const T = [["auki","Avoimet"],["uusi","Uudet"],["listassa","Listassa"],["kasitelty","Käsitellyt"],["kaikki","Kaikki"]];
+  $("tilaTabs").innerHTML = T.map(([k,n]) => `<button type="button" data-k="${k}" aria-pressed="${k===TILA}">${n}</button>`).join("");
+  $("tilaTabs").onclick = e => { const b = e.target.closest("button"); if (b) { TILA = b.dataset.k; piirraVinkit(); } };
+  const R = VINKIT.filter(v => TILA === "kaikki" || (TILA === "auki" ? v.tila !== "kasitelty" : v.tila === TILA));
+  $("vinkkiLista").innerHTML = R.length ? R.map(vinkkiKortti).join("") : `<div class="tyhja">Ei vinkkejä tällä rajauksella.</div>`;
+  kytkeVinkkiKortit($("vinkkiLista")); lataaKuvat($("vinkkiLista"));
+}
+function vinkkiKortti(v){
+  let host = ""; try { host = v.linkki ? new URL(v.linkki).hostname.replace(/^www\./, "") : ""; } catch {}
+  return `<div class="vinkki" data-id="${v.id}">
+    ${v.kuva ? `<a class="kuva" data-kuva="${esc(v.kuva)}"><img alt="Kuvakaappaus" loading="lazy"></a>` : ""}
+    <div class="runko"><div><span class="chip ${v.varmuus}">${esc(v.varmuus)}</span><span class="chip">${esc(v.joukkue || "Yleinen")}</span></div>
+      <p>${esc(v.teksti)}</p>
+      ${v.linkki ? `<a class="meta" href="${esc(v.linkki)}" target="_blank" rel="noopener">${esc(host || v.linkki)} ↗</a>` : ""}
+      <span class="meta">${esc(v.lahettaja || "")} · ${aika(v.luotu)}</span></div>
+    <div class="ala"><span class="chip ${v.tila}">${VINKKITILA[v.tila]}</span><span class="vali"></span>
+      <select data-tila aria-label="Tila">${Object.entries(VINKKITILA).map(([k,t]) => `<option value="${k}"${v.tila===k?" selected":""}>${t}</option>`).join("")}</select>
+      <button class="btn pieni" type="button" data-poista>Poista</button></div></div>`;
+}
+function kytkeVinkkiKortit(el){
+  el.querySelectorAll(".vinkki").forEach(k => {
+    const v = VINKIT.find(x => x.id === k.dataset.id); if (!v) return;
+    k.querySelector("[data-tila]").onchange = async e => {
+      const { error } = await sb.from("podcast_vinkit").update({tila: e.target.value}).eq("id", v.id);
+      if (error) alert("Tallennus epäonnistui: " + error.message); else { v.tila = e.target.value; await lataaVinkit(); if (VALITTU && !$("nostot").hidden) avaa(VALITTU); }
+    };
+    k.querySelector("[data-poista]").onclick = async () => {
+      if (!confirm("Poistetaanko vinkki" + (v.kuva ? " ja kuva" : "") + "?")) return;
+      if (v.kuva) await sb.storage.from(BUCKET).remove([v.kuva]);
+      const { error } = await sb.from("podcast_vinkit").delete().eq("id", v.id);
+      if (error) alert("Poisto epäonnistui: " + error.message); else await lataaVinkit();
+    };
+  });
+}
+async function lataaKuvat(el){
+  const a = [...el.querySelectorAll("[data-kuva]")], puuttuu = [...new Set(a.map(x => x.dataset.kuva).filter(p => !URLIT[p]))];
+  if (puuttuu.length) {
+    const { data } = await sb.storage.from(BUCKET).createSignedUrls(puuttuu, 3600);
+    (data || []).forEach(d => { if (d.signedUrl) URLIT[d.path] = d.signedUrl; });
+  }
+  a.forEach(x => { const u = URLIT[x.dataset.kuva]; if (u) { x.querySelector("img").src = u; x.onclick = () => { $("isoKuva").src = u; $("iso").hidden = false; }; } });
+}
+$("iso").onclick = () => $("iso").hidden = true;
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("iso").hidden = true; });
+lataa();
+</script>

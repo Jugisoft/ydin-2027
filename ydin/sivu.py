@@ -537,6 +537,10 @@ def main():
     # kirjautuneille sallituille (RLS). Julkaistava avain on tarkoitettu selaimeen – sillä ei pääse dataan ilman oikeutta.
     print("sisalto.html", rakenna("sisalto.template.html", {"url": "https://oflffauxlpwrufkijxvl.supabase.co",
           "avain": "sb_publishable_92je7YGANpmvcFTJrL54Gg_wEFJ7Rzb"}, "sisalto.html", "YDIN 2027 Sisältö", "sisalto", **yht))
+    # Podcast (21.11.2026): viikon nostot + vinkkilaatikko podcastin tekijöille. Ei omaa valikkokohtaa (linkki Sisältö-sivulta),
+    # sama YDIN Sisältö -tietokanta, oikeus osiokohtaisesti (sallitut.osiot sisältää 'podcast').
+    print("podcast.html", rakenna("podcast.template.html", {"url": "https://oflffauxlpwrufkijxvl.supabase.co",
+          "avain": "sb_publishable_92je7YGANpmvcFTJrL54Gg_wEFJ7Rzb"}, "podcast.html", "YDIN 2027 Työtila", "sisalto", **yht))
     print("sanasto.html", rakenna("sanasto.template.html", {}, "sanasto.html", "YDIN 2027 Selitteet", "sanasto", **yht))
     print([(t["lyh"], t["P"]) for t in k["taulukko"]])
 

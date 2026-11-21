@@ -9,7 +9,7 @@
 .lukko p{color:var(--muted);margin:0 0 18px;line-height:1.5}
 .lukko form{display:flex;gap:8px}
 .lukko input{flex:1;font:500 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg)}
-.btn{font:600 .85rem var(--font-display);letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:9px 13px;cursor:pointer;white-space:nowrap}
+.btn{text-decoration:none;font:600 .85rem var(--font-display);letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:9px 13px;cursor:pointer;white-space:nowrap}
 .btn.p{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn:disabled{opacity:.5;cursor:default}
 .ilmo{margin-top:14px;font-size:.9rem;color:var(--muted)}
@@ -75,7 +75,7 @@ details.datat pre{white-space:pre-wrap;background:var(--surface-2);border-radius
 </div>
 <div id="tyotila" hidden>
   <div class="top"><div><h1>Sisältö</h1><p>Ennakot Pallomerelle · luonnos → tarkastettu → toimitettu</p></div>
-    <div class="ylarivi"><span class="kuka" id="kuka"></span><button class="btn" id="ulos" type="button">Kirjaudu ulos</button></div></div>
+    <div class="ylarivi"><a class="btn" id="podcastLinkki" href="podcast.html" hidden>Podcast</a><span class="kuka" id="kuka"></span><button class="btn" id="ulos" type="button">Kirjaudu ulos</button></div></div>
   <div class="suod" style="margin-bottom:12px">
     <div class="tabs" id="tyyppiTabs"></div>
     <div class="tabs" id="tilaTabs"></div>
@@ -111,10 +111,12 @@ $("ulos").onclick = $("ulos2").onclick = async () => { await sb.auth.signOut(); 
 async function lataa(){
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { nayta("kirjaudu"); return; }
-  const { data: s, error: e1 } = await sb.from("sallitut").select("email,nimi");
+  const { data: s, error: e1 } = await sb.from("sallitut").select("email,nimi,osiot");
   const minä = (s || []).find(x => x.email === session.user.email.toLowerCase());
-  if (e1 || !minä) { $("eiteksti").textContent = `Osoitteella ${session.user.email} ei ole pääsyä tähän työtilaan.`; nayta("eioikeutta"); return; }
-  $("kuka").textContent = `${minä.nimi} · ${session.user.email}`;
+  const osiot = (minä && minä.osiot) || [];
+  if (!e1 && minä && !osiot.includes("sisalto") && osiot.includes("podcast")) { location.replace("podcast.html"); return; }
+  if (e1 || !minä || !osiot.includes("sisalto")) { $("eiteksti").textContent = `Osoitteella ${session.user.email} ei ole pääsyä tähän työtilaan.`; nayta("eioikeutta"); return; }
+  $("kuka").textContent = `${minä.nimi} · ${session.user.email}`; $("podcastLinkki").hidden = !osiot.includes("podcast");
   const { data, error } = await sb.from("sisalto").select("id,tyyppi,otsikko,ingressi,html,spesiaalit,data,ottelu_id,ottelu_pvm,joukkueet,toimitus_pvm,status,kommentti,muokkaaja,luotu,paivitetty").order("ottelu_pvm", {ascending: true, nullsFirst: true});
   if (error) { $("lista").innerHTML = `<div class="tyhja">Virhe: ${esc(error.message)}</div>`; nayta("tyotila"); return; }
   RIVIT = data || []; nayta("tyotila"); piirraLista();
