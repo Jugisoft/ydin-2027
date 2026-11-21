@@ -444,11 +444,12 @@ IKONIT = {
     "ennuste": '<path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
     "sanasto": '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M10 8h5"/>',
     "sisalto": '<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h6"/>',
+    "podcast": '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/>',
 }
 # (avain, otsikko, tiedosto tai None = tulossa)
 VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("joukkueet", "Joukkueet", "joukkueet.html"),
            ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"), ("vire", "Vire", "vire.html"), ("kulku", "Ottelun kulku", "kulku.html"),
-           ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), ("siirtovaikutus", "Siirtovaikutus", "siirtovaikutus.html"), ("ennuste", "Otteluennuste", "ennuste.html"), None, ("sanasto", "Selitteet", "sanasto.html"), ("sisalto", "Sisältö", "sisalto.html")]
+           ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), ("siirtovaikutus", "Siirtovaikutus", "siirtovaikutus.html"), ("ennuste", "Otteluennuste", "ennuste.html"), None, ("sanasto", "Selitteet", "sanasto.html"), ("sisalto", "Sisältö", "sisalto.html"), ("podcast", "Podcast", "podcast.html")]
 
 def nav(nykyinen):
     osat = []
@@ -537,10 +538,10 @@ def main():
     # kirjautuneille sallituille (RLS). Julkaistava avain on tarkoitettu selaimeen – sillä ei pääse dataan ilman oikeutta.
     print("sisalto.html", rakenna("sisalto.template.html", {"url": "https://oflffauxlpwrufkijxvl.supabase.co",
           "avain": "sb_publishable_92je7YGANpmvcFTJrL54Gg_wEFJ7Rzb"}, "sisalto.html", "YDIN 2027 Sisältö", "sisalto", **yht))
-    # Podcast (21.11.2026): viikon nostot + vinkkilaatikko podcastin tekijöille. Ei omaa valikkokohtaa (linkki Sisältö-sivulta),
+    # Podcast (21.11.2026): viikon nostot + vinkkilaatikko podcastin tekijöille. Valikossa Jugin pyynnöstä 21.11.2026,
     # sama YDIN Sisältö -tietokanta, oikeus osiokohtaisesti (sallitut.osiot sisältää 'podcast').
     print("podcast.html", rakenna("podcast.template.html", {"url": "https://oflffauxlpwrufkijxvl.supabase.co",
-          "avain": "sb_publishable_92je7YGANpmvcFTJrL54Gg_wEFJ7Rzb"}, "podcast.html", "YDIN 2027 Työtila", "sisalto", **yht))
+          "avain": "sb_publishable_92je7YGANpmvcFTJrL54Gg_wEFJ7Rzb"}, "podcast.html", "YDIN 2027 Podcast", "podcast", **yht))
     print("sanasto.html", rakenna("sanasto.template.html", {}, "sanasto.html", "YDIN 2027 Selitteet", "sanasto", **yht))
     print([(t["lyh"], t["P"]) for t in k["taulukko"]])
 
