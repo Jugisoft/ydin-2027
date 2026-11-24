@@ -1,7 +1,7 @@
 {
  "kausi": 2027,
  "pohja": 2026,
- "seuranta_paivitetty": "22.11.2026 klo 18.00",
+ "seuranta_paivitetty": "23.11.2026 klo 19.40",
  "parametrit": {
   "kerroin_C": 1.02,
   "korvaustaso": 0.278,
@@ -2284,6 +2284,7 @@
    ],
    "lahteneet": [],
    "ilman_dataa": [
+    "Aatu Savelainen",
     "Eetu Isohanni",
     "Joe Vartiamäki",
     "Miika Hangasmaa",
@@ -2291,7 +2292,7 @@
     "Jussi Partanen",
     "Leevi Vuollet"
    ],
-   "sopimuksia": 17,
+   "sopimuksia": 18,
    "tyhjia_paikkoja": 1
   }
  ],
