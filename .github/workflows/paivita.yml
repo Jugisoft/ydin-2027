@@ -36,6 +36,9 @@ jobs:
           python -m ydin.tapahtumat ${{ github.event.inputs.kausi && format('--kausi {0}', github.event.inputs.kausi) || '' }}
           python -m ydin.lyonnit ${{ github.event.inputs.kausi && format('--kausi {0}', github.event.inputs.kausi) || '' }}
           python -m ydin.kulku ${{ github.event.inputs.kausi && format('--kausi {0}', github.event.inputs.kausi) || '' }}
+      - name: Talvisuper (otteluohjelma ja tulokset, 1 haku)
+        continue-on-error: true
+        run: python -m ydin.talvi
       - run: python -m ydin.historia
       - run: python -m ydin.lukkarit
       - name: Siirtoseuranta KPL Keskuksen kautta (Jarvis, 30.10.2026)

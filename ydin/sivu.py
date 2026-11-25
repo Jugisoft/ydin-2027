@@ -409,6 +409,17 @@ def ennuste_data():
         return None
     return {"e": e, "logot": lue_kuvat()["logot"]}
 
+def talvi_data():
+    """Talvisuper-sivu: ydin/talvi.py:n tulos (uusin talvi_<kausi>.json) + seuralogot (pesistulokset.fi:n logo, jos YDINin oma puuttuu)."""
+    import glob
+    tiedostot = sorted(glob.glob(os.path.join(OUT, "talvi_*.json")))
+    if not tiedostot:
+        return None
+    with open(tiedostot[-1], encoding="utf-8") as f:
+        d = json.load(f)
+    d["logot"] = {**d.get("logot", {}), **lue_kuvat()["logot"]}
+    return d
+
 def kulku_data():
     """Ottelun kulku -sivu: ydin/kulku.py:n tulos + joukkuelyhenteet ja logot."""
     try:
@@ -437,6 +448,7 @@ IKONIT = {
     "joukkueet": '<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/>',
     "tulostaulut": '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',
     "vire": '<path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/>',
+    "talvi": '<path d="M12 2v20M4.9 6.5l14.2 11M4.9 17.5l14.2-11"/><path d="M9.5 3.5L12 6l2.5-2.5M9.5 20.5L12 18l2.5 2.5"/>',
     "kulku": '<path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/>',
     "vertailu": '<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>',
     "lukkarit": '<circle cx="12" cy="6" r="3"/><path d="M12 9v6M8 21l4-6 4 6M6 12l6-2 6 2"/>',
@@ -448,7 +460,7 @@ IKONIT = {
 }
 # (avain, otsikko, tiedosto tai None = tulossa)
 VALIKKO = [("koti", "Koti", "index.html"), ("kausi", "Kausi 2026", "kausi-2026.html"), ("joukkueet", "Joukkueet", "joukkueet.html"),
-           ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"), ("vire", "Vire", "vire.html"), ("kulku", "Ottelun kulku", "kulku.html"),
+           ("pelaajat", "Pelaajat", "pelaajat.html"), ("ottelut", "Ottelut", "ottelut.html"), ("talvi", "Talvisuper", "talvi.html"), ("vire", "Vire", "vire.html"), ("kulku", "Ottelun kulku", "kulku.html"),
            ("lukkarit", "Lukkarit", "lukkarit.html"), ("vertailu", "Vertailu", "vertailu.html"), ("tulostaulut", "Tulostaulut", "tulostaulut.html"), ("siirtovaikutus", "Siirtovaikutus", "siirtovaikutus.html"), ("ennuste", "Otteluennuste", "ennuste.html"), None, ("sanasto", "Selitteet", "sanasto.html"), ("sisalto", "Sisältö", "sisalto.html"), ("podcast", "Podcast", "podcast.html")]
 
 def nav(nykyinen):
@@ -521,6 +533,9 @@ def main():
     print("pelaajat.html", rakenna("pelaajat.template.html", pd, "pelaajat.html", "YDIN 2027 Pelaajat", "pelaajat", **yht))
     print("ottelut.html", rakenna("ottelut.template.html", ottelut_data(), "ottelut.html", "YDIN 2027 Ottelut", "ottelut", **yht))
     print("tulostaulut.html", rakenna("tulostaulut.template.html", tulostaulut_data({h[0] for h in haku}), "tulostaulut.html", "YDIN 2027 Tulostaulut", "tulostaulut", **yht))
+    tv = talvi_data()
+    if tv:
+        print("talvi.html", rakenna("talvi.template.html", tv, "talvi.html", "YDIN 2027 Talvisuper", "talvi", **yht))
     kl = kulku_data()
     if kl:
         kopioi_kulku()

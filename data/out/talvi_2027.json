@@ -1,0 +1,465 @@
+{
+ "kausi": 2027,
+ "logot": {
+  "IPV": "https://www.pesistulokset.fi/storage/seuralogot/867dc6e796334c53156deaa222f4b206-icon.png",
+  "JoMa": "https://www.pesistulokset.fi/storage/seuralogot/49bd3e15380ee58de7e1cfc5653da795-3-icon.png",
+  "KPL": "https://www.pesistulokset.fi/storage/seuralogot/2db9c313c5969147119829397001d3e4-icon.png",
+  "KeKi": "https://www.pesistulokset.fi/storage/seuralogot/a25ab4b04c06d30f515d1ec7af722295-2-icon.png",
+  "KiPa": "https://www.pesistulokset.fi/storage/seuralogot/7dd7aa4f7b71242de1e18154e861c2ab-icon.png",
+  "Manse": "https://www.pesistulokset.fi/storage/seuralogot/e609c2d3c78f7f70cb616de116ade091-icon.png",
+  "PattU": "https://www.pesistulokset.fi/storage/seuralogot/6e435bca9ea55f2d17de3fda7799327e-icon.png",
+  "PuMu": "https://www.pesistulokset.fi/storage/seuralogot/d0902e1e96c8f98bde340d8b7847257a-icon.png",
+  "SoJy": "https://www.pesistulokset.fi/storage/seuralogot/a97217225ed376bfa9c86cbdb4025b87-3-icon.png",
+  "Tahko": "https://www.pesistulokset.fi/storage/seuralogot/d19cb5ca592dea89749c2c2223414b55-1-icon.png",
+  "Ura": "https://www.pesistulokset.fi/storage/seuralogot/kannuksen-ura-logo-musta-1-icon.png",
+  "ViVe": "https://www.pesistulokset.fi/storage/seuralogot/2a5c10a7d245d83f666f5422aae63628-icon.png"
+ },
+ "ottelut": [
+  {
+   "halli": "Ouluhalli",
+   "id": 147623,
+   "koti": "KeKi",
+   "lohko": "Lohko A",
+   "pvm": "2027-01-06T17:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "SoJy"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147624,
+   "koti": "JoMa",
+   "lohko": "Lohko A",
+   "pvm": "2027-01-09T11:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "KiPa"
+  },
+  {
+   "halli": "Ukonniemi-areena, Imatra",
+   "id": 147609,
+   "koti": "IPV",
+   "lohko": "Lohko B",
+   "pvm": "2027-01-09T13:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "KPL"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147626,
+   "koti": "PattU",
+   "lohko": "Lohko A",
+   "pvm": "2027-01-09T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "Ura"
+  },
+  {
+   "halli": "Tampereen Messu- ja Urheilukeskus",
+   "id": 147608,
+   "koti": "Manse",
+   "lohko": "Lohko B",
+   "pvm": "2027-01-09T18:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "PuMu"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147625,
+   "koti": "PattU",
+   "lohko": "Lohko A",
+   "pvm": "2027-01-10T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "SoJy"
+  },
+  {
+   "halli": "Keravan ja Sipoon Energia-areena",
+   "id": 147610,
+   "koti": "PuMu",
+   "lohko": "Lohko B",
+   "pvm": "2027-01-16T11:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "Tahko"
+  },
+  {
+   "halli": "Tampereen Messu- ja Urheilukeskus",
+   "id": 147611,
+   "koti": "Manse",
+   "lohko": "Lohko B",
+   "pvm": "2027-01-16T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "IPV"
+  },
+  {
+   "halli": "Seinäjoki Areena",
+   "id": 147612,
+   "koti": "ViVe",
+   "lohko": "Lohko B",
+   "pvm": "2027-01-17T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "KPL"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147628,
+   "koti": "KiPa",
+   "lohko": "Lohko A",
+   "pvm": "2027-02-06T11:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "Ura"
+  },
+  {
+   "halli": "Seinäjoki Areena",
+   "id": 147613,
+   "koti": "Tahko",
+   "lohko": "Lohko B",
+   "pvm": "2027-02-06T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "Manse"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147627,
+   "koti": "JoMa",
+   "lohko": "Lohko A",
+   "pvm": "2027-02-06T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "KeKi"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147630,
+   "koti": "JoMa",
+   "lohko": "Lohko A",
+   "pvm": "2027-02-07T10:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "Ura"
+  },
+  {
+   "halli": "Seinäjoki Areena",
+   "id": 147614,
+   "koti": "Tahko",
+   "lohko": "Lohko B",
+   "pvm": "2027-02-07T11:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "ViVe"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147629,
+   "koti": "KiPa",
+   "lohko": "Lohko A",
+   "pvm": "2027-02-07T13:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "KeKi"
+  },
+  {
+   "halli": "Ukonniemi-areena, Imatra",
+   "id": 147615,
+   "koti": "Tahko",
+   "lohko": "Lohko B",
+   "pvm": "2027-02-13T11:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "IPV"
+  },
+  {
+   "halli": "Ouluhalli",
+   "id": 147631,
+   "koti": "KeKi",
+   "lohko": "Lohko A",
+   "pvm": "2027-02-13T11:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "PattU"
+  },
+  {
+   "halli": "Kuopio-halli",
+   "id": 147632,
+   "koti": "SoJy",
+   "lohko": "Lohko A",
+   "pvm": "2027-02-13T14:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "KiPa"
+  },
+  {
+   "halli": "Ukonniemi-areena, Imatra",
+   "id": 147616,
+   "koti": "KPL",
+   "lohko": "Lohko B",
+   "pvm": "2027-02-13T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "PuMu"
+  },
+  {
+   "halli": "Kuopio-halli",
+   "id": 147633,
+   "koti": "Ura",
+   "lohko": "Lohko A",
+   "pvm": "2027-02-14T12:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "SoJy"
+  },
+  {
+   "halli": "Keravan ja Sipoon Energia-areena",
+   "id": 147617,
+   "koti": "PuMu",
+   "lohko": "Lohko B",
+   "pvm": "2027-02-20T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "ViVe"
+  },
+  {
+   "halli": "Keravan ja Sipoon Energia-areena",
+   "id": 147618,
+   "koti": "Manse",
+   "lohko": "Lohko B",
+   "pvm": "2027-02-21T11:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "ViVe"
+  },
+  {
+   "halli": "Tampereen Messu- ja Urheilukeskus",
+   "id": 147619,
+   "koti": "Manse",
+   "lohko": "Lohko B",
+   "pvm": "2027-02-27T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "KPL"
+  },
+  {
+   "halli": "Tampereen Messu- ja Urheilukeskus",
+   "id": 147620,
+   "koti": "ViVe",
+   "lohko": "Lohko B",
+   "pvm": "2027-02-28T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "IPV"
+  },
+  {
+   "halli": "Ukonniemi-areena, Imatra",
+   "id": 147622,
+   "koti": "KPL",
+   "lohko": "Lohko B",
+   "pvm": "2027-03-06T11:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "Tahko"
+  },
+  {
+   "halli": "Ukonniemi-areena, Imatra",
+   "id": 147621,
+   "koti": "IPV",
+   "lohko": "Lohko B",
+   "pvm": "2027-03-06T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "PuMu"
+  },
+  {
+   "halli": "Kempele Areena",
+   "id": 147635,
+   "koti": "KeKi",
+   "lohko": "Lohko A",
+   "pvm": "2027-03-06T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "Ura"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147634,
+   "koti": "JoMa",
+   "lohko": "Lohko A",
+   "pvm": "2027-03-06T16:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "PattU"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147636,
+   "koti": "KiPa",
+   "lohko": "Lohko A",
+   "pvm": "2027-03-07T11:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "PattU"
+  },
+  {
+   "halli": "Joensuu Areena",
+   "id": 147637,
+   "koti": "JoMa",
+   "lohko": "Lohko A",
+   "pvm": "2027-03-07T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "SoJy"
+  }
+ ],
+ "paivitetty": "2026-11-25T11:28",
+ "seasonSeries": 3745,
+ "taulukot": {
+  "Lohko A": [
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "JoMa"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "KeKi"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "KiPa"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "PattU"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "SoJy"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "Ura"
+   }
+  ],
+  "Lohko B": [
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "IPV"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "KPL"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "Manse"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "PuMu"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "Tahko"
+   },
+   {
+    "H": 0,
+    "J": 0,
+    "JH": 0,
+    "JV": 0,
+    "O": 0,
+    "V": 0,
+    "jk": "ViVe"
+   }
+  ]
+ }
+}
