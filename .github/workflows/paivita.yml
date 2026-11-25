@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 15
     environment:
       name: github-pages
-      url: ${{ steps.julkaisu.outputs.page_url }}
+      url: ${{ steps.julkaisu.outputs.page_url || steps.julkaisu2.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -63,4 +63,11 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with: { path: site }
       - id: julkaisu
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+      # GitHub ei aina löydä juuri ladattua pakettia heti ("Found 0 artifact(s)") – uusi yritys tauon jälkeen (Jarvis 25.11.2026)
+      - if: steps.julkaisu.outcome == 'failure'
+        run: sleep 45
+      - id: julkaisu2
+        if: steps.julkaisu.outcome == 'failure'
         uses: actions/deploy-pages@v4
