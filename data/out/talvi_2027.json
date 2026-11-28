@@ -203,17 +203,6 @@
    "vieras": "PattU"
   },
   {
-   "halli": "Kuopio-halli",
-   "id": 147632,
-   "koti": "SoJy",
-   "lohko": "Lohko A",
-   "pvm": "2027-02-13T14:00:00.000000Z",
-   "tba": false,
-   "tulos": null,
-   "vaihe": "Alkulohkot",
-   "vieras": "KiPa"
-  },
-  {
    "halli": "Ukonniemi-areena, Imatra",
    "id": 147616,
    "koti": "KPL",
@@ -223,6 +212,17 @@
    "tulos": null,
    "vaihe": "Alkulohkot",
    "vieras": "PuMu"
+  },
+  {
+   "halli": "Kuopio-halli",
+   "id": 147632,
+   "koti": "SoJy",
+   "lohko": "Lohko A",
+   "pvm": "2027-02-13T15:00:00.000000Z",
+   "tba": false,
+   "tulos": null,
+   "vaihe": "Alkulohkot",
+   "vieras": "KiPa"
   },
   {
    "halli": "Kuopio-halli",
@@ -346,7 +346,7 @@
    "vieras": "SoJy"
   }
  ],
- "paivitetty": "2026-11-27T02:21",
+ "paivitetty": "2026-11-28T00:08",
  "seasonSeries": 3745,
  "taulukot": {
   "Lohko A": [
